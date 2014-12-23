@@ -1,0 +1,10 @@
+{
+  "name": "style",
+  "version": "0.0.0",
+  "author": "Benoit Zugmeyer",
+  "devDependencies": {
+    "better-assert": "^1.0.2",
+    "mocha": "^2.0.1",
+    "should": "^4.4.1"
+  }
+}
