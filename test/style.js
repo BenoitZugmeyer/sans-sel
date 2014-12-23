@@ -1,5 +1,5 @@
 /*jshint mocha: true*/
-var should = require('should');
+require('should');
 var style = require('../style');
 
 beforeEach(function () {
@@ -13,6 +13,22 @@ describe('style', function () {
         it('should exists', function () {
             style.should.have.property('Style');
             style.Style.should.be.a.Function;
+        });
+
+        describe('constructor', function () {
+
+            it('should raise if an invalid name is given', function () {
+                (function () {
+                    new style.Style('-a', {});
+                }).should.throw('Invalid identifier: -a');
+            });
+
+            it('should raise if no declaration is given', function () {
+                (function () {
+                    new style.Style();
+                }).should.throw('Declarations should be a plain object');
+            });
+
         });
 
         describe('id', function () {
@@ -31,12 +47,6 @@ describe('style', function () {
                 new style.Style('foo', {});
                 var s = new style.Style('bar', {});
                 s._id.should.equal('bar-2');
-            });
-
-            it('should raise if invalid name', function () {
-                (function () {
-                    new style.Style('-a');
-                }).should.throw();
             });
 
         });
@@ -72,6 +82,18 @@ describe('style', function () {
                     }
                 });
                 s.render().should.equal('.style-1{foo:bar;}@media screen{.style-1{bar:baz;}}');
+            });
+
+            it('should raise if an invalid property is given', function () {
+                (function () {
+                    new style.Style({ '-foobar': 1 }).render();
+                }).should.throw('Invalid identifier: -foobar');
+                (function () {
+                    new style.Style({ 'foo bar': 1 }).render();
+                }).should.throw('Invalid identifier: foo bar');
+                (function () {
+                    new style.Style({ 'foo:bar': 1 }).render();
+                }).should.throw('Invalid identifier: foo:bar');
             });
 
         });

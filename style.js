@@ -49,11 +49,14 @@ function reset() {
 reset();
 
 
-function validIdentifier(id) {
-    return /^[a-z](?:[a-z0-9_-]*[a-z0-9])$/.test(id);
+function assertValidIdentifier(id) {
+    if (!/^[a-z](?:[a-z0-9_-]*[a-z0-9])$/.test(id)) {
+        throw new Error('Invalid identifier: ' + id);
+    }
 }
 
 function formatDeclaration(property, value) {
+    assertValidIdentifier(property);
     if (!(property in _formatDeclarationCache)) {
         _formatDeclarationCache[property] = property.replace(/([A-Z])/g, '-$1');
     }
@@ -111,8 +114,8 @@ function Style(name, declarations) {
         declarations = name;
         name = 'style';
     }
-    else if (!validIdentifier(name)) {
-        throw new Error('Invalid identifier');
+    else {
+        assertValidIdentifier(name);
     }
 
     if (!isPlainObject(declarations)) {
