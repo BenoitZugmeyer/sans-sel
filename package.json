@@ -2,9 +2,18 @@
   "name": "style",
   "version": "0.0.0",
   "author": "Benoit Zugmeyer",
+  "description": "A new way to write CSS in JS",
   "devDependencies": {
     "better-assert": "^1.0.2",
+    "browserify": "^8.0.2",
     "mocha": "^2.0.1",
-    "should": "^4.4.1"
-  }
+    "should": "^4.4.1",
+    "watchify": "^2.2.1"
+  },
+  "scripts": {
+    "dist":  "mkdir -p ./dist && browserify . -o dist/style.js",
+    "debug": "mkdir -p ./dist && watchify   . -o dist/style.js -d -v"
+  },
+  "main": "./src/index",
+  "browser": "./src/browser"
 }
