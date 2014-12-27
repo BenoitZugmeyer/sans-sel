@@ -2,9 +2,11 @@
 require('should');
 process.env.NODE_ENV = 'test';
 var Style = require('../src/Style');
+var backends = require('../src/backends');
 
 beforeEach(function () {
     Style.__test_reset();
+    backends.setBackend('collect');
 });
 
 describe('Style', function () {
@@ -92,18 +94,9 @@ describe('Style', function () {
 
     });
 
-    describe('populateStyleSheet', function () {
+    describe('inject', function () {
 
-        function StyleSheetMock() {
-            this.sheet = {
-                insertRule: function (rule, index) {
-                    this.cssRules.splice(index, 0, rule);
-                },
-                cssRules: [],
-            };
-        }
-
-        it('should populate a stylesheet', function () {
+        it('should inject a stylesheet', function () {
             var s = new Style({
                 color: 'red',
                 opacity: 1,
@@ -111,12 +104,79 @@ describe('Style', function () {
                     background: 'yellow'
                 }
             });
-            var element = new StyleSheetMock();
-            s.populateStyleSheet(element);
-            element.sheet.cssRules.should.eql([
-                '.style-1{color:red;opacity:1;}',
-                '@media screen{.style-1{background:yellow;}}'
+
+            s.inject();
+
+            backends.current._rules.should.eql([
+                {
+                    id: 'style-1',
+                    rules: [
+                        '.style-1{color:red;opacity:1;}',
+                        '@media screen{.style-1{background:yellow;}}'
+                    ]
+                }
             ]);
+            s.injected.should.equal(true);
+        });
+
+        it('can\'t be injected in different backends', function () {
+            var s = new Style({});
+            s.inject();
+            backends.setBackend('collect');
+            s.inject.bind(s).should.throw('A style can\'t be injected in two backends');
+            s.injected.should.equal(true);
+        });
+
+        it('should ignore injection twice in the same backend', function () {
+            var s = new Style({});
+            s.inject();
+            s.inject.bind(s).should.not.throw();
+            backends.current._rules.should.eql([
+                {
+                    id: 'style-1',
+                    rules: []
+                }
+            ]);
+            s.injected.should.equal(true);
+        });
+
+        it('should inject parent styles', function () {
+            var parent = new Style('parent', {});
+            var s = new Style({ inherit: [parent]});
+            s.inject();
+            backends.current._rules.should.eql([
+                {
+                    id: 'parent-1',
+                    rules: []
+                },
+                {
+                    id: 'style-2',
+                    rules: []
+                },
+            ]);
+            s.injected.should.equal(true);
+        });
+
+    });
+
+    describe('remove', function () {
+
+        it('should remove a style', function () {
+            var s = new Style({});
+            s.inject();
+            s.remove();
+            backends.current._rules.should.eql([]);
+            s.injected.should.equal(false);
+        });
+
+        it('should remove children styles', function () {
+            var parent = new Style('parent', {});
+            var s = new Style({ inherit: [parent]});
+            s.inject();
+            parent.remove();
+            backends.current._rules.should.eql([]);
+            s.injected.should.equal(false);
+            parent.injected.should.equal(false);
         });
 
     });
@@ -162,6 +222,12 @@ describe('Style', function () {
                 inherit: [ new Style('parent', {}), new Style('parent2', {}) ]
             });
             String(s).should.equal('parent-1 parent2-2 style-3');
+        });
+
+        it('should inject automatically', function () {
+            var s = new Style({});
+            String(s);
+            s.injected.should.equal(true);
         });
 
     });

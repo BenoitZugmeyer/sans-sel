@@ -11,8 +11,9 @@
     "watchify": "^2.2.1"
   },
   "scripts": {
-    "dist":  "mkdir -p ./dist && browserify . -o dist/style.js",
-    "debug": "mkdir -p ./dist && watchify   . -o dist/style.js -d -v"
+    "dist":  "mkdir -p dist && browserify . -o dist/style.js",
+    "debug": "mkdir -p dist && watchify   . -o dist/style.js -d -v",
+    "test":  "mocha"
   },
   "main": "./src/index",
   "browser": "./src/browser"

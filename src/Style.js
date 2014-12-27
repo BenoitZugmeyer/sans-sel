@@ -110,6 +110,7 @@ function Style(name, declarations) {
     this._ids.push(id);
     this._injectedInBackend = false;
     this._declarations = deepMerge({}, declarations);
+    delete this._declarations.inherit;
 }
 
 Style.prototype = {
