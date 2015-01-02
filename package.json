@@ -4,7 +4,6 @@
   "author": "Benoît Zugmeyer",
   "description": "A new way to write CSS in JS",
   "devDependencies": {
-    "better-assert": "^1.0.2",
     "browserify": "^8.0.2",
     "mocha": "^2.0.1",
     "should": "^4.4.1",
