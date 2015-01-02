@@ -182,6 +182,7 @@ function reset() {
 }
 reset();
 
+/* istanbul ignore else */
 if (process.env.NODE_ENV === 'test') {
     Style.__test_reset = reset;
 }

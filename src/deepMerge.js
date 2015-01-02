@@ -1,7 +1,7 @@
 var isPlainObject = require('./isPlainObject');
 
 module.exports = function deepMerge(target, source) {
-    if (!isPlainObject(source)) return;
+    if (!isPlainObject(source)) return target;
 
     Object.keys(source).forEach(function (key) {
         var sourceValue = source[key];

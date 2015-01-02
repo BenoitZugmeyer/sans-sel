@@ -80,6 +80,21 @@ describe('Style', function () {
             s.render().should.equal('.style-1{foo:bar;}@media screen{.style-1{bar:baz;}}');
         });
 
+        it('should render nested pseudo selectors', function () {
+            var s = new Style({
+                foo: 'bar',
+                focus: {
+                    foo: 'baz',
+                    hover: {
+                        foo: 'biz',
+                    }
+                }
+            });
+            s.render().should.equal('.style-1{foo:bar;}' +
+                                    '.style-1:focus{foo:baz;}' +
+                                    '.style-1:focus:hover{foo:biz;}');
+        });
+
         it('should raise if an invalid property is given', function () {
             (function () {
                 new Style({ '-foobar': 1 }).render();
@@ -179,6 +194,21 @@ describe('Style', function () {
             parent.injected.should.equal(false);
         });
 
+        it('should ignore the removal twice', function () {
+            var s1 = new Style({});
+            var s2 = new Style({});
+            s1.inject();
+            s2.inject();
+            s1.remove();
+            s1.remove();
+            backends.current._rules.should.eql([
+                {
+                    id: 'style-2',
+                    rules: []
+                }
+            ]);
+        });
+
     });
 
     describe('apply', function () {
@@ -200,12 +230,36 @@ describe('Style', function () {
 
         it('should add inheriting class names too', function () {
             var parent = new Style('parent', {});
-            var child = new Style('child', { inherit: [parent] });
+            var child = new Style('child', { inherit: parent });
             var element = new ElementMock();
             child.apply(element);
             element.classList.length.should.equal(2);
             element.classList[0].should.equal('parent-1');
             element.classList[1].should.equal('child-2');
+        });
+
+        it('should add inheriting class names too with multiple parents', function () {
+            var parent = new Style('parent', {});
+            var parent2 = new Style('parent', {});
+            var child = new Style('child', { inherit: [parent, parent2] });
+            var element = new ElementMock();
+            child.apply(element);
+            element.classList.length.should.equal(3);
+            element.classList[0].should.equal('parent-1');
+            element.classList[1].should.equal('parent-2');
+            element.classList[2].should.equal('child-3');
+        });
+
+        it('should deduplicate class names', function () {
+            var parent = new Style('parent', {});
+            var parent2 = new Style('parent', { inherit: parent });
+            var child = new Style('child', { inherit: [parent, parent2] });
+            var element = new ElementMock();
+            child.apply(element);
+            element.classList.length.should.equal(3);
+            element.classList[0].should.equal('parent-1');
+            element.classList[1].should.equal('parent-2');
+            element.classList[2].should.equal('child-3');
         });
 
     });
@@ -231,4 +285,5 @@ describe('Style', function () {
         });
 
     });
+
 });
