@@ -2,8 +2,17 @@ var isPlainObject = require('./isPlainObject');
 var deepMerge = require('./deepMerge');
 var backends = require('./backends');
 
-var formatDeclarationCache;
-var styleId;
+var formatDeclarationCache = Object.create(null);
+var styleId = 0;
+
+/* istanbul ignore else */
+if (process.env.NODE_ENV === 'test') {
+    Style.__test_reset = function () {
+        formatDeclarationCache = Object.create(null);
+        styleId = 0;
+    };
+}
+
 
 function assertValidIdentifier(id) {
     if (!/^[a-z](?:[a-z0-9_-]*[a-z0-9])$/i.test(id)) {
@@ -175,17 +184,6 @@ Style.prototype = {
         element.classList.add.apply(element.classList, this._ids);
     },
 };
-
-function reset() {
-    formatDeclarationCache = Object.create(null);
-    styleId = 0;
-}
-reset();
-
-/* istanbul ignore else */
-if (process.env.NODE_ENV === 'test') {
-    Style.__test_reset = reset;
-}
 
 module.exports = Style;
 
