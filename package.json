@@ -5,13 +5,14 @@
   "description": "A new way to write CSS in JS",
   "devDependencies": {
     "browserify": "^8.0.2",
+    "envify": "^3.2.0",
     "mocha": "^2.0.1",
     "should": "^4.4.1",
     "uglify-js": "^2.4.16",
     "watchify": "^2.2.1"
   },
   "scripts": {
-    "dist": "mkdir -p dist && NODE_ENV=production browserify . | uglifyjs -c -m -o dist/style.js",
+    "dist": "mkdir -p dist && NODE_ENV=production browserify . -t envify | uglifyjs -c -m -o dist/style.js",
     "dev": "mkdir -p dist && NODE_ENV=development watchify . -o dist/style.js -d -v",
     "coverage": "mkdir -p dist && NODE_ENV=test istanbul cover $(which _mocha)",
     "test": "NODE_ENV=test mocha"
