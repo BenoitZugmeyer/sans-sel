@@ -1,33 +1,32 @@
 var defineProperties = require('./defineProperties');
+var makeClass = require('./makeClass');
 
-function Style(backend, cls, parents) {
-    this._backend = backend;
+module.exports = makeClass({
 
-    if (!parents) {
-        parents = [];
-    }
+    constructor: function Style(backend, cls, parents) {
+        this._backend = backend;
 
-    var classes = [cls];
+        if (!parents) {
+            parents = [];
+        }
 
-    parents.forEach(function (p) {
-        p._children.push(this);
-        classes.push.apply(classes, p.classes);
-    }, this);
+        var classes = [cls];
 
-    Object.freeze(classes);
+        parents.forEach(function (p) {
+            p._children.push(this);
+            classes.push.apply(classes, p.classes);
+        }, this);
 
-    this._active = true;
+        Object.freeze(classes);
 
-    defineProperties(this, {
-        classes: classes,
-        _children: [],
-        _parents: parents,
-    });
-}
+        this._active = true;
 
-Style.prototype = {
-
-    constructor: Style,
+        defineProperties(this, {
+            classes: classes,
+            _children: [],
+            _parents: parents,
+        });
+    },
 
     toString: function () {
         return this.classes.join(' ');
@@ -56,7 +55,4 @@ Style.prototype = {
         this._backend.remove(this.classes[0]);
     },
 
-};
-
-module.exports = Style;
-
+});

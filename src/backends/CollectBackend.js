@@ -1,19 +1,22 @@
+var makeClass = require('../makeClass');
 
-function CollectBackend() {
-    this._rules = [];
-}
+module.exports = makeClass({
 
-CollectBackend.prototype.add = function (id, rule) {
-    this._rules.push({
-        id: id,
-        rule: rule
-    });
-};
+    constructor: function CollectBackend() {
+        this._rules = [];
+    },
 
-CollectBackend.prototype.remove = function (id) {
-    this._rules = this._rules.filter(function (rule) {
-        return rule.id !== id;
-    });
-};
+    add: function (id, rule) {
+        this._rules.push({
+            id: id,
+            rule: rule
+        });
+    },
 
-module.exports = CollectBackend;
+    remove: function (id) {
+        this._rules = this._rules.filter(function (rule) {
+            return rule.id !== id;
+        });
+    },
+
+});

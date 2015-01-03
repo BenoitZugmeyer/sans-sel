@@ -1,25 +1,30 @@
 /*jshint browser: true*/
 
-function DOMBackend() {
-    this._element = document.createElement('style');
-    document.head.appendChild(this._element);
-}
+var makeClass = require('../makeClass');
 
-DOMBackend.prototype.add = function (id, rule) {
-    var sheet = this._element.sheet;
-    var length = sheet.cssRules.length;
-    sheet.insertRule(rule, length);
-    sheet.cssRules[length].__styleId = id;
-};
+module.exports = makeClass({
 
-DOMBackend.prototype.remove = function (id) {
-    var sheet = this._element.sheet;
-    var i;
-    for (i = sheet.cssRules.length - 1; i >= 0; i--) {
-        if (sheet.cssRules[i].__styleId === id) {
-            sheet.removeRule(i);
+    constructor: function DOMBackend() {
+        var element = document.createElement('style');
+        this._sheet = element.sheet;
+        document.head.appendChild(element);
+    },
+
+    add: function (id, rule) {
+        var sheet = this._sheet;
+        var length = sheet.cssRules.length;
+        sheet.insertRule(rule, length);
+        sheet.cssRules[length].__styleId = id;
+    },
+
+    remove: function (id) {
+        var sheet = this._sheet;
+        var i;
+        for (i = sheet.cssRules.length - 1; i >= 0; i--) {
+            if (sheet.cssRules[i].__styleId === id) {
+                sheet.removeRule(i);
+            }
         }
-    }
-};
+    },
 
-module.exports = DOMBackend;
+});

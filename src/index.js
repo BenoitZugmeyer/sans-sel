@@ -4,6 +4,7 @@ var assertValidIdentifier = require('./assertValidIdentifier');
 var Style = require('./Style');
 var backends = require('./backends');
 var formatDeclarations = require('./formatDeclarations');
+var makeClass = require('./makeClass');
 
 var styleId = 0;
 
@@ -14,23 +15,21 @@ if (process.env.NODE_ENV === 'test') {
     };
 }
 
-function SansSel(options) {
-    if (!options) {
-        options = {};
-    }
-    else if (!isPlainObject(options)) {
-        throw new Error('options should be a plain object');
-    }
+var SansSel = makeClass({
 
-    defineProperties(this, {
-        backend: backends.getBackend(options.backend),
-        transforms: Object.create(null),
-    });
-}
+    constructor: function SansSel(options) {
+        if (!options) {
+            options = {};
+        }
+        else if (process.env.NODE_ENV !== 'production' && !isPlainObject(options)) {
+            throw new Error('options should be a plain object');
+        }
 
-SansSel.prototype = {
-
-    constructor: SansSel,
+        defineProperties(this, {
+            backend: backends.getBackend(options.backend),
+            transforms: Object.create(null),
+        });
+    },
 
     add: function (name, declarations) {
         if (typeof name !== 'string') {
@@ -41,7 +40,7 @@ SansSel.prototype = {
             assertValidIdentifier(name);
         }
 
-        if (!isPlainObject(declarations)) {
+        if (process.env.NODE_ENV !== 'production' && !isPlainObject(declarations)) {
             throw new Error('Declarations should be a plain object');
         }
 
@@ -60,7 +59,7 @@ SansSel.prototype = {
         return new Style(this.backend, cls, directParents);
     },
 
-};
+});
 
 function sansSel(options) {
     return new SansSel(options);
