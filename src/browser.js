@@ -1,2 +1,2 @@
 /*jshint browser: true*/
-window.style = require('.');
+window.sansSel = require('.');
