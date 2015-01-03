@@ -5,13 +5,11 @@ function DOMBackend() {
     document.head.appendChild(this._element);
 }
 
-DOMBackend.prototype.add = function (id, rules) {
+DOMBackend.prototype.add = function (id, rule) {
     var sheet = this._element.sheet;
-    rules.forEach(function (rule) {
-        var length = sheet.cssRules.length;
-        sheet.insertRule(rule, length);
-        sheet.cssRules[length].__styleId = id;
-    });
+    var length = sheet.cssRules.length;
+    sheet.insertRule(rule, length);
+    sheet.cssRules[length].__styleId = id;
 };
 
 DOMBackend.prototype.remove = function (id) {

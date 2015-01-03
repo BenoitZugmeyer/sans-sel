@@ -121,13 +121,8 @@ describe('Style', function () {
             s.inject();
 
             backends.current._rules.should.eql([
-                {
-                    id: 'style-1',
-                    rules: [
-                        '.style-1{color:red;opacity:1;}',
-                        '@media screen{.style-1{background:yellow;}}'
-                    ]
-                }
+                { id: 'style-1', rule: '.style-1{color:red;opacity:1;}' },
+                { id: 'style-1', rule: '@media screen{.style-1{background:yellow;}}' },
             ]);
             s.injected.should.equal(true);
         });
@@ -144,28 +139,17 @@ describe('Style', function () {
             var s = new Style({});
             s.inject();
             s.inject.bind(s).should.not.throw();
-            backends.current._rules.should.eql([
-                {
-                    id: 'style-1',
-                    rules: []
-                }
-            ]);
+            backends.current._rules.should.eql([]);
             s.injected.should.equal(true);
         });
 
         it('should inject parent styles', function () {
-            var parent = new Style('parent', {});
-            var s = new Style({ inherit: [parent]});
+            var parent = new Style('parent', { color: 'red' });
+            var s = new Style({ inherit: [parent], color: 'blue' });
             s.inject();
             backends.current._rules.should.eql([
-                {
-                    id: 'parent-1',
-                    rules: []
-                },
-                {
-                    id: 'style-2',
-                    rules: []
-                },
+                { id: 'parent-1', rule: '.parent-1{color:red;}' },
+                { id: 'style-2', rule: '.style-2{color:blue;}' },
             ]);
             s.injected.should.equal(true);
         });
@@ -193,17 +177,14 @@ describe('Style', function () {
         });
 
         it('should ignore the removal twice', function () {
-            var s1 = new Style({});
-            var s2 = new Style({});
+            var s1 = new Style({ color: 'red', });
+            var s2 = new Style({ color: 'blue', });
             s1.inject();
             s2.inject();
             s1.remove();
             s1.remove();
             backends.current._rules.should.eql([
-                {
-                    id: 'style-2',
-                    rules: []
-                }
+                { id: 'style-2', rule: '.style-2{color:blue;}'}
             ]);
         });
 

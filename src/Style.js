@@ -88,12 +88,8 @@ Style.prototype = {
             p.inject();
         });
 
-        var rules = [];
-        this.iterRules(function (rule) {
-            rules.push(rule);
-        });
+        this.iterRules(backend.add.bind(backend, this._id));
 
-        backend.add(this._id, rules);
         this._injectedInBackend = backend;
     },
 

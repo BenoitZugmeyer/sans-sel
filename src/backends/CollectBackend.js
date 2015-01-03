@@ -3,10 +3,10 @@ function CollectBackend() {
     this._rules = [];
 }
 
-CollectBackend.prototype.add = function (id, rules) {
+CollectBackend.prototype.add = function (id, rule) {
     this._rules.push({
         id: id,
-        rules: rules
+        rule: rule
     });
 };
 
