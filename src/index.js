@@ -36,12 +36,13 @@ var SansSel = makeClass({
             declarations = name;
             name = 'style';
         }
-        else {
-            assertValidIdentifier(name);
-        }
 
-        if (process.env.NODE_ENV !== 'production' && !isPlainObject(declarations)) {
-            throw new Error('Declarations should be a plain object');
+        if (process.env.NODE_ENV !== 'production') {
+            assertValidIdentifier(name);
+
+            if (!isPlainObject(declarations)) {
+                throw new Error('Declarations should be a plain object');
+            }
         }
 
         styleId += 1;
