@@ -1,67 +1,20 @@
-var isPlainObject = require('./isPlainObject');
-var deepMerge = require('./deepMerge');
-var backends = require('./backends');
-var formatDeclarations = require('./formatDeclarations');
-var assertValidIdentifier = require('./assertValidIdentifier');
 
-var styleId = 0;
+function Style(backend, cls, parents) {
+    this._backend = backend;
+    this._parents = parents || [];
 
-/* istanbul ignore else */
-if (process.env.NODE_ENV === 'test') {
-    Style.__test_reset = function () {
-        styleId = 0;
-    };
-}
+    var classes = [cls];
 
-function Style(name, declarations) {
+    this._parents.forEach(function (p) {
+        p._children.push(this);
+        classes.push.apply(classes, p._classes);
+    }, this);
 
-    if (typeof name !== 'string') {
-        declarations = name;
-        name = 'style';
-    }
-    else {
-        assertValidIdentifier(name);
-    }
+    Object.freeze(classes);
 
-    if (!isPlainObject(declarations)) {
-        throw new Error('Declarations should be a plain object');
-    }
-
-    styleId += 1;
-    var id = name + '-' + styleId;
-
-    var directParents =
-        declarations.inherit ?
-            Array.isArray(declarations.inherit) ?
-                declarations.inherit :
-                [declarations.inherit] :
-            [];
-
-    var this_ = this;
-    var idTree = Object.create(null);
-    var parents = [];
-
-    function add(parent) {
-        if (!idTree[parent._id]) {
-            idTree[parent._id] = true;
-            parent._children.push(this_);
-            parents.push(parent);
-        }
-    }
-
-    directParents.forEach(function (p) {
-        p._parents.forEach(add);
-        add(p);
-    });
-
-    this._id = id;
-    this._parents = parents;
+    this._classes = classes;
     this._children = [];
-    this._ids = parents.map(function (p) { return p._id; });
-    this._ids.push(id);
-    this._injectedInBackend = false;
-    this._declarations = deepMerge({}, declarations);
-    delete this._declarations.inherit;
+    this._active = true;
 }
 
 Style.prototype = {
@@ -69,58 +22,36 @@ Style.prototype = {
     constructor: Style,
 
     toString: function () {
-        this.inject();
-        return this._ids.join(' ');
+        return this._classes.join(' ');
     },
 
-    get injected() {
-        return Boolean(this._injectedInBackend);
+    get active() {
+        return this._active;
     },
 
-    inject: function () {
-        var backend = backends.current;
-        if (this._injectedInBackend) {
-            if (this._injectedInBackend === backend) return;
-            else throw new Error('A style can\'t be injected in two backends');
-        }
-
-        this._parents.forEach(function (p) {
-            p.inject();
-        });
-
-        this.iterRules(backend.add.bind(backend, this._id));
-
-        this._injectedInBackend = backend;
+    get classes() {
+        return this._classes;
     },
 
     remove: function () {
-        if (!this._injectedInBackend) return;
+        if (!this._active) return;
 
         this._children.forEach(function (c) {
             c.remove();
         });
 
-        this._injectedInBackend.remove(this._id);
-        this._injectedInBackend = false;
+        this._active = false;
+
+        this._parents.forEach(function (p) {
+            var i = p._children.indexOf(this);
+            if (i >= 0) {
+                p._children.splice(i, 1);
+            }
+        }, this);
+
+        this._backend.remove(this._classes[0]);
     },
 
-    iterRules: function (fn) {
-        var selector = '.' + this._id;
-        formatDeclarations(selector, this._declarations, fn);
-    },
-
-    render: function () {
-        var result = '';
-        this.iterRules(function (ruleSet) {
-            result += ruleSet;
-        });
-        return result;
-    },
-
-    apply: function (element) {
-        this.inject();
-        element.classList.add.apply(element.classList, this._ids);
-    },
 };
 
 module.exports = Style;

@@ -1,244 +1,40 @@
 require('should');
 var Style = require('../src/Style');
-var backends = require('../src/backends');
 
 describe('Style', function () {
-
+    var backend;
     beforeEach(function () {
-        Style.__test_reset();
-        backends.setBackend('collect');
-    });
-
-    describe('constructor', function () {
-
-        it('should raise if an invalid name is given', function () {
-            (function () {
-                new Style('-a', {});
-            }).should.throw('Invalid identifier: -a');
-        });
-
-        it('should raise if no declaration is given', function () {
-            (function () {
-                new Style();
-            }).should.throw('Declarations should be a plain object');
-        });
-
-    });
-
-    describe('_id', function () {
-
-        it('should support anonymous styles', function () {
-            var s = new Style({});
-            s._id.should.equal('style-1');
-        });
-
-        it('should support named styles', function () {
-            var s = new Style('foo', {});
-            s._id.should.equal('foo-1');
-        });
-
-        it('should always be incremented', function () {
-            new Style('foo', {});
-            var s = new Style('bar', {});
-            s._id.should.equal('bar-2');
-        });
-
-    });
-
-    describe('render', function () {
-
-        it('should render basic style', function () {
-            var s = new Style({ color: 'red' });
-            s.render().should.equal('.style-1{color:red;}');
-        });
-
-        it('should render media query', function () {
-            var s = new Style({
-                'media screen': {
-                    color: 'red'
-                }
-            });
-            s.render().should.equal('@media screen{.style-1{color:red;}}');
-        });
-
-        it('should join arrays with spaces', function () {
-            var s = new Style({
-                border: ['1px', 'solid', 'grey']
-            });
-            s.render().should.equal('.style-1{border:1px solid grey;}');
-        });
-
-        it('should renders rule sets in order', function () {
-            var s = new Style({
-                foo: 'bar',
-                'media screen': {
-                    bar: 'baz'
-                }
-            });
-            s.render().should.equal('.style-1{foo:bar;}@media screen{.style-1{bar:baz;}}');
-        });
-
-        it('should render nested pseudo selectors', function () {
-            var s = new Style({
-                foo: 'bar',
-                focus: {
-                    foo: 'baz',
-                    hover: {
-                        foo: 'biz',
-                    }
-                }
-            });
-            s.render().should.equal('.style-1{foo:bar;}' +
-                                    '.style-1:focus{foo:baz;}' +
-                                    '.style-1:focus:hover{foo:biz;}');
-        });
-
-        it('should raise if an invalid property is given', function () {
-            (function () {
-                new Style({ '-foobar': 1 }).render();
-            }).should.throw('Invalid identifier: -foobar');
-            (function () {
-                new Style({ 'foo bar': 1 }).render();
-            }).should.throw('Invalid identifier: foo bar');
-            (function () {
-                new Style({ 'foo:bar': 1 }).render();
-            }).should.throw('Invalid identifier: foo:bar');
-        });
-
-    });
-
-    describe('inject', function () {
-
-        it('should inject a stylesheet', function () {
-            var s = new Style({
-                color: 'red',
-                opacity: 1,
-                'media screen': {
-                    background: 'yellow'
-                }
-            });
-
-            s.inject();
-
-            backends.current._rules.should.eql([
-                { id: 'style-1', rule: '.style-1{color:red;opacity:1;}' },
-                { id: 'style-1', rule: '@media screen{.style-1{background:yellow;}}' },
-            ]);
-            s.injected.should.equal(true);
-        });
-
-        it('can\'t be injected in different backends', function () {
-            var s = new Style({});
-            s.inject();
-            backends.setBackend('collect');
-            s.inject.bind(s).should.throw('A style can\'t be injected in two backends');
-            s.injected.should.equal(true);
-        });
-
-        it('should ignore injection twice in the same backend', function () {
-            var s = new Style({});
-            s.inject();
-            s.inject.bind(s).should.not.throw();
-            backends.current._rules.should.eql([]);
-            s.injected.should.equal(true);
-        });
-
-        it('should inject parent styles', function () {
-            var parent = new Style('parent', { color: 'red' });
-            var s = new Style({ inherit: [parent], color: 'blue' });
-            s.inject();
-            backends.current._rules.should.eql([
-                { id: 'parent-1', rule: '.parent-1{color:red;}' },
-                { id: 'style-2', rule: '.style-2{color:blue;}' },
-            ]);
-            s.injected.should.equal(true);
-        });
-
+        backend = {
+            removeCalledWith: [],
+            remove: function (o) {
+                this.removeCalledWith.push(o);
+            },
+        };
     });
 
     describe('remove', function () {
 
         it('should remove a style', function () {
-            var s = new Style({});
-            s.inject();
+            var s = new Style(backend, 'style-1');
             s.remove();
-            backends.current._rules.should.eql([]);
-            s.injected.should.equal(false);
+            s.active.should.be.false;
+            backend.removeCalledWith.should.eql(['style-1']);
         });
 
         it('should remove children styles', function () {
-            var parent = new Style('parent', {});
-            var s = new Style({ inherit: [parent]});
-            s.inject();
+            var parent = new Style(backend, 'style-1');
+            var s = new Style(backend, 'style-2', [parent]);
             parent.remove();
-            backends.current._rules.should.eql([]);
-            s.injected.should.equal(false);
-            parent.injected.should.equal(false);
+            s.active.should.be.false;
+            parent.active.should.be.false;
+            backend.removeCalledWith.should.eql(['style-2', 'style-1']);
         });
 
         it('should ignore the removal twice', function () {
-            var s1 = new Style({ color: 'red', });
-            var s2 = new Style({ color: 'blue', });
-            s1.inject();
-            s2.inject();
-            s1.remove();
-            s1.remove();
-            backends.current._rules.should.eql([
-                { id: 'style-2', rule: '.style-2{color:blue;}'}
-            ]);
-        });
-
-    });
-
-    describe('apply', function () {
-
-        function ElementMock() {
-            this.classList = {
-                add: Array.prototype.push,
-                length: 0
-            };
-        }
-
-        it('should add the class name', function () {
-            var s = new Style({});
-            var element = new ElementMock();
-            s.apply(element);
-            element.classList.length.should.equal(1);
-            element.classList[0].should.equal('style-1');
-        });
-
-        it('should add inheriting class names too', function () {
-            var parent = new Style('parent', {});
-            var child = new Style('child', { inherit: parent });
-            var element = new ElementMock();
-            child.apply(element);
-            element.classList.length.should.equal(2);
-            element.classList[0].should.equal('parent-1');
-            element.classList[1].should.equal('child-2');
-        });
-
-        it('should add inheriting class names too with multiple parents', function () {
-            var parent = new Style('parent', {});
-            var parent2 = new Style('parent', {});
-            var child = new Style('child', { inherit: [parent, parent2] });
-            var element = new ElementMock();
-            child.apply(element);
-            element.classList.length.should.equal(3);
-            element.classList[0].should.equal('parent-1');
-            element.classList[1].should.equal('parent-2');
-            element.classList[2].should.equal('child-3');
-        });
-
-        it('should deduplicate class names', function () {
-            var parent = new Style('parent', {});
-            var parent2 = new Style('parent', { inherit: parent });
-            var child = new Style('child', { inherit: [parent, parent2] });
-            var element = new ElementMock();
-            child.apply(element);
-            element.classList.length.should.equal(3);
-            element.classList[0].should.equal('parent-1');
-            element.classList[1].should.equal('parent-2');
-            element.classList[2].should.equal('child-3');
+            var s = new Style(backend, 'style-1');
+            s.remove();
+            s.remove();
+            backend.removeCalledWith.should.eql(['style-1']);
         });
 
     });
@@ -246,23 +42,82 @@ describe('Style', function () {
     describe('toString', function () {
 
         it('should return a valid className', function () {
-            var s = new Style({});
+            var s = new Style(backend, 'style-1');
             String(s).should.equal('style-1');
         });
 
         it('should return the inherited classes as well', function () {
-            var s = new Style({
-                inherit: [ new Style('parent', {}), new Style('parent2', {}) ]
-            });
-            String(s).should.equal('parent-1 parent2-2 style-3');
-        });
-
-        it('should inject automatically', function () {
-            var s = new Style({});
-            String(s);
-            s.injected.should.equal(true);
+            var s = new Style(backend, 'style-3', [new Style(backend, 'parent-1'), new Style(backend, 'parent-2'),]);
+            String(s).should.equal('style-3 parent-1 parent-2');
         });
 
     });
+
+    describe('classes', function () {
+
+        it('should return a valid className', function () {
+            var s = new Style(backend, 'style-1');
+            s.classes.should.eql(['style-1']);
+        });
+
+        it('should return the inherited classes as well', function () {
+            var s = new Style(backend, 'style-3', [new Style(backend, 'parent-1'), new Style(backend, 'parent-2'),]);
+            s.classes.should.eql(['style-3', 'parent-1', 'parent-2']);
+        });
+
+    });
+
+    // describe('apply', function () {
+
+    //     function ElementMock() {
+    //         this.classList = {
+    //             add: Array.prototype.push,
+    //             length: 0
+    //         };
+    //     }
+
+    //     it('should add the class name', function () {
+    //         var s = new Style({});
+    //         var element = new ElementMock();
+    //         s.apply(element);
+    //         element.classList.length.should.equal(1);
+    //         element.classList[0].should.equal('style-1');
+    //     });
+
+    //     it('should add inheriting class names too', function () {
+    //         var parent = new Style('parent', {});
+    //         var child = new Style('child', { inherit: parent });
+    //         var element = new ElementMock();
+    //         child.apply(element);
+    //         element.classList.length.should.equal(2);
+    //         element.classList[0].should.equal('parent-1');
+    //         element.classList[1].should.equal('child-2');
+    //     });
+
+    //     it('should add inheriting class names too with multiple parents', function () {
+    //         var parent = new Style('parent', {});
+    //         var parent2 = new Style('parent', {});
+    //         var child = new Style('child', { inherit: [parent, parent2] });
+    //         var element = new ElementMock();
+    //         child.apply(element);
+    //         element.classList.length.should.equal(3);
+    //         element.classList[0].should.equal('parent-1');
+    //         element.classList[1].should.equal('parent-2');
+    //         element.classList[2].should.equal('child-3');
+    //     });
+
+    //     it('should deduplicate class names', function () {
+    //         var parent = new Style('parent', {});
+    //         var parent2 = new Style('parent', { inherit: parent });
+    //         var child = new Style('child', { inherit: [parent, parent2] });
+    //         var element = new ElementMock();
+    //         child.apply(element);
+    //         element.classList.length.should.equal(3);
+    //         element.classList[0].should.equal('parent-1');
+    //         element.classList[1].should.equal('parent-2');
+    //         element.classList[2].should.equal('child-3');
+    //     });
+
+    // });
 
 });

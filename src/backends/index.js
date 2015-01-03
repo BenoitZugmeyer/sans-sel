@@ -4,7 +4,12 @@ backends.dom = require('./DOMBackend');
 backends.collect = require('./CollectBackend');
 backends.auto = typeof window !== 'undefined' ? backends.dom : backends.collect;
 
-function setBackend(b) {
+function getBackend(b) {
+
+    if (!b) {
+        b = 'auto';
+    }
+
     if (typeof b === 'string') {
         if (!(b in backends)) {
             throw new Error('Unknown backend ' + b);
@@ -15,8 +20,8 @@ function setBackend(b) {
     if (typeof b === 'function') {
         b = new b();
     }
-    exports.current = b;
+
+    return b;
 }
 
-setBackend('auto');
-exports.setBackend = setBackend;
+exports.getBackend = getBackend;
