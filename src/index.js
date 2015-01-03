@@ -66,6 +66,6 @@ function sansSel(options) {
     return new SansSel(options);
 }
 
-sansSel.merge = require('./deepMerge');
+sansSel.merge = require('./merge');
 
 module.exports = sansSel;
