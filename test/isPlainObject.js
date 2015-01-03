@@ -1,4 +1,3 @@
-/*jshint mocha: true*/
 require('should');
 var isPlainObject = require('../src/isPlainObject');
 

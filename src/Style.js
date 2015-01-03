@@ -1,76 +1,16 @@
 var isPlainObject = require('./isPlainObject');
 var deepMerge = require('./deepMerge');
 var backends = require('./backends');
+var formatDeclarations = require('./formatDeclarations');
+var assertValidIdentifier = require('./assertValidIdentifier');
 
-var formatDeclarationCache = Object.create(null);
 var styleId = 0;
 
 /* istanbul ignore else */
 if (process.env.NODE_ENV === 'test') {
     Style.__test_reset = function () {
-        formatDeclarationCache = Object.create(null);
         styleId = 0;
     };
-}
-
-
-function assertValidIdentifier(id) {
-    if (!/^[a-z](?:[a-z0-9_-]*[a-z0-9])$/i.test(id)) {
-        throw new Error('Invalid identifier: ' + id);
-    }
-}
-
-function formatDeclaration(property, value) {
-    assertValidIdentifier(property);
-    if (!(property in formatDeclarationCache)) {
-        formatDeclarationCache[property] = property.replace(/([A-Z])/g, '-$1');
-    }
-    if (Array.isArray(value)) {
-        value = value.join(' ');
-    }
-    return formatDeclarationCache[property] + ':' + value + ';';
-}
-
-function formatDeclarations(selector, declaration, cb, media) {
-    var result = '';
-
-    var subRules = [];
-    var property, value;
-    for (property in declaration) {
-
-        value = declaration[property];
-        if (isPlainObject(value)) {
-            subRules.push(property);
-        }
-        else {
-            result += formatDeclaration(property, value);
-        }
-
-    }
-
-    if (result) {
-
-        result = selector + '{' + result + '}';
-
-        if (media) {
-            result = media + '{' + result + '}';
-        }
-
-        cb(result);
-
-    }
-
-    var i, l;
-    for (i = 0, l = subRules.length; i < l; i++) {
-        property = subRules[i];
-        value = declaration[property];
-        if (property.slice(0, 6) === 'media ') {
-            formatDeclarations(selector, value, cb, '@' + property);
-        }
-        else {
-            formatDeclarations(selector + ':' + property, value, cb);
-        }
-    }
 }
 
 function Style(name, declarations) {
@@ -100,6 +40,7 @@ function Style(name, declarations) {
     var this_ = this;
     var idTree = Object.create(null);
     var parents = [];
+
     function add(parent) {
         if (!idTree[parent._id]) {
             idTree[parent._id] = true;
@@ -107,6 +48,7 @@ function Style(name, declarations) {
             parents.push(parent);
         }
     }
+
     directParents.forEach(function (p) {
         p._parents.forEach(add);
         add(p);

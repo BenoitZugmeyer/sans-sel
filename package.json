@@ -13,7 +13,7 @@
   "scripts": {
     "dist": "mkdir -p dist && NODE_ENV=production browserify . | uglifyjs -c -m -o dist/style.js",
     "dev": "mkdir -p dist && NODE_ENV=development watchify . -o dist/style.js -d -v",
-    "coverage": "mkdir -p dist && NODE_ENV=development istanbul cover $(which _mocha)",
+    "coverage": "mkdir -p dist && NODE_ENV=test istanbul cover $(which _mocha)",
     "test": "NODE_ENV=test mocha"
   },
   "main": "./src/index",

@@ -1,0 +1,6 @@
+{
+    "unused": true,
+    "undef": true,
+    "node": true,
+    "mocha": true
+}

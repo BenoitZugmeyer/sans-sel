@@ -1,15 +1,13 @@
-/*jshint mocha: true*/
 require('should');
-process.env.NODE_ENV = 'test';
 var Style = require('../src/Style');
 var backends = require('../src/backends');
 
-beforeEach(function () {
-    Style.__test_reset();
-    backends.setBackend('collect');
-});
-
 describe('Style', function () {
+
+    beforeEach(function () {
+        Style.__test_reset();
+        backends.setBackend('collect');
+    });
 
     describe('constructor', function () {
 

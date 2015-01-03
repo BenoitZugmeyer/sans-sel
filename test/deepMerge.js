@@ -1,7 +1,5 @@
-/*jshint mocha: true*/
 require('should');
 var deepMerge = require('../src/deepMerge');
-
 
 describe('merge', function () {
 
