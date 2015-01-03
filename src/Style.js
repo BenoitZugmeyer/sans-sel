@@ -1,20 +1,28 @@
+var defineProperties = require('./defineProperties');
 
 function Style(backend, cls, parents) {
     this._backend = backend;
-    this._parents = parents || [];
+
+    if (!parents) {
+        parents = [];
+    }
 
     var classes = [cls];
 
-    this._parents.forEach(function (p) {
+    parents.forEach(function (p) {
         p._children.push(this);
-        classes.push.apply(classes, p._classes);
+        classes.push.apply(classes, p.classes);
     }, this);
 
     Object.freeze(classes);
 
-    this._classes = classes;
-    this._children = [];
     this._active = true;
+
+    defineProperties(this, {
+        classes: classes,
+        _children: [],
+        _parents: parents,
+    });
 }
 
 Style.prototype = {
@@ -22,15 +30,11 @@ Style.prototype = {
     constructor: Style,
 
     toString: function () {
-        return this._classes.join(' ');
+        return this.classes.join(' ');
     },
 
     get active() {
         return this._active;
-    },
-
-    get classes() {
-        return this._classes;
     },
 
     remove: function () {
@@ -49,7 +53,7 @@ Style.prototype = {
             }
         }, this);
 
-        this._backend.remove(this._classes[0]);
+        this._backend.remove(this.classes[0]);
     },
 
 };

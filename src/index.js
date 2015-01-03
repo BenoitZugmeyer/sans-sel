@@ -1,4 +1,5 @@
 var isPlainObject = require('./isPlainObject');
+var defineProperties = require('./defineProperties');
 var assertValidIdentifier = require('./assertValidIdentifier');
 var Style = require('./Style');
 var backends = require('./backends');
@@ -21,16 +22,15 @@ function SansSel(options) {
         throw new Error('options should be a plain object');
     }
 
-    this._backend = backends.getBackend(options.backend);
+    defineProperties(this, {
+        backend: backends.getBackend(options.backend),
+        transforms: Object.create(null),
+    });
 }
 
 SansSel.prototype = {
 
     constructor: SansSel,
-
-    get backend() {
-        return this._backend;
-    },
 
     add: function (name, declarations) {
         if (typeof name !== 'string') {
@@ -55,7 +55,7 @@ SansSel.prototype = {
                 [declarations.inherit] :
             [];
 
-        formatDeclarations('.' + cls, declarations, this._backend.add.bind(this._backend, cls));
+        formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
 
         return new Style(this.backend, cls, directParents);
     },

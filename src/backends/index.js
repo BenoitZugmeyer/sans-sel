@@ -1,4 +1,3 @@
-
 var backends = Object.create(null);
 backends.dom = require('./DOMBackend');
 backends.collect = require('./CollectBackend');
