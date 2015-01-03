@@ -1,10 +1,11 @@
 var isPlainObject = require('./isPlainObject');
 var defineProperties = require('./defineProperties');
 var assertValidIdentifier = require('./assertValidIdentifier');
+var makeClass = require('./makeClass');
+
 var Style = require('./Style');
 var backends = require('./backends');
 var formatDeclarations = require('./formatDeclarations');
-var makeClass = require('./makeClass');
 
 var styleId = 0;
 
