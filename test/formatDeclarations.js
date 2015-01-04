@@ -3,12 +3,14 @@ var formatDeclaration = formatDeclarations.__test_formatDeclaration;
 
 describe('formatDeclarations', function () {
 
-    function collectRules() {
-        function result(rule) {
-            result.rules.push(rule);
-        }
-        result.rules = [];
-        return result;
+    function collectRules(transforms) {
+        return {
+            fn: function (rule) {
+                this.rules.push(rule);
+            },
+            rules: [],
+            transforms: transforms || Object.create(null),
+        };
     }
 
     it('should iterate over each rule of a declaration', function () {
@@ -70,6 +72,122 @@ describe('formatDeclarations', function () {
             '.selector{background:red;}',
             '@media screen{.selector{background:yellow;}}',
         ]);
+    });
+
+    describe('transforms', function () {
+
+        function formatWithTransforms(selector, transforms, declarations) {
+            var c = collectRules(transforms);
+            formatDeclarations(selector, declarations, c);
+            return c.rules;
+        }
+
+        it('should replace a simple value', function () {
+            formatWithTransforms(
+                '.selector',
+                {
+                    display: function (v) {
+                        return {
+                            display: '-webkit-' + v,
+                        };
+                    },
+                },
+                {
+                    display: 'flex',
+                }
+            ).should.eql([
+                '.selector{display:-webkit-flex;}',
+            ]);
+        });
+
+        it('should be able to add more rules', function () {
+            formatWithTransforms(
+                '.selector',
+                {
+                    boxSizing: function (v) {
+                        return {
+                            boxSizing: v,
+                            MozBoxSizing: v,
+                        };
+                    },
+                },
+                {
+                    boxSizing: 'border-box',
+                }
+            ).should.eql([
+                '.selector{box-Sizing:border-box;-Moz-Box-Sizing:border-box;}',
+            ]);
+        });
+
+        it('should be able to add more pseudo selectors', function () {
+            formatWithTransforms(
+                '.selector',
+                {
+                    custom: function () {
+                        return {
+                            textDecoration: 'none',
+                            hover: {
+                                textDecoration: 'underline',
+                            }
+                        };
+                    },
+                },
+                {
+                    custom: true
+                }
+            ).should.eql([
+                '.selector{text-Decoration:none;}',
+                '.selector:hover{text-Decoration:underline;}',
+            ]);
+        });
+
+        it('should be able to add more media queries', function () {
+            formatWithTransforms(
+                '.selector',
+                {
+                    customMediaQuery: function (v) {
+                        return {
+                            'media foo': v
+                        };
+                    },
+                },
+                {
+                    customMediaQuery: {
+                        width: '100px'
+                    }
+                }
+            ).should.eql([
+                '@media foo{.selector{width:100px;}}',
+            ]);
+        });
+
+        it('should be able to make another transform pass', function () {
+            formatWithTransforms(
+                '.selector',
+                {
+                    display: function (v) {
+                        return {
+                            display: '-webkit-' + v,
+                        };
+                    },
+
+                    custom: function () {
+                        return {
+                            _recurse: true,
+                            display: 'flex',
+                            textDecoration: 'none',
+                        };
+                    },
+                },
+                {
+                    custom: true
+                }
+            ).should.eql([
+                '.selector{display:-webkit-flex;}',
+                '.selector{text-Decoration:none;}',
+            ]);
+        });
+
     });
 
     describe('(private) formatDeclaration', function () {

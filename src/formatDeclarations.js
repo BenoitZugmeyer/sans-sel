@@ -55,7 +55,7 @@ function formatDeclaration(property, value) {
     return formatDeclarationCache[property] + ':' + value + ';';
 }
 
-function formatDeclarations(selector, declaration, cb, media) {
+function formatDeclarations(selector, declaration, options, media, transforms) {
     var result = '';
 
     var subRules = [];
@@ -64,7 +64,13 @@ function formatDeclarations(selector, declaration, cb, media) {
     for (property in declaration) {
         value = declaration[property];
 
-        if (isPlainObject(value)) {
+        if (transforms !== false && (property in options.transforms)) {
+            var transformedValue = options.transforms[property](value);
+            var recurse = transformedValue._recurse === true;
+            delete transformedValue._recurse;
+            formatDeclarations(selector, transformedValue, options, media, recurse);
+        }
+        else if (isPlainObject(value)) {
             subRules.push(property);
         }
         else {
@@ -79,7 +85,7 @@ function formatDeclarations(selector, declaration, cb, media) {
             result = media + '{' + result + '}';
         }
 
-        cb(result);
+        options.fn(result);
     }
 
     var i, l;
@@ -88,10 +94,10 @@ function formatDeclarations(selector, declaration, cb, media) {
         value = declaration[property];
 
         if (property.slice(0, 6) === 'media ') {
-            formatDeclarations(selector, value, cb, '@' + property);
+            formatDeclarations(selector, value, options, '@' + property);
         }
         else {
-            formatDeclarations(selector + ':' + property, value, cb);
+            formatDeclarations(selector + ':' + property, value, options);
         }
     }
 }
