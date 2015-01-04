@@ -159,14 +159,14 @@ describe('index', function () {
 
         it('should return a valid className', function () {
             var s = ss.add({});
-            String(s).should.equal('style-1');
+            String(s).should.equal('style-1 ');
         });
 
         it('should return the inherited classes as well', function () {
             var s = ss.add({
                 inherit: [ ss.add('parent', {}), ss.add('parent2', {}) ]
             });
-            String(s).should.equal('style-3 parent-1 parent2-2');
+            String(s).should.equal('style-3 parent-1 parent2-2 ');
         });
 
     });

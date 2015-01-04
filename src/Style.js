@@ -29,7 +29,7 @@ module.exports = makeClass({
     },
 
     toString: function () {
-        return this.classes.join(' ');
+        return this.classes.join(' ') + ' ';
     },
 
     get active() {

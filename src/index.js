@@ -6,6 +6,7 @@ var makeClass = require('./makeClass');
 var Style = require('./Style');
 var backends = require('./backends');
 var formatDeclarations = require('./formatDeclarations');
+var applyTransforms = require('./applyTransforms');
 
 var styleId = 0;
 
@@ -29,6 +30,7 @@ var SansSel = makeClass({
         defineProperties(this, {
             backend: backends.getBackend(options.backend),
             transforms: Object.create(null),
+            _transformsCache: Object.create(null),
         });
     },
 
@@ -56,10 +58,8 @@ var SansSel = makeClass({
                     [declarations.inherit] :
             [];
 
-        formatDeclarations('.' + cls, declarations, {
-            fn: this.backend.add.bind(this.backend, cls),
-            transforms: this.transforms,
-        });
+        applyTransforms(this.transforms, declarations, this._transformsCache);
+        formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
 
         return new Style(this.backend, cls, directParents);
     },

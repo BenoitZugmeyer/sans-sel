@@ -43,12 +43,15 @@ describe('Style', function () {
 
         it('should return a valid className', function () {
             var s = new Style(backend, 'style-1');
-            String(s).should.equal('style-1');
+            String(s).should.equal('style-1 ');
         });
 
         it('should return the inherited classes as well', function () {
-            var s = new Style(backend, 'style-3', [new Style(backend, 'parent-1'), new Style(backend, 'parent-2'),]);
-            String(s).should.equal('style-3 parent-1 parent-2');
+            var s = new Style(backend, 'style-3', [
+                new Style(backend, 'parent-1'),
+                new Style(backend, 'parent-2'),
+            ]);
+            String(s).should.equal('style-3 parent-1 parent-2 ');
         });
 
     });
@@ -61,7 +64,10 @@ describe('Style', function () {
         });
 
         it('should return the inherited classes as well', function () {
-            var s = new Style(backend, 'style-3', [new Style(backend, 'parent-1'), new Style(backend, 'parent-2'),]);
+            var s = new Style(backend, 'style-3', [
+                new Style(backend, 'parent-1'),
+                new Style(backend, 'parent-2'),
+            ]);
             s.classes.should.eql(['style-3', 'parent-1', 'parent-2']);
         });
 
