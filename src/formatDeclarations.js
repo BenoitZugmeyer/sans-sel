@@ -91,7 +91,7 @@ function formatDeclarations(selector, declaration, cb, media) {
             formatDeclarations(selector, value, cb, '@' + property);
         }
         else {
-            formatDeclarations(selector + ':' + property, value, cb);
+            formatDeclarations(selector + ':' + property, value, cb, media);
         }
     }
 }

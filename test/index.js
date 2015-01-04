@@ -1,3 +1,4 @@
+var should = require('should');
 var sansSel = require('../src/index');
 
 describe('index', function () {
@@ -169,5 +170,54 @@ describe('index', function () {
             String(s).should.equal('style-3 parent-1 parent2-2 ');
         });
 
+    });
+
+    describe('transforms', function () {
+        it('should exist', function () {
+            should(ss.transforms).be.an.Object;
+        });
+
+        it('should apply transforms', function () {
+            ss.transforms.display = function (v) {
+                if (v === 'flex') {
+                    v = '-webkit-' + v;
+                }
+                return {
+                    display: v,
+                };
+            };
+
+            ss.add({
+                display: 'flex',
+            });
+
+            ss.backend._rules.should.eql([
+                { id: 'style-1', rule: '.style-1{display:-webkit-flex;}' }
+            ]);
+        });
+
+        it('should support transformable media rules and nested pseudo selectors', function () {
+            ss.transforms.customMedia = function (v) {
+                return {
+                    'media foo': v,
+                };
+            };
+
+            ss.add({
+                color: 'red',
+                customMedia: {
+                    color: 'blue',
+                    hover: {
+                        color: 'yellow'
+                    }
+                }
+            });
+
+            ss.backend._rules.should.eql([
+                { id: 'style-1', rule: '.style-1{color:red;}' },
+                { id: 'style-1', rule: '@media foo{.style-1{color:blue;}}' },
+                { id: 'style-1', rule: '@media foo{.style-1:hover{color:yellow;}}' },
+            ]);
+        });
     });
 });
