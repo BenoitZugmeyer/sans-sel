@@ -1,4 +1,4 @@
-require('should');
+var should = require('should');
 var applyTransforms = require('../src/applyTransforms');
 
 describe('applyTransforms', function () {
@@ -9,7 +9,8 @@ describe('applyTransforms', function () {
 
     function apply(transforms, declarations) {
         applyTransforms(transforms, declarations, Object.create(null));
-        return declarations;
+        //console.log('RESULT', result);
+        return should(declarations);
     }
 
     it('should replace a simple value', function () {
@@ -24,7 +25,7 @@ describe('applyTransforms', function () {
             {
                 foo: 'flex',
             }
-        ).should.eql({
+        ).eql({
             bar: 'flex'
         });
     });
@@ -44,7 +45,7 @@ describe('applyTransforms', function () {
             {
                 display: 'flex',
             }
-        ).should.eql({
+        ).eql({
             display: '-webkit-flex'
         });
     });
@@ -62,7 +63,7 @@ describe('applyTransforms', function () {
             {
                 boxSizing: 'border-box',
             }
-        ).should.eql({
+        ).eql({
             boxSizing: 'border-box',
             MozBoxSizing: 'border-box',
         });
@@ -86,7 +87,7 @@ describe('applyTransforms', function () {
                     color: 'blue',
                 }
             }
-        ).should.eql({
+        ).eql({
             textDecoration: 'none',
             hover: {
                 textDecoration: 'underline',
@@ -109,7 +110,7 @@ describe('applyTransforms', function () {
                     width: '100px'
                 }
             }
-        ).should.eql({
+        ).eql({
             'media foo': {
                 width: '100px'
             }
@@ -138,7 +139,7 @@ describe('applyTransforms', function () {
             {
                 custom: true
             }
-        ).should.eql({
+        ).eql({
             display: '-webkit-flex',
             textDecoration: 'none',
         });
@@ -158,7 +159,7 @@ describe('applyTransforms', function () {
                     custom: true,
                 }
             }
-        ).should.eql({
+        ).eql({
             hover: {
                 textDecoration: 'none',
             }
@@ -182,7 +183,7 @@ describe('applyTransforms', function () {
                     custom: true,
                 }
             }
-        ).should.eql({
+        ).eql({
             textDecoration: 'none',
             hover: {
                 textDecoration: 'none',
@@ -190,6 +191,27 @@ describe('applyTransforms', function () {
         });
 
         called.should.be.equal(1);
+    });
+
+    it('should support transforms with plain objects', function () {
+        apply(
+            {
+                display: {
+                    display: '-webkit-flex',
+                },
+
+                custom: {
+                    textDecoration: 'none',
+                    display: 'flex',
+                }
+            },
+            {
+                custom: true,
+            }
+        ).eql({
+            display: '-webkit-flex',
+            textDecoration: 'none',
+        });
     });
 
 });

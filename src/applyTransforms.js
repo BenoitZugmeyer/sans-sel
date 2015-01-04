@@ -10,10 +10,12 @@ function applyTransforms(transforms, declarations, transformCache) {
         var value = declarations[property];
 
         if (property in transforms) {
-            var key = property + ':' + hash(value);
+            var transform = transforms[property];
+            var isFunction = typeof transform === 'function';
+            var key = property + (isFunction ? ':' + hash(value) : '');
 
             if (!(key in transformCache)) {
-                transformCache[key] = transforms[property](value);
+                transformCache[key] = isFunction ? transform(value) : merge({}, transform);
                 applyTransforms(transforms, transformCache[key], transformCache);
             }
 
