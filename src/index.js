@@ -52,8 +52,8 @@ var SansSel = makeClass({
         var directParents =
             declarations.inherit ?
                 Array.isArray(declarations.inherit) ?
-                declarations.inherit :
-                [declarations.inherit] :
+                    declarations.inherit :
+                    [declarations.inherit] :
             [];
 
         formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
