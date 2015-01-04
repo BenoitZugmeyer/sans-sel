@@ -165,4 +165,31 @@ describe('applyTransforms', function () {
         });
     });
 
+    it('should memoize the results', function () {
+        var called = 0;
+        apply(
+            {
+                custom: function () {
+                    called++;
+                    return {
+                        textDecoration: 'none',
+                    };
+                },
+            },
+            {
+                custom: true,
+                hover: {
+                    custom: true,
+                }
+            }
+        ).should.eql({
+            textDecoration: 'none',
+            hover: {
+                textDecoration: 'none',
+            }
+        });
+
+        called.should.be.equal(1);
+    });
+
 });
