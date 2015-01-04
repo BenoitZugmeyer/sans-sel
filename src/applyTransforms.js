@@ -22,9 +22,7 @@ function applyTransforms(transforms, declarations, transformCache, result) {
                 applyTransforms(transforms, transformCache[key], transformCache, transformCache[key]);
             }
 
-            if (declarations !== transformCache[key]) {
-                merge(result, transformCache[key]);
-            }
+            merge(result, transformCache[key]);
         }
         else if (isPlainObject(value)) {
             if (!isPlainObject(result[property])) {
