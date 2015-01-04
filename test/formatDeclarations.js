@@ -3,7 +3,7 @@ var formatDeclaration = formatDeclarations.__test_formatDeclaration;
 
 describe('formatDeclarations', function () {
 
-    function collectRules(transforms) {
+    function collectRules() {
         function result(rule) {
             result.rules.push(rule);
         }
