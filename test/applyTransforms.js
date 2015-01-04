@@ -8,9 +8,8 @@ describe('applyTransforms', function () {
     });
 
     function apply(transforms, declarations) {
-        applyTransforms(transforms, declarations, Object.create(null));
-        //console.log('RESULT', result);
-        return should(declarations);
+        var result = applyTransforms(transforms, declarations, Object.create(null));
+        return should(result);
     }
 
     it('should replace a simple value', function () {

@@ -58,7 +58,7 @@ var SansSel = makeClass({
                     [declarations.inherit] :
             [];
 
-        applyTransforms(this.transforms, declarations, this._transformsCache);
+        declarations = applyTransforms(this.transforms, declarations, this._transformsCache);
         formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
 
         return new Style(this.backend, cls, directParents);

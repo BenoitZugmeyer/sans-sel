@@ -3,7 +3,7 @@ var isPlainObject = require('./isPlainObject');
 
 var hash = JSON.stringify;
 
-function applyTransforms(transforms, declarations, transformCache) {
+function applyTransforms(transforms, declarations, transformCache, result) {
     var property;
 
     for (property in declarations) {
@@ -15,19 +15,33 @@ function applyTransforms(transforms, declarations, transformCache) {
             var key = property + (isFunction ? ':' + hash(value) : '');
 
             if (!(key in transformCache)) {
-                transformCache[key] = isFunction ? transform(value) : merge({}, transform);
-                applyTransforms(transforms, transformCache[key], transformCache);
+                transformCache[key] = merge(
+                    Object.create(null),
+                    isFunction ? transform(value) : transform
+                );
+                applyTransforms(transforms, transformCache[key], transformCache, transformCache[key]);
             }
 
             if (declarations !== transformCache[key]) {
-                delete declarations[property];
-                merge(declarations, transformCache[key]);
+                merge(result, transformCache[key]);
             }
         }
         else if (isPlainObject(value)) {
-            applyTransforms(transforms, value, transformCache);
+            if (!isPlainObject(result[property])) {
+                result[property] = Object.create(null);
+            }
+            applyTransforms(transforms, value, transformCache, result[property]);
+        }
+        else {
+            result[property] = value;
         }
     }
+
+    return result;
 }
 
-module.exports = applyTransforms;
+module.exports = function (transforms, declarations, transformCache) {
+    var result = Object.create(null);
+    applyTransforms(transforms, declarations, transformCache, result);
+    return result;
+};
