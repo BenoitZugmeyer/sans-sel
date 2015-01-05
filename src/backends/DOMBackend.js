@@ -6,8 +6,8 @@ module.exports = makeClass({
 
     constructor: function DOMBackend() {
         var element = document.createElement('style');
-        this._sheet = element.sheet;
         document.head.appendChild(element);
+        this._sheet = element.sheet;
     },
 
     add: function (id, rule) {
