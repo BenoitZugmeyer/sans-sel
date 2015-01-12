@@ -5,7 +5,6 @@ var makeClass = require('./makeClass');
 var owns = require('./owns');
 var merge = require('./merge');
 
-var Style = require('./Style');
 var backends = require('./backends');
 var formatDeclarations = require('./formatDeclarations');
 var applyTransforms = require('./applyTransforms');
@@ -78,12 +77,13 @@ var SansSel = makeClass({
                     [declarations.inherit] :
             [];
 
+        var parents = directParents.map(SansSel.prototype.get, this);
+
         declarations = applyTransforms(this.transforms, declarations, this._transformsCache);
         formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
 
-        var style = new Style(this.backend, cls, directParents);
-        this._styles[name] = String(style);
-        return style;
+        this._styles[name] = cls + ' ' + parents.join('');
+        return this._styles[name];
     },
 
     get: function (name) {

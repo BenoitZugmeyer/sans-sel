@@ -47,20 +47,12 @@ describe('index', function () {
             });
 
             it('should return the inherited classes as well', function () {
+                ss.add('parent', {});
+                ss.add('parent2', {});
                 var s = ss.add('foo', {
-                    inherit: [ ss.add('parent', {}), ss.add('parent2', {}) ]
+                    inherit: [ 'parent', 'parent2' ]
                 });
                 String(s).should.equal('__foo __parent __parent2 ');
-            });
-
-        });
-
-        describe('classes', function () {
-
-            it('should concatenate namespace and style name', function () {
-                ss.add('foo', {}).classes.should.eql([
-                    '__foo'
-                ]);
             });
 
         });
@@ -177,7 +169,18 @@ describe('index', function () {
         });
 
         it('should return the same object if called with the same name', function () {
-            (ss.namespace('foo') === ss.namespace('foo')).should.be.true;
+            ss.namespace('foo').should.be.equal(ss.namespace('foo'));
+        });
+
+        it('should support style inheritance', function () {
+            ss.add('foo', {});
+            ss.add('bar', {});
+            var ns = ss.namespace('ns');
+            ns.add('bar', {});
+            var s = ns.add('baz', {
+                inherit: ['foo', 'bar']
+            });
+            String(s).should.be.equal('ns__baz __foo ns__bar ');
         });
 
     });
@@ -241,35 +244,35 @@ describe('index', function () {
         });
     });
 
-    describe('remove', function () {
+    // describe('remove', function () {
 
-        it('should remove a style', function () {
-            var s = ss.add('foo', {});
-            s.remove();
-            s.active.should.equal(false);
-            ss.backend._rules.should.eql([]);
-        });
+    //     it('should remove a style', function () {
+    //         var s = ss.add('foo', {});
+    //         s.remove();
+    //         s.active.should.equal(false);
+    //         ss.backend._rules.should.eql([]);
+    //     });
 
-        it('should remove children styles', function () {
-            var parent = ss.add('parent', {});
-            var s = ss.add('foo', { inherit: parent });
-            parent.remove();
-            s.active.should.equal(false);
-            parent.active.should.equal(false);
-            ss.backend._rules.should.eql([]);
-        });
+    //     it('should remove children styles', function () {
+    //         var parent = ss.add('parent', {});
+    //         var s = ss.add('foo', { inherit: parent });
+    //         parent.remove();
+    //         s.active.should.equal(false);
+    //         parent.active.should.equal(false);
+    //         ss.backend._rules.should.eql([]);
+    //     });
 
-        it('should ignore the removal twice', function () {
-            var s1 = ss.add('foo', { color: 'red', });
-            ss.add('bar', { color: 'blue', });
-            s1.remove();
-            s1.remove();
-            ss.backend._rules.should.eql([
-                { id: '__bar', rule: '.__bar{color:blue;}'}
-            ]);
-        });
+    //     it('should ignore the removal twice', function () {
+    //         var s1 = ss.add('foo', { color: 'red', });
+    //         ss.add('bar', { color: 'blue', });
+    //         s1.remove();
+    //         s1.remove();
+    //         ss.backend._rules.should.eql([
+    //             { id: '__bar', rule: '.__bar{color:blue;}'}
+    //         ]);
+    //     });
 
-    });
+    // });
 
     describe('transforms', function () {
         it('should exist', function () {
