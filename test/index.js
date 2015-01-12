@@ -39,22 +39,16 @@ describe('index', function () {
             ss.add.bind(ss, 'foo', {}).should.throw('A "foo" style already exists');
         });
 
-        describe('toString', function () {
+        it('should return a valid className', function () {
+            ss.add('foo', {}).should.equal('__foo ');
+        });
 
-            it('should return a valid className', function () {
-                var s = ss.add('foo', {});
-                String(s).should.equal('__foo ');
-            });
-
-            it('should return the inherited classes as well', function () {
-                ss.add('parent', {});
-                ss.add('parent2', {});
-                var s = ss.add('foo', {
-                    inherit: [ 'parent', 'parent2' ]
-                });
-                String(s).should.equal('__foo __parent __parent2 ');
-            });
-
+        it('should return the inherited classes as well', function () {
+            ss.add('parent', {});
+            ss.add('parent2', {});
+            ss.add('foo', {
+                inherit: [ 'parent', 'parent2' ]
+            }).should.equal('__foo __parent __parent2 ');
         });
 
     });
@@ -158,14 +152,12 @@ describe('index', function () {
 
         it('should prefix all classes by the name', function () {
             var ns = ss.namespace('foo');
-            var s = ns.add('style', {});
-            String(s).should.equal('foo__style ');
+            ns.add('style', {}).should.equal('foo__style ');
         });
 
         it('should concatenate prefixes', function () {
             var ns = ss.namespace('foo').namespace('bar');
-            var s = ns.add('style', {});
-            String(s).should.equal('foo_bar__style ');
+            ns.add('style', {}).should.equal('foo_bar__style ');
         });
 
         it('should support own transforms', function () {
@@ -194,10 +186,9 @@ describe('index', function () {
             ss.add('bar', {});
             var ns = ss.namespace('ns');
             ns.add('bar', {});
-            var s = ns.add('baz', {
+            ns.add('baz', {
                 inherit: ['foo', 'bar']
-            });
-            String(s).should.be.equal('ns__baz __foo ns__bar ');
+            }).should.be.equal('ns__baz __foo ns__bar ');
         });
 
     });
