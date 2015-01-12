@@ -195,21 +195,86 @@ describe('applyTransforms', function () {
     it('should support transforms with plain objects', function () {
         apply(
             {
-                display: {
-                    display: '-webkit-flex',
-                },
-
                 custom: {
                     textDecoration: 'none',
-                    display: 'flex',
                 }
             },
             {
                 custom: true,
             }
         ).eql({
-            display: '-webkit-flex',
             textDecoration: 'none',
+        });
+    });
+
+    it('should not recurse when a transform returns the same property', function () {
+        apply(
+            {
+                a: {
+                    a: '-webkit-flex',
+                },
+            },
+            {
+                a: true,
+            }
+        ).eql({
+            a: '-webkit-flex',
+        });
+    });
+
+    it('should not affect transformed properties to the result', function () {
+        apply(
+            {
+                a: {
+                    b: '32',
+                },
+            },
+            {
+                a: true,
+            }
+        ).eql({
+            b: '32',
+        });
+    });
+
+    it('should not affect transformed properties to the result even inside a transform', function () {
+        apply(
+            {
+                b: {
+                    c: '-webkit-flex',
+                },
+
+                a: {
+                    b: 'flex',
+                }
+            },
+            {
+                a: true,
+            }
+        ).eql({
+            c: '-webkit-flex',
+        });
+    });
+
+    it('should support transforms from inherited objects', function () {
+        var transformsBase = {
+            foo: {
+                color: 'red'
+            }
+        };
+        var transforms = Object.create(transformsBase);
+        transforms.bar = {
+            foo: true,
+            background: 'yellow',
+        };
+        apply(
+            transforms,
+            {
+                bar: true
+            }
+        ).eql({
+            color: 'red',
+            background: 'yellow',
         });
     });
 
