@@ -148,9 +148,97 @@ describe('index', function () {
         });
 
         it('should prefix all classes by the name', function () {
-            
+            var ns = ss.namespace('foo');
+            var s = ns.add('style', {});
+            String(s).should.equal('foo__style ');
         });
 
+        it('should concatenate prefixes', function () {
+            var ns = ss.namespace('foo').namespace('bar');
+            var s = ns.add('style', {});
+            String(s).should.equal('foo_bar__style ');
+        });
+
+        it('should support own transforms', function () {
+            var ns = ss.namespace('foo');
+            ss.transforms.foo = {
+                textDecoration: 'underline',
+            };
+            ns.transforms.bar = {
+                foo: true,
+                background: 'red',
+            };
+            ns.add('baz', {
+                bar: true,
+            });
+            ss.backend._rules.should.eql([
+                { id: 'foo__baz', rule: '.foo__baz{text-Decoration:underline;background:red;}' }
+            ]);
+        });
+
+        it('should return the same object if called with the same name', function () {
+            (ss.namespace('foo') === ss.namespace('foo')).should.be.true;
+        });
+
+    });
+
+    describe('get', function () {
+
+        it('should exist', function () {
+            ss.get.should.be.a.Function;
+        });
+
+        it('should throw if called with an unknown name', function () {
+            ss.get.bind(ss, 'foo').should.throw('Unknown style "foo"');
+        });
+
+        it('should return the class name of a style', function () {
+            ss.add('foo', {});
+            ss.get('foo').should.equal('__foo ');
+        });
+
+        it('should get parent namespace styles', function () {
+            ss.add('foo', {});
+            ss.namespace('bar').get('foo').should.equal('__foo ');
+        });
+
+        it('should be overidable by a namespace', function () {
+            ss.add('foo', {});
+            var ns = ss.namespace('bar');
+            ns.add('foo', {});
+            ns.get('foo').should.equal('bar__foo ');
+        });
+
+    });
+
+    describe('getAll', function () {
+
+        it('should exist', function () {
+            ss.getAll.should.be.a.Function;
+        });
+
+        it('should return a frozen object', function () {
+            var res = ss.getAll();
+            should(res).be.an.Object;
+            Object.isFrozen(res).should.be.true;
+        });
+
+        it('should contain the current namespace style as own properties', function () {
+            ss.add('foo', {});
+            ss.add('bar', {});
+            var res = ss.getAll();
+            should(res).have.ownProperty('foo').equal('__foo ');
+            should(res).have.ownProperty('bar').equal('__bar ');
+        });
+
+        it('should inherit styles from parent namespaces', function () {
+            var ns = ss.namespace('baz');
+            ns.add('bar', {});
+            var res = ns.getAll();
+            ss.add('foo', {});
+            should(res).have.property('foo').equal('__foo ');
+            should(res).have.ownProperty('bar').equal('baz__bar ');
+        });
     });
 
     describe('remove', function () {

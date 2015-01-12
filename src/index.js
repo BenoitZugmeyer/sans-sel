@@ -2,6 +2,8 @@ var isPlainObject = require('./isPlainObject');
 var defineProperties = require('./defineProperties');
 var assertValidIdentifier = require('./assertValidIdentifier');
 var makeClass = require('./makeClass');
+var owns = require('./owns');
+var merge = require('./merge');
 
 var Style = require('./Style');
 var backends = require('./backends');
@@ -23,16 +25,30 @@ var SansSel = makeClass({
             backend: backends.getBackend(options.backend),
             transforms: options.transforms ? Object.create(options.transforms) : {},
             _transformsCache: Object.create(null),
-            _styles: Object.create(null),
+            _namespaces: Object.create(null),
+            _styles: Object.create(options._styles || null),
         });
     },
 
     namespace: function (name) {
-        return new SansSel({
-            name: name,
-            backend: this.backend,
-            transforms: this.transforms,
-        });
+        if (process.env.NODE_ENV !== 'production') {
+            assertValidIdentifier(name);
+
+            if (typeof name !== 'string') {
+                throw new Error('The "name" argument should be a string');
+            }
+        }
+
+        if (!(name in this._namespaces)) {
+            this._namespaces[name] = new SansSel({
+                name: this.name ? this.name + '_' + name : name,
+                backend: this.backend,
+                transforms: this.transforms,
+                _styles: this._styles,
+            });
+        }
+
+        return this._namespaces[name];
     },
 
     add: function (name, declarations) {
@@ -48,7 +64,7 @@ var SansSel = makeClass({
                 throw new Error('The "declaration" argument should be a plain object');
             }
 
-            if (name in this._styles) {
+            if (owns(this._styles, name)) {
                 throw new Error('A "' + name + '" style already exists');
             }
         }
@@ -66,8 +82,32 @@ var SansSel = makeClass({
         formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
 
         var style = new Style(this.backend, cls, directParents);
-        this._styles[name] = style;
+        this._styles[name] = String(style);
         return style;
+    },
+
+    get: function (name) {
+
+        if (process.env.NODE_ENV !== 'production') {
+            if (!(name in this._styles)) {
+                throw new Error('Unknown style "' + name + '"');
+            }
+        }
+
+        return this._styles[name];
+    },
+
+    getAll: function () {
+        var styles = this._styles;
+
+        if (process.env.NODE_ENV !== 'production') {
+            var result = Object.create(Object.getPrototypeOf(styles));
+            merge(result, styles, true);
+            Object.freeze(result);
+            styles = result;
+        }
+
+        return styles;
     },
 
 });
@@ -76,7 +116,7 @@ function sansSel(options) {
     return new SansSel(options);
 }
 
-sansSel.merge = require('./merge');
+sansSel.merge = merge;
 sansSel.SansSel = SansSel;
 
 module.exports = sansSel;
