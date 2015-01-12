@@ -1,6 +1,9 @@
-var backends = Object.create(null);
-backends.dom = require('./DOMBackend');
-backends.collect = require('./CollectBackend');
+var owns = require('../owns');
+
+var backends = {
+    dom: require('./DOMBackend'),
+    collect: require('./CollectBackend'),
+};
 backends.auto = typeof window !== 'undefined' ? backends.dom : backends.collect;
 
 function getBackend(b) {
@@ -10,7 +13,7 @@ function getBackend(b) {
     }
 
     if (typeof b === 'string') {
-        if (!(b in backends)) {
+        if (!owns(backends, b)) {
             throw new Error('Unknown backend ' + b);
         }
         b = backends[b];

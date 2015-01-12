@@ -29,7 +29,7 @@ var SansSel = makeClass({
 
         defineProperties(this, {
             backend: backends.getBackend(options.backend),
-            transforms: Object.create(null),
+            transforms: {},
             _transformsCache: Object.create(null),
         });
     },
