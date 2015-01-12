@@ -1,61 +1,7 @@
 var isPlainObject = require('./isPlainObject');
-var assertValidIdentifier = require('./assertValidIdentifier');
+var formatDeclaration = require('./formatDeclaration');
 
-var formatDeclarationCache = Object.create(null);
-
-var unitLess = Object.create(null);
-[
-    'columnCount',
-    'fillOpacity',
-    'flex',
-    'flexGrow',
-    'flexShrink',
-    'fontWeight',
-    'lineClamp',
-    'lineHeight',
-    'opacity',
-    'order',
-    'orphans',
-    'strokeOpacity',
-    'transition',
-    'transitionDelay',
-    'transitionDuration',
-    'widows',
-    'zIndex',
-    'zoom',
-].forEach(function (property) {
-    unitLess[property] = true;
-});
-
-function addUnit(value) {
-    return typeof value === 'number' ? value + 'px' : value;
-}
-
-function formatDeclaration(property, value) {
-    assertValidIdentifier(property);
-    var isUnitLess = unitLess[property];
-
-    if (property === 'content') {
-        value = JSON.stringify(value);
-    }
-    else if (Array.isArray(value)) {
-        if (!isUnitLess) {
-            value = value.map(addUnit);
-        }
-        value = value.join(' ');
-    }
-    else if (!isUnitLess) {
-        value = addUnit(value);
-    }
-
-    if (!(property in formatDeclarationCache)) {
-        formatDeclarationCache[property] = property.replace(/([A-Z])/g, '-$1');
-    }
-
-    return formatDeclarationCache[property] + ':' + value + ';';
-}
-
-function formatDeclarations(selector, declaration, cb, media) {
+module.exports = function formatDeclarations(selector, declaration, cb, media) {
     var result = '';
 
     var subRules = [];
@@ -94,11 +40,4 @@ function formatDeclarations(selector, declaration, cb, media) {
             formatDeclarations(selector + ':' + property, value, cb, media);
         }
     }
-}
-
-/* istanbul ignore else */
-if (process.env.NODE_ENV === 'test') {
-    formatDeclarations.__test_formatDeclaration = formatDeclaration;
-}
-
-module.exports = formatDeclarations;
+};
