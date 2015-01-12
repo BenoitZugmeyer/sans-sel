@@ -11,7 +11,7 @@
   "scripts": {
     "dist": "NODE_ENV=production node build.js",
     "dev": "NODE_ENV=development node build.js",
-    "coverage": "mkdir -p dist && NODE_ENV=test istanbul cover $(which _mocha)",
+    "coverage": "NODE_ENV=test istanbul cover $(which _mocha)",
     "test": "NODE_ENV=test mocha"
   },
   "main": "./src/index"
