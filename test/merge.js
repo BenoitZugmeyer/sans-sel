@@ -33,4 +33,10 @@ describe('merge', function () {
         merge({ foo: new Date() }, { foo: { bar: 'baz' } }).should.eql({ foo: { bar: 'baz' } });
     });
 
+    it('should run a shallow merge if instructed to', function () {
+        merge({ foo: { bar: 1 } }, { foo: { baz: 2 } }, true).should.eql({
+            foo: { baz: 2 }
+        });
+    });
+
 });
