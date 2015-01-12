@@ -82,8 +82,16 @@ var SansSel = makeClass({
         declarations = applyTransforms(this.transforms, declarations, this._transformsCache);
         formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
 
-        this._styles[name] = cls + ' ' + parents.join('');
-        return this._styles[name];
+        var selector = cls + ' ' + parents.join('');
+        this._styles[name] = selector;
+        return selector;
+    },
+
+    addAll: function (styles) {
+        var name;
+        for (name in styles) {
+            this.add(name, styles[name]);
+        }
     },
 
     get: function (name) {

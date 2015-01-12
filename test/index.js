@@ -59,6 +59,23 @@ describe('index', function () {
 
     });
 
+    describe('addAll', function () {
+
+        it('should exist', function () {
+            ss.addAll.should.be.a.Function;
+        });
+
+        it('should add all styles', function () {
+            ss.addAll({
+                foo: {},
+                bar: {},
+            });
+
+            ss.get('foo').should.equal('__foo ');
+            ss.get('bar').should.equal('__bar ');
+        });
+    });
+
     describe('render', function () {
 
         it('should render basic style', function () {
