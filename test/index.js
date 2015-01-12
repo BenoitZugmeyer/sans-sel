@@ -133,7 +133,22 @@ describe('index', function () {
             ss.add.bind(ss, 'foo', { '-foobar': 1 }).should.throw('Invalid identifier: -foobar');
             ss.add.bind(ss, 'foo', { 'foo bar': 1 }).should.throw('Invalid identifier: foo bar');
             ss.add.bind(ss, 'foo', { 'foo:bar': 1 }).should.throw('Invalid identifier: foo:bar');
+        });
 
+    });
+
+    describe('namespace', function () {
+
+        it('should exist', function () {
+            ss.namespace.should.be.a.Function;
+        });
+
+        it('should return a SansSel instance', function () {
+            ss.namespace('foo').should.be.an.instanceOf(sansSel.SansSel);
+        });
+
+        it('should prefix all classes by the name', function () {
+            
         });
 
     });

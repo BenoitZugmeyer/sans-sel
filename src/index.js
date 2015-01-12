@@ -21,9 +21,17 @@ var SansSel = makeClass({
         defineProperties(this, {
             name: options.name || '',
             backend: backends.getBackend(options.backend),
-            transforms: {},
+            transforms: options.transforms ? Object.create(options.transforms) : {},
             _transformsCache: Object.create(null),
             _styles: Object.create(null),
+        });
+    },
+
+    namespace: function (name) {
+        return new SansSel({
+            name: name,
+            backend: this.backend,
+            transforms: this.transforms,
         });
     },
 
@@ -69,5 +77,6 @@ function sansSel(options) {
 }
 
 sansSel.merge = require('./merge');
+sansSel.SansSel = SansSel;
 
 module.exports = sansSel;
