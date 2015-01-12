@@ -8,15 +8,6 @@ var backends = require('./backends');
 var formatDeclarations = require('./formatDeclarations');
 var applyTransforms = require('./applyTransforms');
 
-var styleId = 0;
-
-/* istanbul ignore else */
-if (process.env.NODE_ENV === 'test') {
-    sansSel.__test_reset = function () {
-        styleId = 0;
-    };
-}
-
 var SansSel = makeClass({
 
     constructor: function SansSel(options) {
@@ -28,28 +19,33 @@ var SansSel = makeClass({
         }
 
         defineProperties(this, {
+            name: options.name || '',
             backend: backends.getBackend(options.backend),
             transforms: {},
             _transformsCache: Object.create(null),
+            _styles: Object.create(null),
         });
     },
 
     add: function (name, declarations) {
-        if (typeof name !== 'string') {
-            declarations = name;
-            name = 'style';
-        }
 
         if (process.env.NODE_ENV !== 'production') {
+            if (typeof name !== 'string') {
+                throw new Error('The "name" argument should be a string');
+            }
+
             assertValidIdentifier(name);
 
             if (!isPlainObject(declarations)) {
-                throw new Error('Declarations should be a plain object');
+                throw new Error('The "declaration" argument should be a plain object');
+            }
+
+            if (name in this._styles) {
+                throw new Error('A "' + name + '" style already exists');
             }
         }
 
-        styleId += 1;
-        var cls = name + '-' + styleId;
+        var cls = this.name + '__' + name;
 
         var directParents =
             declarations.inherit ?
@@ -61,7 +57,9 @@ var SansSel = makeClass({
         declarations = applyTransforms(this.transforms, declarations, this._transformsCache);
         formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
 
-        return new Style(this.backend, cls, directParents);
+        var style = new Style(this.backend, cls, directParents);
+        this._styles[name] = style;
+        return style;
     },
 
 });

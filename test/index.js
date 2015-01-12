@@ -13,7 +13,6 @@ describe('index', function () {
 
     var ss;
     beforeEach(function () {
-        sansSel.__test_reset();
         ss = sansSel();
     });
 
@@ -27,31 +26,43 @@ describe('index', function () {
             ss.add.bind(ss, '-a').should.throw('Invalid identifier: -a');
         });
 
+        it('should raise if no name is given', function () {
+            ss.add.bind(ss).should.throw('The "name" argument should be a string');
+        });
+
         it('should raise if no declaration is given', function () {
-            ss.add.bind(ss).should.throw('Declarations should be a plain object');
+            ss.add.bind(ss, 'foo').should.throw('The "declaration" argument should be a plain object');
         });
 
-    });
-
-    describe('classes', function () {
-
-        it('should support anonymous styles', function () {
-            ss.add({}).classes.should.eql([
-                'style-1'
-            ]);
-        });
-
-        it('should support named styles', function () {
-            ss.add('foo', {}).classes.should.eql([
-                'foo-1'
-            ]);
-        });
-
-        it('should always be incremented', function () {
+        it('should raise if an already existing name is given', function () {
             ss.add('foo', {});
-            ss.add('bar', {}).classes.should.eql([
-                'bar-2'
-            ]);
+            ss.add.bind(ss, 'foo', {}).should.throw('A "foo" style already exists');
+        });
+
+        describe('toString', function () {
+
+            it('should return a valid className', function () {
+                var s = ss.add('foo', {});
+                String(s).should.equal('__foo ');
+            });
+
+            it('should return the inherited classes as well', function () {
+                var s = ss.add('foo', {
+                    inherit: [ ss.add('parent', {}), ss.add('parent2', {}) ]
+                });
+                String(s).should.equal('__foo __parent __parent2 ');
+            });
+
+        });
+
+        describe('classes', function () {
+
+            it('should concatenate namespace and style name', function () {
+                ss.add('foo', {}).classes.should.eql([
+                    '__foo'
+                ]);
+            });
+
         });
 
     });
@@ -59,35 +70,35 @@ describe('index', function () {
     describe('render', function () {
 
         it('should render basic style', function () {
-            ss.add({ color: 'red' });
+            ss.add('foo', { color: 'red' });
             ss.backend._rules.should.eql([
-                { id: 'style-1', rule: '.style-1{color:red;}' },
+                { id: '__foo', rule: '.__foo{color:red;}' },
             ]);
         });
 
         it('should render media query', function () {
-            ss.add({
+            ss.add('foo', {
                 'media screen': {
                     color: 'red'
                 }
             });
             ss.backend._rules.should.eql([
-                { id: 'style-1', rule: '@media screen{.style-1{color:red;}}' },
+                { id: '__foo', rule: '@media screen{.__foo{color:red;}}' },
             ]);
         });
 
         it('should join arrays with spaces', function () {
-            ss.add({
+            ss.add('foo', {
                 border: ['1px', 'solid', 'grey']
             });
             ss.backend._rules.should.eql([
-                { id: 'style-1', rule: '.style-1{border:1px solid grey;}' }
+                { id: '__foo', rule: '.__foo{border:1px solid grey;}' }
             ]);
         });
 
         it('should renders rule sets in order', function () {
 
-            ss.add({
+            ss.add('foo', {
                 foo: 'bar',
                 'media screen': {
                     bar: 'baz'
@@ -95,14 +106,14 @@ describe('index', function () {
             });
 
             ss.backend._rules.should.eql([
-                { id: 'style-1', rule: '.style-1{foo:bar;}' },
-                { id: 'style-1', rule: '@media screen{.style-1{bar:baz;}}' },
+                { id: '__foo', rule: '.__foo{foo:bar;}' },
+                { id: '__foo', rule: '@media screen{.__foo{bar:baz;}}' },
             ]);
 
         });
 
         it('should render nested pseudo selectors', function () {
-            ss.add({
+            ss.add('foo', {
                 foo: 'bar',
                 focus: {
                     foo: 'baz',
@@ -112,16 +123,17 @@ describe('index', function () {
                 }
             });
             ss.backend._rules.should.eql([
-                { id: 'style-1', rule: '.style-1{foo:bar;}'  },
-                { id: 'style-1', rule: '.style-1:focus{foo:baz;}' },
-                { id: 'style-1', rule: '.style-1:focus:hover{foo:biz;}' },
+                { id: '__foo', rule: '.__foo{foo:bar;}'  },
+                { id: '__foo', rule: '.__foo:focus{foo:baz;}' },
+                { id: '__foo', rule: '.__foo:focus:hover{foo:biz;}' },
             ]);
         });
 
         it('should raise if an invalid property is given', function () {
-            ss.add.bind(ss, { '-foobar': 1 }).should.throw('Invalid identifier: -foobar');
-            ss.add.bind(ss, { 'foo bar': 1 }).should.throw('Invalid identifier: foo bar');
-            ss.add.bind(ss, { 'foo:bar': 1 }).should.throw('Invalid identifier: foo:bar');
+            ss.add.bind(ss, 'foo', { '-foobar': 1 }).should.throw('Invalid identifier: -foobar');
+            ss.add.bind(ss, 'foo', { 'foo bar': 1 }).should.throw('Invalid identifier: foo bar');
+            ss.add.bind(ss, 'foo', { 'foo:bar': 1 }).should.throw('Invalid identifier: foo:bar');
+
         });
 
     });
@@ -129,7 +141,7 @@ describe('index', function () {
     describe('remove', function () {
 
         it('should remove a style', function () {
-            var s = ss.add({});
+            var s = ss.add('foo', {});
             s.remove();
             s.active.should.equal(false);
             ss.backend._rules.should.eql([]);
@@ -137,7 +149,7 @@ describe('index', function () {
 
         it('should remove children styles', function () {
             var parent = ss.add('parent', {});
-            var s = ss.add({ inherit: parent });
+            var s = ss.add('foo', { inherit: parent });
             parent.remove();
             s.active.should.equal(false);
             parent.active.should.equal(false);
@@ -145,29 +157,13 @@ describe('index', function () {
         });
 
         it('should ignore the removal twice', function () {
-            var s1 = ss.add({ color: 'red', });
-            ss.add({ color: 'blue', });
+            var s1 = ss.add('foo', { color: 'red', });
+            ss.add('bar', { color: 'blue', });
             s1.remove();
             s1.remove();
             ss.backend._rules.should.eql([
-                { id: 'style-2', rule: '.style-2{color:blue;}'}
+                { id: '__bar', rule: '.__bar{color:blue;}'}
             ]);
-        });
-
-    });
-
-    describe('toString', function () {
-
-        it('should return a valid className', function () {
-            var s = ss.add({});
-            String(s).should.equal('style-1 ');
-        });
-
-        it('should return the inherited classes as well', function () {
-            var s = ss.add({
-                inherit: [ ss.add('parent', {}), ss.add('parent2', {}) ]
-            });
-            String(s).should.equal('style-3 parent-1 parent2-2 ');
         });
 
     });
@@ -187,12 +183,12 @@ describe('index', function () {
                 };
             };
 
-            ss.add({
+            ss.add('foo', {
                 display: 'flex',
             });
 
             ss.backend._rules.should.eql([
-                { id: 'style-1', rule: '.style-1{display:-webkit-flex;}' }
+                { id: '__foo', rule: '.__foo{display:-webkit-flex;}' }
             ]);
         });
 
@@ -203,7 +199,7 @@ describe('index', function () {
                 };
             };
 
-            ss.add({
+            ss.add('foo', {
                 color: 'red',
                 customMedia: {
                     color: 'blue',
@@ -214,9 +210,9 @@ describe('index', function () {
             });
 
             ss.backend._rules.should.eql([
-                { id: 'style-1', rule: '.style-1{color:red;}' },
-                { id: 'style-1', rule: '@media foo{.style-1{color:blue;}}' },
-                { id: 'style-1', rule: '@media foo{.style-1:hover{color:yellow;}}' },
+                { id: '__foo', rule: '.__foo{color:red;}' },
+                { id: '__foo', rule: '@media foo{.__foo{color:blue;}}' },
+                { id: '__foo', rule: '@media foo{.__foo:hover{color:yellow;}}' },
             ]);
         });
     });
