@@ -1,5 +1,6 @@
 var should = require('should');
 var sansSel = require('../src/index');
+var backend = require('./backendMock');
 
 describe('index', function () {
 
@@ -13,7 +14,7 @@ describe('index', function () {
 
     var ss;
     beforeEach(function () {
-        ss = sansSel();
+        ss = sansSel({backend: backend});
     });
 
     describe('add', function () {
@@ -39,18 +40,6 @@ describe('index', function () {
             ss.add.bind(ss, 'foo', {}).should.throw('A "foo" style already exists');
         });
 
-        it('should return a valid className', function () {
-            ss.add('foo', {}).should.equal('__foo ');
-        });
-
-        it('should return the inherited classes as well', function () {
-            ss.add('parent', {});
-            ss.add('parent2', {});
-            ss.add('foo', {
-                inherit: [ 'parent', 'parent2' ]
-            }).should.equal('__foo __parent __parent2 ');
-        });
-
     });
 
     describe('addAll', function () {
@@ -65,8 +54,8 @@ describe('index', function () {
                 bar: {},
             });
 
-            ss.get('foo').should.equal('__foo ');
-            ss.get('bar').should.equal('__bar ');
+            should(ss._styles).have.property('foo');
+            should(ss._styles).have.property('bar');
         });
     });
 
@@ -74,8 +63,9 @@ describe('index', function () {
 
         it('should render basic style', function () {
             ss.add('foo', { color: 'red' });
-            ss.backend._rules.should.eql([
-                { id: '__foo', rule: '.__foo{color:red;}' },
+            ss.render('foo');
+            backend.rules.should.eql([
+                { id: '__foo', rule: '.__foo__0{color:red;}' },
             ]);
         });
 
@@ -85,8 +75,9 @@ describe('index', function () {
                     color: 'red'
                 }
             });
-            ss.backend._rules.should.eql([
-                { id: '__foo', rule: '@media screen{.__foo{color:red;}}' },
+            ss.render('foo');
+            backend.rules.should.eql([
+                { id: '__foo', rule: '@media screen{.__foo__0{color:red;}}' },
             ]);
         });
 
@@ -94,8 +85,9 @@ describe('index', function () {
             ss.add('foo', {
                 border: ['1px', 'solid', 'grey']
             });
-            ss.backend._rules.should.eql([
-                { id: '__foo', rule: '.__foo{border:1px solid grey;}' }
+            ss.render('foo');
+            backend.rules.should.eql([
+                { id: '__foo', rule: '.__foo__0{border:1px solid grey;}' }
             ]);
         });
 
@@ -107,10 +99,11 @@ describe('index', function () {
                     bar: 'baz'
                 }
             });
+            ss.render('foo');
 
-            ss.backend._rules.should.eql([
-                { id: '__foo', rule: '.__foo{foo:bar;}' },
-                { id: '__foo', rule: '@media screen{.__foo{bar:baz;}}' },
+            backend.rules.should.eql([
+                { id: '__foo', rule: '.__foo__0{foo:bar;}' },
+                { id: '__foo', rule: '@media screen{.__foo__0{bar:baz;}}' },
             ]);
 
         });
@@ -125,17 +118,21 @@ describe('index', function () {
                     }
                 }
             });
-            ss.backend._rules.should.eql([
-                { id: '__foo', rule: '.__foo{foo:bar;}'  },
-                { id: '__foo', rule: '.__foo:focus{foo:baz;}' },
-                { id: '__foo', rule: '.__foo:focus:hover{foo:biz;}' },
+            ss.render('foo');
+            backend.rules.should.eql([
+                { id: '__foo', rule: '.__foo__0{foo:bar;}'  },
+                { id: '__foo', rule: '.__foo__0:focus{foo:baz;}' },
+                { id: '__foo', rule: '.__foo__0:focus:hover{foo:biz;}' },
             ]);
         });
 
         it('should raise if an invalid property is given', function () {
-            ss.add.bind(ss, 'foo', { '-foobar': 1 }).should.throw('Invalid identifier: -foobar');
-            ss.add.bind(ss, 'foo', { 'foo bar': 1 }).should.throw('Invalid identifier: foo bar');
-            ss.add.bind(ss, 'foo', { 'foo:bar': 1 }).should.throw('Invalid identifier: foo:bar');
+            ss.add('a', { '-foobar': 1 });
+            ss.add('b', { 'foo bar': 1 });
+            ss.add('c', { 'foo:bar': 1 });
+            ss.render.bind(ss, 'a').should.throw('Invalid identifier: -foobar');
+            ss.render.bind(ss, 'b').should.throw('Invalid identifier: foo bar');
+            ss.render.bind(ss, 'c').should.throw('Invalid identifier: foo:bar');
         });
 
     });
@@ -152,12 +149,14 @@ describe('index', function () {
 
         it('should prefix all classes by the name', function () {
             var ns = ss.namespace('foo');
-            ns.add('style', {}).should.equal('foo__style ');
+            ns.add('style', {});
+            ns.render('style').should.equal('foo__style__0 ');
         });
 
         it('should concatenate prefixes', function () {
             var ns = ss.namespace('foo').namespace('bar');
-            ns.add('style', {}).should.equal('foo_bar__style ');
+            ns.add('style', {});
+            ns.render('style').should.equal('foo_bar__style__0 ');
         });
 
         it('should support own transforms', function () {
@@ -172,8 +171,9 @@ describe('index', function () {
             ns.add('baz', {
                 bar: true,
             });
-            ss.backend._rules.should.eql([
-                { id: 'foo__baz', rule: '.foo__baz{text-Decoration:underline;background:red;}' }
+            ns.render('baz');
+            backend.rules.should.eql([
+                { id: 'foo__baz', rule: '.foo__baz__0{text-Decoration:underline;background:red;}' }
             ]);
         });
 
@@ -188,99 +188,11 @@ describe('index', function () {
             ns.add('bar', {});
             ns.add('baz', {
                 inherit: ['foo', 'bar']
-            }).should.be.equal('ns__baz __foo ns__bar ');
+            });
+            ns.render('baz').should.be.equal('__foo__0 ns__bar__1 ns__baz__2 ');
         });
 
     });
-
-    describe('get', function () {
-
-        it('should exist', function () {
-            ss.get.should.be.a.Function;
-        });
-
-        it('should throw if called with an unknown name', function () {
-            ss.get.bind(ss, 'foo').should.throw('Unknown style "foo"');
-        });
-
-        it('should return the class name of a style', function () {
-            ss.add('foo', {});
-            ss.get('foo').should.equal('__foo ');
-        });
-
-        it('should get parent namespace styles', function () {
-            ss.add('foo', {});
-            ss.namespace('bar').get('foo').should.equal('__foo ');
-        });
-
-        it('should be overidable by a namespace', function () {
-            ss.add('foo', {});
-            var ns = ss.namespace('bar');
-            ns.add('foo', {});
-            ns.get('foo').should.equal('bar__foo ');
-        });
-
-    });
-
-    describe('getAll', function () {
-
-        it('should exist', function () {
-            ss.getAll.should.be.a.Function;
-        });
-
-        it('should return a frozen object', function () {
-            var res = ss.getAll();
-            should(res).be.an.Object;
-            Object.isFrozen(res).should.be.true;
-        });
-
-        it('should contain the current namespace style as own properties', function () {
-            ss.add('foo', {});
-            ss.add('bar', {});
-            var res = ss.getAll();
-            should(res).have.ownProperty('foo').equal('__foo ');
-            should(res).have.ownProperty('bar').equal('__bar ');
-        });
-
-        it('should inherit styles from parent namespaces', function () {
-            var ns = ss.namespace('baz');
-            ns.add('bar', {});
-            var res = ns.getAll();
-            ss.add('foo', {});
-            should(res).have.property('foo').equal('__foo ');
-            should(res).have.ownProperty('bar').equal('baz__bar ');
-        });
-    });
-
-    // describe('remove', function () {
-
-    //     it('should remove a style', function () {
-    //         var s = ss.add('foo', {});
-    //         s.remove();
-    //         s.active.should.equal(false);
-    //         ss.backend._rules.should.eql([]);
-    //     });
-
-    //     it('should remove children styles', function () {
-    //         var parent = ss.add('parent', {});
-    //         var s = ss.add('foo', { inherit: parent });
-    //         parent.remove();
-    //         s.active.should.equal(false);
-    //         parent.active.should.equal(false);
-    //         ss.backend._rules.should.eql([]);
-    //     });
-
-    //     it('should ignore the removal twice', function () {
-    //         var s1 = ss.add('foo', { color: 'red', });
-    //         ss.add('bar', { color: 'blue', });
-    //         s1.remove();
-    //         s1.remove();
-    //         ss.backend._rules.should.eql([
-    //             { id: '__bar', rule: '.__bar{color:blue;}'}
-    //         ]);
-    //     });
-
-    // });
 
     describe('transforms', function () {
         it('should exist', function () {
@@ -300,9 +212,10 @@ describe('index', function () {
             ss.add('foo', {
                 display: 'flex',
             });
+            ss.render('foo');
 
-            ss.backend._rules.should.eql([
-                { id: '__foo', rule: '.__foo{display:-webkit-flex;}' }
+            backend.rules.should.eql([
+                { id: '__foo', rule: '.__foo__0{display:-webkit-flex;}' }
             ]);
         });
 
@@ -322,11 +235,12 @@ describe('index', function () {
                     }
                 }
             });
+            ss.render('foo');
 
-            ss.backend._rules.should.eql([
-                { id: '__foo', rule: '.__foo{color:red;}' },
-                { id: '__foo', rule: '@media foo{.__foo{color:blue;}}' },
-                { id: '__foo', rule: '@media foo{.__foo:hover{color:yellow;}}' },
+            backend.rules.should.eql([
+                { id: '__foo', rule: '.__foo__0{color:red;}' },
+                { id: '__foo', rule: '@media foo{.__foo__0{color:blue;}}' },
+                { id: '__foo', rule: '@media foo{.__foo__0:hover{color:yellow;}}' },
             ]);
         });
     });

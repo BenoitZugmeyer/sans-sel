@@ -4,10 +4,20 @@ var assertValidIdentifier = require('./assertValidIdentifier');
 var makeClass = require('./makeClass');
 var owns = require('./owns');
 var merge = require('./merge');
+var render = require('./render');
 
 var backends = require('./backends');
-var formatDeclarations = require('./formatDeclarations');
 var applyTransforms = require('./applyTransforms');
+
+function get(sansSel, names) {
+    return Array.prototype.map.call(names, function (name) {
+        if (!(name in sansSel._styles)) {
+            throw new Error('Unknown style "' + name + '"');
+        }
+
+        return sansSel._styles[name];
+    });
+}
 
 var SansSel = makeClass({
 
@@ -77,14 +87,11 @@ var SansSel = makeClass({
                     [declarations.inherit] :
             [];
 
-        var parents = directParents.map(SansSel.prototype.get, this);
-
-        declarations = applyTransforms(this.transforms, declarations, this._transformsCache);
-        formatDeclarations('.' + cls, declarations, this.backend.add.bind(this.backend, cls));
-
-        var selector = cls + ' ' + parents.join('');
-        this._styles[name] = selector;
-        return selector;
+        this._styles[name] = {
+            cls: cls,
+            parents: get(this, directParents),
+            declarations: applyTransforms(this.transforms, declarations, this._transformsCache)
+        };
     },
 
     addAll: function (styles) {
@@ -94,29 +101,9 @@ var SansSel = makeClass({
         }
     },
 
-    get: function (name) {
-
-        if (process.env.NODE_ENV !== 'production') {
-            if (!(name in this._styles)) {
-                throw new Error('Unknown style "' + name + '"');
-            }
-        }
-
-        return this._styles[name];
-    },
-
-    getAll: function () {
-        var styles = this._styles;
-
-        if (process.env.NODE_ENV !== 'production') {
-            var result = Object.create(Object.getPrototypeOf(styles));
-            merge(result, styles, true);
-            Object.freeze(result);
-            styles = result;
-        }
-
-        return styles;
-    },
+    render: function () {
+        return render(this.backend, get(this, arguments));
+    }
 
 });
 

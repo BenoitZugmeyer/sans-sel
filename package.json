@@ -1,8 +1,8 @@
 {
   "name": "sans-sel",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Benoît Zugmeyer",
-  "description": "A new way to write CSS in JS",
+  "description": "Write CSS in JS, without selector",
   "devDependencies": {
     "mocha": "^2.0.1",
     "should": "^4.4.1",
