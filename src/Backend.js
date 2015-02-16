@@ -26,41 +26,40 @@ module.exports = makeClass({
 
     _render: function (selectors) {
         var currentSpec = -1;
-        var result = '';
+        var add = this.addRule.bind(this);
 
-        for (var selector of splat(selectors)) {
+        return splat(selectors).map(function (selector) {
             completeSelector(selector);
 
-            var hasSpec = false;
-            var spec;
+            var spec = -1;
 
             var specs = this._specs[selector.id] || (this._specs[selector.id] = []);
 
-            for (spec of specs) {
-                if (spec > currentSpec) {
-                    hasSpec = true;
+            var i, l;
+            for (i = 0, l = specs.length; i < l; i++) {
+                if (specs[i] > currentSpec) {
+                    spec = specs[i];
                     break;
                 }
             }
 
-            if (!hasSpec) {
+            if (spec < 0) {
                 formatDeclarations('.' + selector.cls + '__' + this._spec,
                                    selector.declarations,
-                                   this.addRule.bind(this));
+                                   add);
                 specs.push(this._spec);
                 spec = this._spec;
                 this._spec += 1;
             }
 
-            result += selector.cls + '__' + spec + ' ';
-
             currentSpec = spec;
-        }
 
-        return result;
+            return selector.cls + '__' + spec;
+        }, this).join(' ');
     },
 
     addRule: function () {
         // To override
     }
+
 });

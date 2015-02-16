@@ -150,13 +150,13 @@ describe('SansSel', function () {
         it('should prefix all classes by the name', function () {
             var ns = ss.namespace('foo');
             ns.add('style', {});
-            ns.render('style').should.equal('foo__style__0 ');
+            ns.render('style').should.equal('foo__style__0');
         });
 
         it('should concatenate prefixes', function () {
             var ns = ss.namespace('foo').namespace('bar');
             ns.add('style', {});
-            ns.render('style').should.equal('foo_bar__style__0 ');
+            ns.render('style').should.equal('foo_bar__style__0');
         });
 
         it('should support own transforms', function () {
@@ -189,7 +189,7 @@ describe('SansSel', function () {
             ns.add('baz', {
                 inherit: ['foo', 'bar']
             });
-            ns.render('baz').should.be.equal('__foo__0 ns__bar__1 ns__baz__2 ');
+            ns.render('baz').should.be.equal('__foo__0 ns__bar__1 ns__baz__2');
         });
 
     });
