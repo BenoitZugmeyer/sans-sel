@@ -7,6 +7,7 @@ describe('assertValidIdentifier', function () {
         assertValidIdentifier.bind(null, 'bar-foo').should.not.throw();
         assertValidIdentifier.bind(null, 'foo5').should.not.throw();
         assertValidIdentifier.bind(null, 'Foo').should.not.throw();
+        assertValidIdentifier.bind(null, 'f').should.not.throw();
     });
 
     it('should fail if the identifier is invalid', function () {
@@ -19,6 +20,7 @@ describe('assertValidIdentifier', function () {
         assertValidIdentifier.bind(null, 'foo bar').should.throw();
         assertValidIdentifier.bind(null, 'foo.bar').should.throw();
         assertValidIdentifier.bind(null, 'foo>bar').should.throw();
+        assertValidIdentifier.bind(null, '1').should.throw();
     });
 });
 
