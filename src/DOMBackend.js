@@ -5,14 +5,12 @@ var Backend = require('./Backend');
 
 module.exports = makeClass(Backend, {
 
-    constructor: function DOMBackend() {
-        Backend.call(this);
-        var element = document.createElement('style');
-        document.head.appendChild(element);
-        this._sheet = element.sheet;
-    },
-
-    add: function (id, rule) {
+    addRule: function (rule) {
+        if (!this._sheet) {
+            var element = document.createElement('style');
+            document.head.appendChild(element);
+            this._sheet = element.sheet;
+        }
         this._sheet.insertRule(rule, this._sheet.cssRules.length);
     },
 

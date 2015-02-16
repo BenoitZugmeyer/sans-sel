@@ -1,3 +1,5 @@
+var owns = require('./owns');
+
 module.exports = function (parent, definition) {
 
     if (!definition) {
@@ -5,7 +7,15 @@ module.exports = function (parent, definition) {
         parent = null;
     }
 
-    var constructor = definition.constructor || (definition.constructor = function () {});
+    if (!owns(definition, 'constructor')) {
+        definition.constructor = function () {
+            if (parent) {
+                parent.apply(this, arguments);
+            }
+        };
+    }
+
+    var constructor = definition.constructor;
     constructor.prototype = definition;
 
     if (parent) {
