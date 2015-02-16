@@ -1,6 +1,5 @@
 var isPlainObject = require('./isPlainObject');
 var defineProperties = require('./defineProperties');
-var assertValidIdentifier = require('./assertValidIdentifier');
 var makeClass = require('./makeClass');
 var owns = require('./owns');
 var DOMBackend = require('./DOMBackend');
@@ -39,7 +38,7 @@ module.exports = makeClass({
 
     namespace: function (name) {
         if (process.env.NODE_ENV !== 'production') {
-            assertValidIdentifier(name);
+            require('./assertValidIdentifier')(name);
 
             if (typeof name !== 'string') {
                 throw new Error('The "name" argument should be a string');
@@ -65,7 +64,7 @@ module.exports = makeClass({
                 throw new Error('The "name" argument should be a string');
             }
 
-            assertValidIdentifier(name);
+            require('./assertValidIdentifier')(name);
 
             if (!isPlainObject(declarations)) {
                 throw new Error('The "declaration" argument should be a plain object');

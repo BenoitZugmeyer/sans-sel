@@ -1,6 +1,4 @@
 
-var assertValidIdentifier = require('./assertValidIdentifier');
-
 var formatDeclarationCache = Object.create(null);
 
 var unitLess = Object.create(null);
@@ -32,7 +30,9 @@ function addUnit(value) {
 }
 
 module.exports = function formatDeclaration(property, value) {
-    assertValidIdentifier(property);
+    if (process.env.NODE_ENV !== 'production') {
+        require('./assertValidIdentifier')(property);
+    }
     var isUnitLess = unitLess[property];
 
     if (property === 'content') {
