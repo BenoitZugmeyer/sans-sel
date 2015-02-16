@@ -8,6 +8,8 @@ module.exports = makeClass({
         var element = document.createElement('style');
         document.head.appendChild(element);
         this._sheet = element.sheet;
+        this.specs = {};
+        this.spec = 0;
     },
 
     add: function (id, rule) {
