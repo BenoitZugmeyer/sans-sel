@@ -1,15 +1,14 @@
-var render = require('../src/render');
-var backend = require('./backendMock');
+var backend = require('./testBackend');
 
 describe('render', function () {
 
     it('should render a single selector', function () {
-        render(backend, [{cls: 'a'}]).should.eql('a__0 ');
+        backend._render([{cls: 'a'}]).should.eql('a__0 ');
         backend.rules.should.eql([]);
     });
 
     it('should render two selectors', function () {
-        render(backend, [
+        backend._render([
             {cls: 'a'},
             {cls: 'b'}
         ]).should.eql('a__0 b__1 ');
@@ -18,8 +17,8 @@ describe('render', function () {
     it('should render two selectors declared anormally', function () {
         var a = {cls: 'a'};
         var b = {cls: 'b'};
-        render(backend, [a, b]).should.eql('a__0 b__1 ');
-        render(backend, [b, a]).should.eql('b__1 a__2 ');
-        render(backend, [a, b]).should.eql('a__0 b__1 ');
+        backend._render([a, b]).should.eql('a__0 b__1 ');
+        backend._render([b, a]).should.eql('b__1 a__2 ');
+        backend._render([a, b]).should.eql('a__0 b__1 ');
     });
 });

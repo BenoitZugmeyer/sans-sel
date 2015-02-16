@@ -1,6 +1,6 @@
 var should = require('should');
 var sansSel = require('../src/index');
-var backend = require('./backendMock');
+var backend = require('./testBackend');
 
 describe('index', function () {
 
@@ -65,7 +65,7 @@ describe('index', function () {
             ss.add('foo', { color: 'red' });
             ss.render('foo');
             backend.rules.should.eql([
-                { id: '__foo', rule: '.__foo__0{color:red;}' },
+                '.__foo__0{color:red;}',
             ]);
         });
 
@@ -77,7 +77,7 @@ describe('index', function () {
             });
             ss.render('foo');
             backend.rules.should.eql([
-                { id: '__foo', rule: '@media screen{.__foo__0{color:red;}}' },
+                '@media screen{.__foo__0{color:red;}}',
             ]);
         });
 
@@ -87,7 +87,7 @@ describe('index', function () {
             });
             ss.render('foo');
             backend.rules.should.eql([
-                { id: '__foo', rule: '.__foo__0{border:1px solid grey;}' }
+                '.__foo__0{border:1px solid grey;}'
             ]);
         });
 
@@ -102,8 +102,8 @@ describe('index', function () {
             ss.render('foo');
 
             backend.rules.should.eql([
-                { id: '__foo', rule: '.__foo__0{foo:bar;}' },
-                { id: '__foo', rule: '@media screen{.__foo__0{bar:baz;}}' },
+                '.__foo__0{foo:bar;}',
+                '@media screen{.__foo__0{bar:baz;}}',
             ]);
 
         });
@@ -120,9 +120,9 @@ describe('index', function () {
             });
             ss.render('foo');
             backend.rules.should.eql([
-                { id: '__foo', rule: '.__foo__0{foo:bar;}'  },
-                { id: '__foo', rule: '.__foo__0:focus{foo:baz;}' },
-                { id: '__foo', rule: '.__foo__0:focus:hover{foo:biz;}' },
+                '.__foo__0{foo:bar;}',
+                '.__foo__0:focus{foo:baz;}',
+                '.__foo__0:focus:hover{foo:biz;}',
             ]);
         });
 
@@ -173,7 +173,7 @@ describe('index', function () {
             });
             ns.render('baz');
             backend.rules.should.eql([
-                { id: 'foo__baz', rule: '.foo__baz__0{text-Decoration:underline;background:red;}' }
+                '.foo__baz__0{text-Decoration:underline;background:red;}'
             ]);
         });
 
@@ -215,7 +215,7 @@ describe('index', function () {
             ss.render('foo');
 
             backend.rules.should.eql([
-                { id: '__foo', rule: '.__foo__0{display:-webkit-flex;}' }
+                '.__foo__0{display:-webkit-flex;}'
             ]);
         });
 
@@ -238,9 +238,9 @@ describe('index', function () {
             ss.render('foo');
 
             backend.rules.should.eql([
-                { id: '__foo', rule: '.__foo__0{color:red;}' },
-                { id: '__foo', rule: '@media foo{.__foo__0{color:blue;}}' },
-                { id: '__foo', rule: '@media foo{.__foo__0:hover{color:yellow;}}' },
+                '.__foo__0{color:red;}',
+                '@media foo{.__foo__0{color:blue;}}',
+                '@media foo{.__foo__0:hover{color:yellow;}}',
             ]);
         });
     });

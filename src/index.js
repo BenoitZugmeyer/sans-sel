@@ -102,7 +102,7 @@ var SansSel = makeClass({
     },
 
     render: function () {
-        return render(this.backend, get(this, arguments));
+        return this.backend._render.apply(this.backend, get(this, arguments));
     }
 
 });
