@@ -5,6 +5,7 @@ var makeClass = require('./makeClass');
 var owns = require('./owns');
 var DOMBackend = require('./DOMBackend');
 var applyTransforms = require('./applyTransforms');
+var Selector = require('./Selector');
 
 function get(sansSel, names) {
     return Array.prototype.map.call(names, function (name) {
@@ -75,8 +76,6 @@ module.exports = makeClass({
             }
         }
 
-        var cls = this.name + '__' + name;
-
         var directParents =
             declarations.inherit ?
                 Array.isArray(declarations.inherit) ?
@@ -84,11 +83,11 @@ module.exports = makeClass({
                     [declarations.inherit] :
             [];
 
-        this._styles[name] = {
-            cls: cls,
+        this._styles[name] = new Selector({
+            class: this.name + '__' + name,
             parents: get(this, directParents),
             declarations: applyTransforms(this.transforms, declarations, this._transformsCache)
-        };
+        });
     },
 
     addAll: function (styles) {

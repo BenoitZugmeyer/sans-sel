@@ -5,16 +5,6 @@ var splat = require('./splat');
 
 var formatDeclarations = require('./formatDeclarations');
 
-var globalId = 0;
-
-function completeSelector(selector) {
-    if (!selector.id) {
-        selector.id = globalId;
-        globalId += 1;
-    }
-}
-
-
 module.exports = makeClass({
 
     constructor: function Backend() {
@@ -29,8 +19,6 @@ module.exports = makeClass({
         var add = this.addRule.bind(this);
 
         return splat(selectors).map(function (selector) {
-            completeSelector(selector);
-
             var spec = -1;
 
             var specs = this._specs[selector.id] || (this._specs[selector.id] = []);
@@ -44,7 +32,7 @@ module.exports = makeClass({
             }
 
             if (spec < 0) {
-                formatDeclarations('.' + selector.cls + '__' + this._spec,
+                formatDeclarations('.' + selector.class + '__' + this._spec,
                                    selector.declarations,
                                    add);
                 specs.push(this._spec);
@@ -54,7 +42,7 @@ module.exports = makeClass({
 
             currentSpec = spec;
 
-            return selector.cls + '__' + spec;
+            return selector.class + '__' + spec;
         }, this).join(' ');
     },
 

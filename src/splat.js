@@ -1,17 +1,16 @@
-function addSelectors(selectors, list) {
+function addSelectors(selectors, list, added) {
     var i;
     for (i = selectors.length - 1; i >= 0; i--) {
         var selector = selectors[i];
         if (selector) {
             if (typeof selector.length === 'number') {
-                addSelectors(selector, list);
+                addSelectors(selector, list, added);
             }
-            else {
-                if (list.indexOf(selector) < 0) {
-                    list.unshift(selector);
-                    if (selector.parents) {
-                        addSelectors(selector.parents, list);
-                    }
+            else if (!added[selector.id]) {
+                list.unshift(selector);
+                added[selector.id] = true;
+                if (selector.parents) {
+                    addSelectors(selector.parents, list, added);
                 }
             }
         }
@@ -20,6 +19,6 @@ function addSelectors(selectors, list) {
 
 module.exports = function splat() {
     var selectors = [];
-    addSelectors(arguments, selectors);
+    addSelectors(arguments, selectors, {});
     return selectors;
 };
