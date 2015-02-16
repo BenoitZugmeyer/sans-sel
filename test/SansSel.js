@@ -1,20 +1,20 @@
 var should = require('should');
-var sansSel = require('../src/index');
+var SansSel = require('../src/SansSel');
 var backend = require('./testBackend');
 
-describe('index', function () {
+describe('SansSel', function () {
 
     it('should be a function', function () {
-        sansSel.should.be.a.Function;
+        SansSel.should.be.a.Function;
     });
 
     it('should throw if invoked with something other than an object', function () {
-        sansSel.bind(null, []).should.throw('options should be a plain object');
+        (function () { new SansSel([]); }).should.throw('options should be a plain object');
     });
 
     var ss;
     beforeEach(function () {
-        ss = sansSel({backend: backend});
+        ss = new SansSel({backend: backend});
     });
 
     describe('add', function () {
@@ -144,7 +144,7 @@ describe('index', function () {
         });
 
         it('should return a SansSel instance', function () {
-            ss.namespace('foo').should.be.an.instanceOf(sansSel.SansSel);
+            ss.namespace('foo').should.be.an.instanceOf(SansSel);
         });
 
         it('should prefix all classes by the name', function () {
