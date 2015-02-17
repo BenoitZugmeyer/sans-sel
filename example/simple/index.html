@@ -5,58 +5,63 @@
     <meta charset="utf-8" />
 </head>
 <body>
-    <script src="../../dist/style.js"></script>
+    <script src="../../dist/sansSel.js"></script>
     <script>
         (function () {
             'use strict';
 
-            var appStyle = new style.Style({
-                background: '#eee',
-                fontFamily: 'sans-serif',
-            });
+            var ss = sansSel();
 
-            var linkStyle = new style.Style({
-                display: 'inline-block',
-                backgroundColor: '#389090',
-                color: 'white',
-                marginRight: '10px',
-                padding: '10px',
-                textDecoration: 'none',
-
-                transition: 'background-color .5s',
-
-                // Media queries example
-                'media (max-width: 640px)': {
-                    display: 'block',
-                    marginRight: 0,
+            ss.addAll({
+                app: {
+                    background: '#eee',
+                    fontFamily: 'sans-serif',
                 },
 
-                // Pseudo-classes example
-                hover: {
-                    backgroundColor: '#B5D045',
+                link: {
+                    display: 'inline-block',
+                    backgroundColor: '#389090',
+                    color: 'white',
+                    marginRight: '10px',
+                    padding: '10px',
+                    textDecoration: 'none',
 
-                    // Nested too!
-                    focus: {
-                        backgroundColor: '#FB8335',
+                    transition: 'background-color .5s',
+
+                    // Media queries example
+                    'media (max-width: 640px)': {
+                        display: 'block',
+                        marginRight: 0,
+                    },
+
+                    // Pseudo-classes example
+                    hover: {
+                        backgroundColor: '#B5D045',
+
+                        // Nested too!
+                        focus: {
+                            backgroundColor: '#FB8335',
+                        }
                     }
+                },
+
+                mainLink: {
+                    // Inheriting from another style
+                    inherit: ['link'],
+
+                    fontWeight: 'bold',
                 }
-            });
 
-            var mainLinkStyle = new style.Style({
-                // Inheriting from another style
-                inherit: [linkStyle],
-
-                fontWeight: 'bold',
             });
 
             var app = document.createElement('div');
-            app.className = appStyle;
+            app.className = ss.render('app');
 
             function createLink(label, main) {
                 var link = document.createElement('a');
                 link.setAttribute('href', '#');
                 link.textContent = label;
-                link.className = main ? mainLinkStyle : linkStyle;
+                link.className = ss.render(main ? 'mainLink' : 'link');
                 return link;
             }
 
