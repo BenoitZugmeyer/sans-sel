@@ -6,14 +6,19 @@ body {
     word-wrap: break-word;
 }
 
+main {
+    display: flex;
+    justify-content: center;
+}
+
 .document {
+    flex: 1;
     max-width: 790px;
+    min-height: 100vh;
     border: solid #D8D8D8;
     border-width: 0 1px;
     padding: 30px;
     box-sizing: border-box;
-    margin: 0 auto;
-
 }
 
 @media (max-width: 800px) {
@@ -26,6 +31,32 @@ body {
     margin-top: 0px !important;
 }
 
+.sidebar {
+    max-width: 200px;
+    padding: 30px;
+}
+
+.sidebar h1 {
+    margin: 0;
+    text-align: center;
+}
+
+.contents {
+    float: right;
+}
+
+.toc {
+    padding: 30px 0;
+}
+
+.toc .current {
+    font-weight: bold;
+}
+.toc > ul {
+    list-style-type: none;
+    padding: 0;
+}
+
 h1, h2, h3, h4, h5, h6 {
     margin-top: 1em;
     margin-bottom: 16px;
@@ -33,7 +64,7 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.4;
 }
 
-h1.title {
+h1 {
     padding-bottom: 0.3em;
     font-size: 2.25em;
     line-height: 1.2;
@@ -41,27 +72,27 @@ h1.title {
 }
 
 
-h1 {
+h2 {
     padding-bottom:0.3em;
     font-size:1.75em;
     line-height:1.225;
     border-bottom:1px solid #eee
 }
 
-h2 {
+h3 {
     font-size:1.5em;
     line-height:1.43
 }
 
-h3 {
+h4 {
     font-size:1.25em
 }
 
-h4 {
+h5 {
     font-size:1em
 }
 
-h5 {
+h6 {
     font-size:1em;
     color:#777
 }
@@ -128,12 +159,36 @@ blockquote>:last-child{
     margin-bottom:0
 }
 
+pre, code {
+    font-family: Consolas,"Liberation Mono",Menlo,Courier,monospace;
+    background-color: #F7F7F7;
+    font-size: 85%;
+    word-wrap: normal;
+    border-radius: 3px;
+}
+
 pre {
     padding: 16px;
     overflow: auto;
-    font-size: 85%;
     line-height: 1.45;
-    background-color: #F7F7F7;
-    border-radius: 3px;
-    word-wrap: normal;
+}
+
+code {
+    padding: 0.2em 0px;
+}
+
+code:before,
+code:after {
+    letter-spacing: -0.2em;
+    content: "\00a0";
+}
+
+a {
+    color: #4183C4;
+    text-decoration: none;
+}
+
+a:active, a:hover {
+    text-decoration: underline;
+    outline: none;
 }
