@@ -37,7 +37,7 @@ main {
 }
 
 .sidebar h1 {
-    margin: 0;
+    margin: 0 0 16px;
     text-align: center;
 }
 
@@ -46,7 +46,6 @@ main {
 }
 
 .toc {
-    padding: 30px 0;
 }
 
 .toc .current {
