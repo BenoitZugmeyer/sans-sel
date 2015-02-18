@@ -3,12 +3,12 @@ body {
     font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
     font-size: 16px;
     line-height: 1.6;
-    word-wrap: break-word;
 }
 
 main {
     display: flex;
     justify-content: center;
+    min-width: 200px;
 }
 
 .document {
@@ -21,19 +21,13 @@ main {
     box-sizing: border-box;
 }
 
-@media (max-width: 800px) {
-    .document {
-        border: none;
-    }
-}
-
 .document > :first-child {
     margin-top: 0px !important;
 }
 
 .sidebar {
     max-width: 200px;
-    padding: 30px;
+    padding: 30px 30px 0;
 }
 
 .sidebar h1 {
@@ -56,7 +50,33 @@ main {
 .toc > ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
+
+@media (max-width: 1014px) {
+    .document {
+        border-right: none;
+    }
+}
+
+@media (max-width: 800px) {
+    main {
+        flex-direction: column;
+    }
+    .document {
+        border: none;
+    }
+    .sidebar {
+        max-width: none;
+    }
+}
+
+@media (max-width: 400px) {
+    body {
+        font-size: 12px;
+    }
+}
+
 
 h1, h2, h3, h4, h5, h6 {
     margin-top: 1em;
