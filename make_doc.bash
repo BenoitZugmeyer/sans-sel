@@ -93,5 +93,5 @@ else
     cp doc/style.css dist/doc/style.css
     pygmentize -S friendly -f html -a .code >> dist/doc/style.css
 
-    find doc -iname '*.rst' -print0 | xargs -0 -n1 -P0 bash $0
+    find doc -iname '*.rst' -print0 | xargs -0 -n1 -P10 bash $0
 fi
