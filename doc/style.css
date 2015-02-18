@@ -73,7 +73,13 @@ main {
 
 @media (max-width: 400px) {
     body {
-        font-size: 12px;
+        font-size: 13px;
+    }
+    .document {
+        padding: 15px;
+    }
+    .sidebar {
+        padding: 15px 15px 0;
     }
 }
 
