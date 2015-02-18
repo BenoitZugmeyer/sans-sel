@@ -38,6 +38,8 @@ main {
 
 .sidebar h1 {
     margin: 0 0 16px;
+    padding-left: 10px;
+    padding-right: 10px;
     text-align: center;
 }
 
