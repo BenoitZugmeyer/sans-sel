@@ -81,6 +81,9 @@ generate_file() {
         --syntax-highlight=short \
         --template="doc/template.html" \
         --initial-header-level=2 \
+        --smart-quotes=yes \
+        --no-section-subtitles \
+        --tab-width=4 \
         "$file" \
     | sed "/#TOC#/ c\\$(generate_toc "$file" "$relative_path")" \
     > "dist/${file%.rst}.html"
