@@ -7,7 +7,8 @@ var applyTransforms = require('./applyTransforms');
 var Selector = require('./Selector');
 
 function get(sansSel, names) {
-    return Array.prototype.map.call(names, function (name) {
+    return Array.prototype.filter.call(names, function (name) { return name; })
+    .map(function (name) {
         if (!(name in sansSel._styles)) {
             throw new Error('Unknown style "' + name + '"');
         }
@@ -97,7 +98,7 @@ module.exports = makeClass({
     },
 
     render: function () {
-        return this.backend._render.apply(this.backend, get(this, arguments));
+        return this.backend._render.call(this.backend, get(this, arguments));
     }
 
 });
