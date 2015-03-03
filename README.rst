@@ -1,23 +1,11 @@
-hello
-=====
+sans-sel
+========
 
-subtitle
---------
+Write your components styles in JavaScript, without selectors.
 
-This is some texto oeut hosu hoest uhoetns uhoe o oeut hosu hoest uhoetns uhoe o oeut hosu
-hoest uhoetns uhoe o oeut hosu hoest uhoetns uhoe o oeut hosu hoest uhoetns uhoe o oeut
-hosu hoest uhoetns uhoe o oeut hosu hoest uhoetns uhoe o oeut hosu hoest uhoetns uhoe o
-oeut hosu hoest uhoetns uhoe o oeut hosu hoest uhoetns uhoe 
+This is project is still in development. Documentation_ will follow.
 
-* Bullet
+For now, you can see the examples_ to have a peek.
 
-.. code:: python
-
-    def foo():
-        "doc"
-        pass
-
-subtitle
---------
-
-foo
+.. _Documentation: doc
+.. _examples: example
