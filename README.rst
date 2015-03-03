@@ -3,7 +3,7 @@ sans-sel
 
 Write your components styles in JavaScript, without selectors.
 
-This is project is still in development. Documentation_ will follow.
+This project is still in development. Documentation_ will follow.
 
 For now, you can see the examples_ to have a peek.
 

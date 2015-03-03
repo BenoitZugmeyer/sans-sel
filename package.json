@@ -1,8 +1,9 @@
 {
   "name": "sans-sel",
-  "version": "1.0.0",
+  "version": "1.0.0dev",
   "author": "Benoît Zugmeyer",
-  "description": "Write CSS in JS, without selector",
+  "description": "Write your components styles in JavaScript, without selectors.",
+  "repository": "https://github.com/BenoitZugmeyer/sans-sel",
   "devDependencies": {
     "mocha": "^2.0.1",
     "should": "^4.4.1",
