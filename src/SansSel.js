@@ -9,6 +9,9 @@ var Selector = require('./Selector');
 function get(sansSel, names) {
     return Array.prototype.filter.call(names, function (name) { return name; })
     .map(function (name) {
+        if (name instanceof Selector) {
+            return name;
+        }
         if (!(name in sansSel._styles)) {
             throw new Error('Unknown style "' + name + '"');
         }
@@ -95,6 +98,10 @@ module.exports = makeClass({
         for (name in styles) {
             this.add(name, styles[name]);
         }
+    },
+
+    get: function (name) {
+        return owns(this._styles, name) ? this._styles[name] : undefined;
     },
 
     render: function () {
