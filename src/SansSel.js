@@ -6,18 +6,29 @@ var DOMBackend = require('./DOMBackend');
 var applyTransforms = require('./applyTransforms');
 var Selector = require('./Selector');
 
-function get(sansSel, names) {
-    return Array.prototype.filter.call(names, function (name) { return name; })
-    .map(function (name) {
-        if (name instanceof Selector) {
-            return name;
+function get(sansSel, names, result) {
+    var i, l;
+    for (i = 0, l = names.length; i < l; i++) {
+        var name = names[i];
+        if (name) {
+            if (Array.isArray(name)) {
+                get(sansSel, name, result);
+            }
+            else if (name instanceof Selector) {
+                result.push(name);
+            }
+            else if (typeof name === 'string') {
+                if (!(name in sansSel._styles)) {
+                    throw new Error('Unknown style "' + name + '"');
+                }
+                result.push(sansSel._styles[name]);
+            }
+            else {
+                throw new Error('Style "' + name + '" has wrong type');
+            }
         }
-        if (!(name in sansSel._styles)) {
-            throw new Error('Unknown style "' + name + '"');
-        }
-
-        return sansSel._styles[name];
-    });
+    }
+    return result;
 }
 
 module.exports = makeClass({
@@ -88,7 +99,7 @@ module.exports = makeClass({
 
         this._styles[name] = new Selector({
             class: this.name + '__' + name,
-            parents: get(this, directParents),
+            parents: get(this, directParents, []),
             declarations: applyTransforms(this.transforms, declarations, this._transformsCache)
         });
     },
@@ -100,12 +111,12 @@ module.exports = makeClass({
         }
     },
 
-    get: function (name) {
-        return owns(this._styles, name) ? this._styles[name] : undefined;
+    get: function () {
+        return get(this, arguments, []);
     },
 
     render: function () {
-        return this.backend._render.call(this.backend, get(this, arguments));
+        return this.backend._render.call(this.backend, get(this, arguments, []));
     }
 
 });
