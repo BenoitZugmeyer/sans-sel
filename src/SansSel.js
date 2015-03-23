@@ -11,10 +11,7 @@ function get(sansSel, names, result) {
     for (i = 0, l = names.length; i < l; i++) {
         var name = names[i];
         if (name) {
-            if (Array.isArray(name)) {
-                get(sansSel, name, result);
-            }
-            else if (name instanceof Selector) {
+            if (name instanceof Selector) {
                 result.push(name);
             }
             else if (typeof name === 'string') {
@@ -22,6 +19,9 @@ function get(sansSel, names, result) {
                     throw new Error('Unknown style "' + name + '"');
                 }
                 result.push(sansSel._styles[name]);
+            }
+            else if (typeof name.length === 'number') {
+                get(sansSel, name, result);
             }
             else {
                 throw new Error('Style "' + name + '" has wrong type');
@@ -99,7 +99,7 @@ module.exports = makeClass({
 
         this._styles[name] = new Selector({
             class: this.name + '__' + name,
-            parents: get(this, directParents, []),
+            parents: this.get(directParents),
             declarations: applyTransforms(this.transforms, declarations, this._transformsCache)
         });
     },
@@ -116,7 +116,7 @@ module.exports = makeClass({
     },
 
     render: function () {
-        return this.backend._render.call(this.backend, get(this, arguments, []));
+        return this.backend._render.call(this.backend, this.get(arguments));
     }
 
 });
