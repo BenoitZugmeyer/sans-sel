@@ -81,13 +81,13 @@ describe('SansSel', function () {
             ]);
         });
 
-        it('should join arrays with spaces', function () {
+        it('should repeat properties with arrays as value', function () {
             ss.add('foo', {
-                border: ['1px', 'solid', 'grey']
+                border: ['blue', 'red'],
             });
             ss.render('foo');
             backend.rules.should.eql([
-                '.__foo__0{border:1px solid grey;}'
+                '.__foo__0{border:red;\nborder:blue;}'
             ]);
         });
 

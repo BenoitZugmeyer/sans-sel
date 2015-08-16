@@ -14,17 +14,17 @@ describe('formatDeclaration', function () {
             .should.equal('-moz-border-box:box-sizing;');
     });
 
-    it('should join array values', function () {
-        formatDeclaration('border', ['1px', 'solid', 'red'])
-            .should.equal('border:1px solid red;');
+    it('should repeat array values', function () {
+        formatDeclaration('border', ['blue', 'red'])
+            .should.equal('border:red;\nborder:blue;');
     });
 
     it('should automatically add the px unit when value needs a unit', function () {
         formatDeclaration('border', 1)
             .should.equal('border:1px;');
 
-        formatDeclaration('border', [1, 'solid', 'red'])
-            .should.equal('border:1px solid red;');
+        formatDeclaration('borderWidth', [1, 2])
+            .should.equal('border-Width:2px;\nborder-Width:1px;');
     });
 
     it('should not add the px unit when the unit is not needed', function () {
@@ -35,7 +35,7 @@ describe('formatDeclaration', function () {
             .should.equal('z-index:1;');
 
         formatDeclaration('flex', [2, 1]).toLowerCase()
-            .should.equal('flex:2 1;');
+            .should.equal('flex:1;\nflex:2;');
     });
 
     it('should format the "content" property like a string', function () {

@@ -25,27 +25,22 @@ var unitLess = Object.create(null);
     unitLess[property] = true;
 });
 
-function addUnit(value) {
-    return typeof value === 'number' ? value + 'px' : value;
-}
-
 module.exports = function formatDeclaration(property, value) {
     if (process.env.NODE_ENV !== 'production') {
         require('./assertValidIdentifier')(property);
     }
+
+    if (Array.isArray(value)) {
+        return value.map(function (v) { return formatDeclaration(property, v); }).reverse().join('\n');
+    }
+
     var isUnitLess = unitLess[property];
 
     if (property === 'content') {
         value = JSON.stringify(value);
     }
-    else if (Array.isArray(value)) {
-        if (!isUnitLess) {
-            value = value.map(addUnit);
-        }
-        value = value.join(' ');
-    }
-    else if (!isUnitLess) {
-        value = addUnit(value);
+    else if (typeof value === 'number' && !isUnitLess) {
+        value += 'px';
     }
 
     if (!(property in formatDeclarationCache)) {
