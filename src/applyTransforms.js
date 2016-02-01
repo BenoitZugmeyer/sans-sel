@@ -1,6 +1,6 @@
-var merge = require('./merge');
-var isPlainObject = require('./isPlainObject');
-var owns = require('./owns');
+var merge = require("./merge");
+var isPlainObject = require("./isPlainObject");
+var owns = require("./owns");
 
 var hash = JSON.stringify;
 
@@ -12,8 +12,8 @@ function applyTransforms(transforms, declarations, transformCache, result) {
 
         if (property in transforms) {
             var transform = transforms[property];
-            var isFunction = typeof transform === 'function';
-            var key = property + (isFunction ? ':' + hash(value) : '');
+            var isFunction = typeof transform === "function";
+            var key = property + (isFunction ? ":" + hash(value) : "");
 
             if (!owns(transformCache, key)) {
                 transformCache[key] = merge({}, isFunction ? transform(value) : transform);

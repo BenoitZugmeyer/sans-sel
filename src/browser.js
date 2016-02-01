@@ -1,2 +1,2 @@
-/*jshint browser: true*/
-window.sansSel = require('.');
+/*eslint-env browser*/
+window.sansSel = require(".");

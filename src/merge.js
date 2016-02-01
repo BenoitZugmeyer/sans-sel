@@ -1,7 +1,7 @@
-var isPlainObject = require('./isPlainObject');
+var isPlainObject = require("./isPlainObject");
 
 module.exports = function merge(target, source, shallow) {
-    if (typeof source !== 'object' || !source) return target;
+    if (typeof source !== "object" || !source) return target;
 
     Object.keys(source).forEach(function (key) {
         var sourceValue = source[key];

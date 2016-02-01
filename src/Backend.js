@@ -1,16 +1,16 @@
-var makeClass = require('./makeClass');
-var defineProperties = require('./defineProperties');
+var makeClass = require("./makeClass");
+var defineProperties = require("./defineProperties");
 
-var splat = require('./splat');
+var splat = require("./splat");
 
-var formatDeclarations = require('./formatDeclarations');
+var formatDeclarations = require("./formatDeclarations");
 
 module.exports = makeClass({
 
     constructor: function Backend() {
         this._spec = 0;
         defineProperties(this, {
-            _specs: Object.create(null)
+            _specs: Object.create(null),
         });
     },
 
@@ -32,7 +32,7 @@ module.exports = makeClass({
             }
 
             if (spec < 0) {
-                formatDeclarations('.' + selector.class + '__' + this._spec,
+                formatDeclarations("." + selector.class + "__" + this._spec,
                                    selector.declarations,
                                    add);
                 specs.push(this._spec);
@@ -42,12 +42,12 @@ module.exports = makeClass({
 
             currentSpec = spec;
 
-            return selector.class + '__' + spec;
-        }, this).join(' ');
+            return selector.class + "__" + spec;
+        }, this).join(" ");
     },
 
     addRule: function () {
         // To override
-    }
+    },
 
 });

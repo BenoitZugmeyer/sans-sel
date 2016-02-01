@@ -1,10 +1,10 @@
-var isPlainObject = require('./isPlainObject');
-var defineProperties = require('./defineProperties');
-var makeClass = require('./makeClass');
-var owns = require('./owns');
-var DOMBackend = require('./DOMBackend');
-var applyTransforms = require('./applyTransforms');
-var Selector = require('./Selector');
+var isPlainObject = require("./isPlainObject");
+var defineProperties = require("./defineProperties");
+var makeClass = require("./makeClass");
+var owns = require("./owns");
+var DOMBackend = require("./DOMBackend");
+var applyTransforms = require("./applyTransforms");
+var Selector = require("./Selector");
 
 function get(sansSel, names, result) {
     var i, l;
@@ -14,17 +14,17 @@ function get(sansSel, names, result) {
             if (name instanceof Selector) {
                 result.push(name);
             }
-            else if (typeof name === 'string') {
+            else if (typeof name === "string") {
                 if (!(name in sansSel._styles)) {
-                    throw new Error('Unknown style "' + name + '"');
+                    throw new Error("Unknown style \"" + name + "\"");
                 }
                 result.push(sansSel._styles[name]);
             }
-            else if (typeof name.length === 'number') {
+            else if (typeof name.length === "number") {
                 get(sansSel, name, result);
             }
             else {
-                throw new Error('Style "' + name + '" has wrong type');
+                throw new Error("Style \"" + name + "\" has wrong type");
             }
         }
     }
@@ -37,12 +37,12 @@ module.exports = makeClass({
         if (!options) {
             options = {};
         }
-        else if (process.env.NODE_ENV !== 'production' && !isPlainObject(options)) {
-            throw new Error('options should be a plain object');
+        else if (process.env.NODE_ENV !== "production" && !isPlainObject(options)) {
+            throw new Error("options should be a plain object");
         }
 
         defineProperties(this, {
-            name: options.name || '',
+            name: options.name || "",
             backend: options.backend || new DOMBackend(),
             transforms: options.transforms ? Object.create(options.transforms) : {},
             _transformsCache: Object.create(null),
@@ -52,17 +52,17 @@ module.exports = makeClass({
     },
 
     namespace: function (name) {
-        if (process.env.NODE_ENV !== 'production') {
-            require('./assertValidIdentifier')(name);
+        if (process.env.NODE_ENV !== "production") {
+            require("./assertValidIdentifier")(name);
 
-            if (typeof name !== 'string') {
-                throw new Error('The "name" argument should be a string');
+            if (typeof name !== "string") {
+                throw new Error("The \"name\" argument should be a string");
             }
         }
 
         if (!(name in this._namespaces)) {
             this._namespaces[name] = new this.constructor({
-                name: this.name ? this.name + '_' + name : name,
+                name: this.name ? this.name + "_" + name : name,
                 backend: this.backend,
                 transforms: this.transforms,
                 _styles: this._styles,
@@ -74,19 +74,19 @@ module.exports = makeClass({
 
     add: function (name, declarations) {
 
-        if (process.env.NODE_ENV !== 'production') {
-            if (typeof name !== 'string') {
-                throw new Error('The "name" argument should be a string');
+        if (process.env.NODE_ENV !== "production") {
+            if (typeof name !== "string") {
+                throw new Error("The \"name\" argument should be a string");
             }
 
-            require('./assertValidIdentifier')(name);
+            require("./assertValidIdentifier")(name);
 
             if (!isPlainObject(declarations)) {
-                throw new Error('The "declaration" argument should be a plain object');
+                throw new Error("The \"declaration\" argument should be a plain object");
             }
 
             if (owns(this._styles, name)) {
-                throw new Error('A "' + name + '" style already exists');
+                throw new Error("A \"" + name + "\" style already exists");
             }
         }
 
@@ -98,9 +98,9 @@ module.exports = makeClass({
             [];
 
         this._styles[name] = new Selector({
-            class: this.name + '__' + name,
+            class: this.name + "__" + name,
             parents: this.get(directParents),
-            declarations: applyTransforms(this.transforms, declarations, this._transformsCache)
+            declarations: applyTransforms(this.transforms, declarations, this._transformsCache),
         });
     },
 
@@ -117,7 +117,7 @@ module.exports = makeClass({
 
     render: function () {
         return this.backend._render.call(this.backend, this.get(arguments));
-    }
+    },
 
 });
 

@@ -1,4 +1,4 @@
-var owns = require('./owns');
+var owns = require("./owns");
 
 module.exports = function (parent, definition) {
 
@@ -7,7 +7,7 @@ module.exports = function (parent, definition) {
         parent = null;
     }
 
-    if (!owns(definition, 'constructor')) {
+    if (!owns(definition, "constructor")) {
         definition.constructor = function () {
             if (parent) {
                 parent.apply(this, arguments);

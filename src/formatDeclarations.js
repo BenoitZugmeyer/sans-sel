@@ -1,8 +1,8 @@
-var isPlainObject = require('./isPlainObject');
-var formatDeclaration = require('./formatDeclaration');
+var isPlainObject = require("./isPlainObject");
+var formatDeclaration = require("./formatDeclaration");
 
 module.exports = function formatDeclarations(selector, declaration, cb, media) {
-    var result = '';
+    var result = "";
 
     var subRules = [];
     var property, value;
@@ -19,10 +19,10 @@ module.exports = function formatDeclarations(selector, declaration, cb, media) {
     }
 
     if (result) {
-        result = selector + '{' + result + '}';
+        result = selector + "{" + result + "}";
 
         if (media) {
-            result = media + '{' + result + '}';
+            result = media + "{" + result + "}";
         }
 
         cb(result);
@@ -33,11 +33,11 @@ module.exports = function formatDeclarations(selector, declaration, cb, media) {
         property = subRules[i];
         value = declaration[property];
 
-        if (property.slice(0, 6) === 'media ') {
-            formatDeclarations(selector, value, cb, '@' + property);
+        if (property.slice(0, 6) === "media ") {
+            formatDeclarations(selector, value, cb, "@" + property);
         }
         else {
-            formatDeclarations(selector + ':' + property, value, cb, media);
+            formatDeclarations(selector + ":" + property, value, cb, media);
         }
     }
 };

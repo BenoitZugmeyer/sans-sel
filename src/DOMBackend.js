@@ -1,13 +1,13 @@
-/*jshint browser: true*/
+/*eslint-env browser*/
 
-var makeClass = require('./makeClass');
-var Backend = require('./Backend');
+var makeClass = require("./makeClass");
+var Backend = require("./Backend");
 
 module.exports = makeClass(Backend, {
 
     addRule: function (rule) {
         if (!this._sheet) {
-            var element = document.createElement('style');
+            var element = document.createElement("style");
             document.head.appendChild(element);
             this._sheet = element.sheet;
         }

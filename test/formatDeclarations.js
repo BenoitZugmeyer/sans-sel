@@ -1,6 +1,6 @@
-var formatDeclarations = require('../src/formatDeclarations');
+var formatDeclarations = require("../src/formatDeclarations");
 
-describe('formatDeclarations', function () {
+describe("formatDeclarations", function () {
 
     function collectRules() {
         function result(rule) {
@@ -10,64 +10,64 @@ describe('formatDeclarations', function () {
         return result;
     }
 
-    it('should iterate over each rule of a declaration', function () {
+    it("should iterate over each rule of a declaration", function () {
         var declaration = {
-            color: 'red',
-            background: 'yellow',
+            color: "red",
+            background: "yellow",
         };
 
         var c = collectRules();
-        formatDeclarations('.selector', declaration, c);
-        c.rules.should.eql(['.selector{color:red;background:yellow;}']);
+        formatDeclarations(".selector", declaration, c);
+        c.rules.should.eql([".selector{color:red;background:yellow;}"]);
     });
 
-    it('should add a media query if needed', function () {
+    it("should add a media query if needed", function () {
         var declaration = {
-            color: 'red',
-            background: 'yellow',
+            color: "red",
+            background: "yellow",
         };
 
         var c = collectRules();
-        formatDeclarations('.selector', declaration, c, '@media foo');
-        c.rules.should.eql(['@media foo{.selector{color:red;background:yellow;}}']);
+        formatDeclarations(".selector", declaration, c, "@media foo");
+        c.rules.should.eql(["@media foo{.selector{color:red;background:yellow;}}"]);
     });
 
-    it('should ignore empty declarations', function () {
+    it("should ignore empty declarations", function () {
         var declaration = {};
         var c = collectRules();
-        formatDeclarations('.selector', declaration, c, '@media foo');
+        formatDeclarations(".selector", declaration, c, "@media foo");
         c.rules.should.eql([]);
     });
 
-    it('should raise more rules for sub rules', function () {
+    it("should raise more rules for sub rules", function () {
         var declarations = {
-            background: 'red',
+            background: "red",
             hover: {
-                background: 'yellow',
+                background: "yellow",
             },
         };
 
         var c = collectRules();
-        formatDeclarations('.selector', declarations, c);
+        formatDeclarations(".selector", declarations, c);
         c.rules.should.eql([
-            '.selector{background:red;}',
-            '.selector:hover{background:yellow;}',
+            ".selector{background:red;}",
+            ".selector:hover{background:yellow;}",
         ]);
     });
 
-    it('should raise more rules for media', function () {
+    it("should raise more rules for media", function () {
         var declarations = {
-            background: 'red',
-            'media screen': {
-                background: 'yellow',
+            background: "red",
+            "media screen": {
+                background: "yellow",
             },
         };
 
         var c = collectRules();
-        formatDeclarations('.selector', declarations, c);
+        formatDeclarations(".selector", declarations, c);
         c.rules.should.eql([
-            '.selector{background:red;}',
-            '@media screen{.selector{background:yellow;}}',
+            ".selector{background:red;}",
+            "@media screen{.selector{background:yellow;}}",
         ]);
     });
 

@@ -1,9 +1,9 @@
-var should = require('should');
-var applyTransforms = require('../src/applyTransforms');
+var should = require("should");
+var applyTransforms = require("../src/applyTransforms");
 
-describe('applyTransforms', function () {
+describe("applyTransforms", function () {
 
-    it('exists', function () {
+    it("exists", function () {
         applyTransforms.should.be.a.Function;
     });
 
@@ -12,7 +12,7 @@ describe('applyTransforms', function () {
         return should(result);
     }
 
-    it('should replace a simple value', function () {
+    it("should replace a simple value", function () {
         apply(
             {
                 foo: function (v) {
@@ -22,19 +22,19 @@ describe('applyTransforms', function () {
                 },
             },
             {
-                foo: 'flex',
+                foo: "flex",
             }
         ).eql({
-            bar: 'flex'
+            bar: "flex",
         });
     });
 
-    it('should memoize transform results', function () {
+    it("should memoize transform results", function () {
         apply(
             {
                 display: function (v) {
-                    if (v === 'flex') {
-                        v = '-webkit-' + v;
+                    if (v === "flex") {
+                        v = "-webkit-" + v;
                     }
                     return {
                         display: v,
@@ -42,14 +42,14 @@ describe('applyTransforms', function () {
                 },
             },
             {
-                display: 'flex',
+                display: "flex",
             }
         ).eql({
-            display: '-webkit-flex'
+            display: "-webkit-flex",
         });
     });
 
-    it('should be able to add more rules', function () {
+    it("should be able to add more rules", function () {
         apply(
             {
                 boxSizing: function (v) {
@@ -60,68 +60,68 @@ describe('applyTransforms', function () {
                 },
             },
             {
-                boxSizing: 'border-box',
+                boxSizing: "border-box",
             }
         ).eql({
-            boxSizing: 'border-box',
-            MozBoxSizing: 'border-box',
+            boxSizing: "border-box",
+            MozBoxSizing: "border-box",
         });
     });
 
-    it('should be able to add more pseudo selectors', function () {
+    it("should be able to add more pseudo selectors", function () {
         apply(
             {
                 custom: function () {
                     return {
-                        textDecoration: 'none',
+                        textDecoration: "none",
                         hover: {
-                            textDecoration: 'underline',
-                        }
+                            textDecoration: "underline",
+                        },
                     };
                 },
             },
             {
                 custom: true,
                 hover: {
-                    color: 'blue',
-                }
+                    color: "blue",
+                },
             }
         ).eql({
-            textDecoration: 'none',
+            textDecoration: "none",
             hover: {
-                textDecoration: 'underline',
-                color: 'blue',
-            }
+                textDecoration: "underline",
+                color: "blue",
+            },
         });
     });
 
-    it('should be able to add more media queries', function () {
+    it("should be able to add more media queries", function () {
         apply(
             {
                 customMediaQuery: function (v) {
                     return {
-                        'media foo': v
+                        "media foo": v,
                     };
                 },
             },
             {
                 customMediaQuery: {
-                    width: '100px'
-                }
+                    width: "100px",
+                },
             }
         ).eql({
-            'media foo': {
-                width: '100px'
-            }
+            "media foo": {
+                width: "100px",
+            },
         });
     });
 
-    it('should be able to make another transform pass', function () {
+    it("should be able to make another transform pass", function () {
         apply(
             {
                 display: function (v) {
-                    if (v === 'flex') {
-                        v = '-webkit-' + v;
+                    if (v === "flex") {
+                        v = "-webkit-" + v;
                     }
                     return {
                         display: v,
@@ -130,49 +130,49 @@ describe('applyTransforms', function () {
 
                 custom: function () {
                     return {
-                        display: 'flex',
-                        textDecoration: 'none',
+                        display: "flex",
+                        textDecoration: "none",
                     };
                 },
             },
             {
-                custom: true
+                custom: true,
             }
         ).eql({
-            display: '-webkit-flex',
-            textDecoration: 'none',
+            display: "-webkit-flex",
+            textDecoration: "none",
         });
     });
 
-    it('should recurse on sub properties too', function () {
+    it("should recurse on sub properties too", function () {
         apply(
             {
                 custom: function () {
                     return {
-                        textDecoration: 'none',
+                        textDecoration: "none",
                     };
                 },
             },
             {
                 hover: {
                     custom: true,
-                }
+                },
             }
         ).eql({
             hover: {
-                textDecoration: 'none',
-            }
+                textDecoration: "none",
+            },
         });
     });
 
-    it('should memoize the results', function () {
+    it("should memoize the results", function () {
         var called = 0;
         apply(
             {
                 custom: function () {
                     called++;
                     return {
-                        textDecoration: 'none',
+                        textDecoration: "none",
                     };
                 },
             },
@@ -180,101 +180,101 @@ describe('applyTransforms', function () {
                 custom: true,
                 hover: {
                     custom: true,
-                }
+                },
             }
         ).eql({
-            textDecoration: 'none',
+            textDecoration: "none",
             hover: {
-                textDecoration: 'none',
-            }
+                textDecoration: "none",
+            },
         });
 
         called.should.be.equal(1);
     });
 
-    it('should support transforms with plain objects', function () {
+    it("should support transforms with plain objects", function () {
         apply(
             {
                 custom: {
-                    textDecoration: 'none',
-                }
+                    textDecoration: "none",
+                },
             },
             {
                 custom: true,
             }
         ).eql({
-            textDecoration: 'none',
+            textDecoration: "none",
         });
     });
 
-    it('should not recurse when a transform returns the same property', function () {
+    it("should not recurse when a transform returns the same property", function () {
         apply(
             {
                 a: {
-                    a: '-webkit-flex',
+                    a: "-webkit-flex",
                 },
             },
             {
                 a: true,
             }
         ).eql({
-            a: '-webkit-flex',
+            a: "-webkit-flex",
         });
     });
 
-    it('should not affect transformed properties to the result', function () {
+    it("should not affect transformed properties to the result", function () {
         apply(
             {
                 a: {
-                    b: '32',
+                    b: "32",
                 },
             },
             {
                 a: true,
             }
         ).eql({
-            b: '32',
+            b: "32",
         });
     });
 
-    it('should not affect transformed properties to the result even inside a transform', function () {
+    it("should not affect transformed properties to the result even inside a transform", function () {
         apply(
             {
                 b: {
-                    c: '-webkit-flex',
+                    c: "-webkit-flex",
                 },
 
                 a: {
-                    b: 'flex',
-                }
+                    b: "flex",
+                },
             },
             {
                 a: true,
             }
         ).eql({
-            c: '-webkit-flex',
+            c: "-webkit-flex",
         });
     });
 
-    it('should support transforms from inherited objects', function () {
+    it("should support transforms from inherited objects", function () {
         var transformsBase = {
             foo: {
-                color: 'red'
-            }
+                color: "red",
+            },
         };
         var transforms = Object.create(transformsBase);
         transforms.bar = {
             foo: true,
-            background: 'yellow',
+            background: "yellow",
         };
         apply(
             transforms,
             {
-                bar: true
+                bar: true,
             }
         ).eql({
-            color: 'red',
-            background: 'yellow',
+            color: "red",
+            background: "yellow",
         });
     });
 

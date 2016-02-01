@@ -5,6 +5,7 @@
   "description": "Write your components styles in JavaScript, without selectors.",
   "repository": "https://github.com/BenoitZugmeyer/sans-sel",
   "devDependencies": {
+    "eslint": "^1.10.3",
     "mocha": "^2.0.1",
     "should": "^4.4.1",
     "webpack": "^1.4.15"

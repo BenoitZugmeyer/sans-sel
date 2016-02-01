@@ -1,5 +1,5 @@
-var makeClass = require('../src/makeClass');
-var Backend = require('../src/Backend');
+var makeClass = require("../src/makeClass");
+var Backend = require("../src/Backend");
 
 var BackendMock = makeClass(Backend, {
     constructor: function BackendMock() {
@@ -18,7 +18,7 @@ var BackendMock = makeClass(Backend, {
         for (spec in this._specs) {
             delete this._specs[spec];
         }
-    }
+    },
 });
 
 var instance = new BackendMock();

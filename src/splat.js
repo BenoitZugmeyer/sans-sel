@@ -3,7 +3,7 @@ function addSelectors(selectors, list, added) {
     for (i = selectors.length - 1; i >= 0; i--) {
         var selector = selectors[i];
         if (selector) {
-            if (typeof selector.length === 'number') {
+            if (typeof selector.length === "number") {
                 addSelectors(selector, list, added);
             }
             else if (!added[selector.id]) {

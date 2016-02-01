@@ -1,36 +1,36 @@
-var webpack = require('webpack');
+var webpack = require("webpack");
 
-var mode = process.env.NODE_ENV || 'production';
+var mode = process.env.NODE_ENV || "production";
 
 var config = {
 
-    context: __dirname + '/src',
+    context: __dirname + "/src",
 
-    entry: './browser',
+    entry: "./browser",
 
     output: {
-        path: __dirname + '/dist',
-        filename: 'sansSel.js',
+        path: __dirname + "/dist",
+        filename: "sansSel.js",
     },
 
     plugins: [
 
         new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify(mode)
-            }
+            "process.env": {
+                NODE_ENV: JSON.stringify(mode),
+            },
         }),
 
     ],
 };
 
-if (mode === 'production') {
+if (mode === "production") {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 unsafe: true,
                 warnings: false,
-            }
+            },
         })
     );
 }
@@ -38,10 +38,10 @@ if (mode === 'production') {
 var wp = webpack(config);
 
 function callback(error, stats) {
-    console.log(String(error || stats));
+    process.stdout.write(String(error || stats) + "\n");
 }
 
-if (mode === 'development') {
+if (mode === "development") {
     wp.watch(200, callback);
 }
 else {
