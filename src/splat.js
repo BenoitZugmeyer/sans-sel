@@ -17,8 +17,8 @@ function addSelectors(selectors, list, added) {
     }
 }
 
-module.exports = function splat() {
+export default function splat() {
     var selectors = [];
     addSelectors(arguments, selectors, {});
     return selectors;
-};
+}

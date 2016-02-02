@@ -1,5 +1,5 @@
-require("should");
-var isPlainObject = require("../src/isPlainObject");
+import "should";
+import isPlainObject from "../src/isPlainObject";
 
 describe("isPlainObject", function () {
 

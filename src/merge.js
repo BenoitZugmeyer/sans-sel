@@ -1,6 +1,6 @@
-var isPlainObject = require("./isPlainObject");
+import isPlainObject from "./isPlainObject";
 
-module.exports = function merge(target, source, shallow) {
+export default function merge(target, source, shallow) {
     if (typeof source !== "object" || !source) return target;
 
     Object.keys(source).forEach(function (key) {
@@ -23,4 +23,4 @@ module.exports = function merge(target, source, shallow) {
     });
 
     return target;
-};
+}

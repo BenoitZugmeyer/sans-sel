@@ -1,4 +1,4 @@
-var assertValidIdentifier = require("../src/assertValidIdentifier");
+import assertValidIdentifier from "../src/assertValidIdentifier";
 
 describe("assertValidIdentifier", function () {
 

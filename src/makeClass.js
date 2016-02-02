@@ -1,6 +1,6 @@
-var owns = require("./owns");
+import owns from "./owns";
 
-module.exports = function (parent, definition) {
+export default function (parent, definition) {
 
     if (!definition) {
         definition = parent;
@@ -24,4 +24,4 @@ module.exports = function (parent, definition) {
     }
 
     return constructor;
-};
+}

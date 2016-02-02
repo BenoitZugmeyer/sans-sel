@@ -1,9 +1,9 @@
 /*eslint-env browser*/
 
-var makeClass = require("./makeClass");
-var Backend = require("./Backend");
+import makeClass from "./makeClass";
+import Backend from "./Backend";
 
-module.exports = makeClass(Backend, {
+export default makeClass(Backend, {
 
     addRule: function (rule) {
         if (!this._sheet) {

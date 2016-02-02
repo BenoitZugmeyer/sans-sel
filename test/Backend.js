@@ -1,5 +1,5 @@
-var backend = require("./testBackend");
-var Selector = require("../src/Selector");
+import backend from "./testBackend";
+import Selector from "../src/Selector";
 
 describe("Backend", function () {
 

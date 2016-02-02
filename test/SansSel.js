@@ -1,6 +1,6 @@
-var should = require("should");
-var SansSel = require("../src/SansSel");
-var backend = require("./testBackend");
+import should from "should";
+import SansSel from "../src/SansSel";
+import backend from "./testBackend";
 
 describe("SansSel", function () {
 

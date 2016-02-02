@@ -1,11 +1,11 @@
-var makeClass = require("./makeClass");
-var defineProperties = require("./defineProperties");
+import makeClass from "./makeClass";
+import defineProperties from "./defineProperties";
 
-var splat = require("./splat");
+import splat from "./splat";
 
-var formatDeclarations = require("./formatDeclarations");
+import formatDeclarations from "./formatDeclarations";
 
-module.exports = makeClass({
+export default makeClass({
 
     constructor: function Backend() {
         this._spec = 0;

@@ -1,3 +1,4 @@
+import assertValidIdentifier from "./assertValidIdentifier";
 
 var formatDeclarationCache = Object.create(null);
 
@@ -25,9 +26,9 @@ var unitLess = Object.create(null);
     unitLess[property] = true;
 });
 
-module.exports = function formatDeclaration(property, value) {
-    if (process.env.NODE_ENV !== "production") {
-        require("./assertValidIdentifier")(property);
+export default function formatDeclaration(property, value) {
+    if (__DEV__) {
+        assertValidIdentifier(property);
     }
 
     if (Array.isArray(value)) {
@@ -48,4 +49,4 @@ module.exports = function formatDeclaration(property, value) {
     }
 
     return formatDeclarationCache[property] + ":" + value + ";";
-};
+}

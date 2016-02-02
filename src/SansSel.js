@@ -1,10 +1,11 @@
-var isPlainObject = require("./isPlainObject");
-var defineProperties = require("./defineProperties");
-var makeClass = require("./makeClass");
-var owns = require("./owns");
-var DOMBackend = require("./DOMBackend");
-var applyTransforms = require("./applyTransforms");
-var Selector = require("./Selector");
+import isPlainObject from "./isPlainObject";
+import defineProperties from "./defineProperties";
+import makeClass from "./makeClass";
+import owns from "./owns";
+import DOMBackend from "./DOMBackend";
+import applyTransforms from "./applyTransforms";
+import Selector from "./Selector";
+import assertValidIdentifier from "./assertValidIdentifier";
 
 function get(sansSel, names, result) {
     var i, l;
@@ -31,13 +32,13 @@ function get(sansSel, names, result) {
     return result;
 }
 
-module.exports = makeClass({
+export default makeClass({
 
     constructor: function SansSel(options) {
         if (!options) {
             options = {};
         }
-        else if (process.env.NODE_ENV !== "production" && !isPlainObject(options)) {
+        else if (__DEV__ && !isPlainObject(options)) {
             throw new Error("options should be a plain object");
         }
 
@@ -52,8 +53,8 @@ module.exports = makeClass({
     },
 
     namespace: function (name) {
-        if (process.env.NODE_ENV !== "production") {
-            require("./assertValidIdentifier")(name);
+        if (__DEV__) {
+            assertValidIdentifier(name);
 
             if (typeof name !== "string") {
                 throw new Error("The \"name\" argument should be a string");
@@ -74,12 +75,12 @@ module.exports = makeClass({
 
     add: function (name, declarations) {
 
-        if (process.env.NODE_ENV !== "production") {
+        if (__DEV__) {
             if (typeof name !== "string") {
                 throw new Error("The \"name\" argument should be a string");
             }
 
-            require("./assertValidIdentifier")(name);
+            assertValidIdentifier(name);
 
             if (!isPlainObject(declarations)) {
                 throw new Error("The \"declaration\" argument should be a plain object");

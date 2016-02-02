@@ -1,5 +1,5 @@
-require("should");
-var merge = require("../src/merge");
+import "should";
+import merge from "../src/merge";
 
 describe("merge", function () {
 

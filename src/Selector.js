@@ -1,11 +1,11 @@
-var makeClass = require("./makeClass");
-var defineProperties = require("./defineProperties");
+import makeClass from "./makeClass";
+import defineProperties from "./defineProperties";
 
 var globalId = 0;
 
-module.exports = makeClass({
+export default makeClass({
     constructor: function Selector(options) {
-        if (process.env.NODE_ENV !== "production") {
+        if (__DEV__) {
             if (!options) {
                 throw new Error("Selector constructor should have an object as argument");
             }

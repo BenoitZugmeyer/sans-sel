@@ -1,6 +1,6 @@
-var merge = require("./merge");
-var isPlainObject = require("./isPlainObject");
-var owns = require("./owns");
+import merge from "./merge";
+import isPlainObject from "./isPlainObject";
+import owns from "./owns";
 
 var hash = JSON.stringify;
 
@@ -41,8 +41,8 @@ function applyTransforms(transforms, declarations, transformCache, result) {
     return result;
 }
 
-module.exports = function (transforms, declarations, transformCache) {
+export default function (transforms, declarations, transformCache) {
     var result = {};
     applyTransforms(transforms, declarations, transformCache, result);
     return result;
-};
+}

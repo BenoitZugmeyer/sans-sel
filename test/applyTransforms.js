@@ -1,5 +1,5 @@
-var should = require("should");
-var applyTransforms = require("../src/applyTransforms");
+import should from "should";
+import applyTransforms from "../src/applyTransforms";
 
 describe("applyTransforms", function () {
 

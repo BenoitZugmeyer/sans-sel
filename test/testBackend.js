@@ -1,5 +1,5 @@
-var makeClass = require("../src/makeClass");
-var Backend = require("../src/Backend");
+import makeClass from "../src/makeClass";
+import Backend from "../src/Backend";
 
 var BackendMock = makeClass(Backend, {
     constructor: function BackendMock() {
@@ -27,4 +27,4 @@ beforeEach(function () {
     instance.reset();
 });
 
-module.exports = instance;
+export default instance;

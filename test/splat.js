@@ -1,5 +1,5 @@
-var splat = require("../src/splat");
-var Selector = require("../src/Selector");
+import splat from "../src/splat";
+import Selector from "../src/Selector";
 
 describe("splat", function () {
 

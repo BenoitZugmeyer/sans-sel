@@ -5,16 +5,19 @@
   "description": "Write your components styles in JavaScript, without selectors.",
   "repository": "https://github.com/BenoitZugmeyer/sans-sel",
   "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-es2015-rollup": "^1.1.1",
+    "babel-register": "^6.4.3",
     "eslint": "^1.10.3",
     "mocha": "^2.0.1",
-    "should": "^4.4.1",
-    "webpack": "^1.4.15"
+    "rollup-plugin-babel": "^2.3.9",
+    "should": "^4.4.1"
   },
   "scripts": {
-    "dist": "NODE_ENV=production node build.js",
-    "dev": "NODE_ENV=development node build.js",
+    "dist": "mkdir -p dist && rollup -c | uglifyjs -c -m -d '__DEV__=false' > dist/sansSel.min.js",
+    "dev": "mkdir -p dist && rollup -c --intro 'var __DEV__ = true;' > dist/sansSel.js",
     "coverage": "NODE_ENV=test istanbul cover $(which _mocha)",
-    "test": "NODE_ENV=test mocha"
+    "test": "NODE_ENV=test mocha --compilers js:babel-register --require test/setDev.js"
   },
   "main": "./src/index"
 }

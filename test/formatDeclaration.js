@@ -1,4 +1,4 @@
-var formatDeclaration = require("../src/formatDeclaration");
+import formatDeclaration from "../src/formatDeclaration";
 
 describe("formatDeclaration", function () {
 

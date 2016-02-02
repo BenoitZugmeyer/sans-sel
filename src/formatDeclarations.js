@@ -1,7 +1,7 @@
-var isPlainObject = require("./isPlainObject");
-var formatDeclaration = require("./formatDeclaration");
+import isPlainObject from "./isPlainObject";
+import formatDeclaration from "./formatDeclaration";
 
-module.exports = function formatDeclarations(selector, declaration, cb, media) {
+export default function formatDeclarations(selector, declaration, cb, media) {
     var result = "";
 
     var subRules = [];
@@ -40,4 +40,4 @@ module.exports = function formatDeclarations(selector, declaration, cb, media) {
             formatDeclarations(selector + ":" + property, value, cb, media);
         }
     }
-};
+}

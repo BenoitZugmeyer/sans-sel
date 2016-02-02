@@ -1,4 +1,4 @@
-module.exports = function (o, props) {
+export default function (o, props) {
     var prop;
     for (prop in props) {
         Object.defineProperty(o, prop, {
@@ -6,4 +6,4 @@ module.exports = function (o, props) {
             writable: false,
         });
     }
-};
+}
