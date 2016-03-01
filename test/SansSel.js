@@ -40,16 +40,8 @@ describe("SansSel", function () {
             ss.add.bind(ss, "foo", {}).should.throw("A \"foo\" style already exists");
         });
 
-    });
-
-    describe("addAll", function () {
-
-        it("should exist", function () {
-            ss.addAll.should.be.a.Function();
-        });
-
-        it("should add all styles", function () {
-            ss.addAll({
+        it("should add all styles if given an object", function () {
+            ss.add({
                 foo: {},
                 bar: {},
             });

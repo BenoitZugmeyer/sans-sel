@@ -74,6 +74,11 @@ export default class SansSel {
 
     add(name, declarations) {
 
+        if (typeof name === "object") {
+            for (let n in name) this.add(n, name[n]);
+            return;
+        }
+
         if (__DEV__) {
             if (typeof name !== "string") {
                 throw new Error("The \"name\" argument should be a string");
@@ -102,13 +107,6 @@ export default class SansSel {
             parents: this.get(directParents),
             declarations: applyTransforms(this.transforms, declarations, this._transformsCache),
         });
-    }
-
-    addAll(styles) {
-        var name;
-        for (name in styles) {
-            this.add(name, styles[name]);
-        }
     }
 
     get() {
