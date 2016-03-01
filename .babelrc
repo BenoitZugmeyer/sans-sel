@@ -1,7 +1,22 @@
 {
     "env": {
         "test": {
-            "presets": ["es2015"]
+            "presets": ["es2015"],
+            "plugins": [
+                ["transform-es2015-classes", {"loose": true}]
+            ]
+        },
+        "development": {
+            "presets": ["es2015-rollup"],
+            "plugins": [
+                ["transform-es2015-classes", {"loose": true}]
+            ]
+        },
+        "production": {
+            "presets": ["es2015-rollup"],
+            "plugins": [
+                ["transform-es2015-classes", {"loose": true}]
+            ]
         }
     }
 }

@@ -1,6 +1,5 @@
 import isPlainObject from "./isPlainObject";
 import defineProperties from "./defineProperties";
-import makeClass from "./makeClass";
 import owns from "./owns";
 import DOMBackend from "./DOMBackend";
 import applyTransforms from "./applyTransforms";
@@ -32,9 +31,9 @@ function get(sansSel, names, result) {
     return result;
 }
 
-export default makeClass({
+export default class SansSel {
 
-    constructor: function SansSel(options) {
+    constructor(options) {
         if (!options) {
             options = {};
         }
@@ -50,9 +49,9 @@ export default makeClass({
             _namespaces: Object.create(null),
             _styles: Object.create(options._styles || null),
         });
-    },
+    }
 
-    namespace: function (name) {
+    namespace(name) {
         if (__DEV__) {
             assertValidIdentifier(name);
 
@@ -71,9 +70,9 @@ export default makeClass({
         }
 
         return this._namespaces[name];
-    },
+    }
 
-    add: function (name, declarations) {
+    add(name, declarations) {
 
         if (__DEV__) {
             if (typeof name !== "string") {
@@ -103,22 +102,22 @@ export default makeClass({
             parents: this.get(directParents),
             declarations: applyTransforms(this.transforms, declarations, this._transformsCache),
         });
-    },
+    }
 
-    addAll: function (styles) {
+    addAll(styles) {
         var name;
         for (name in styles) {
             this.add(name, styles[name]);
         }
-    },
+    }
 
-    get: function () {
+    get() {
         return get(this, arguments, []);
-    },
+    }
 
-    render: function () {
+    render() {
         return this.backend._render.call(this.backend, this.get(arguments));
-    },
+    }
 
-});
+}
 

@@ -1,25 +1,24 @@
-import makeClass from "../src/makeClass";
 import Backend from "../src/Backend";
 
-var BackendMock = makeClass(Backend, {
-    constructor: function BackendMock() {
-        Backend.call(this);
+class BackendMock extends Backend {
+    constructor() {
+        super();
         this.rules = [];
-    },
+    }
 
-    addRule: function (rule) {
+    addRule(rule) {
         this.rules.push(rule);
-    },
+    }
 
-    reset: function () {
+    reset() {
         this.rules.length = 0;
         this._spec = 0;
         var spec;
         for (spec in this._specs) {
             delete this._specs[spec];
         }
-    },
-});
+    }
+}
 
 var instance = new BackendMock();
 

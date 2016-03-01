@@ -1,20 +1,19 @@
-import makeClass from "./makeClass";
 import defineProperties from "./defineProperties";
 
 import splat from "./splat";
 
 import formatDeclarations from "./formatDeclarations";
 
-export default makeClass({
+export default class Backend {
 
-    constructor: function Backend() {
+    constructor() {
         this._spec = 0;
         defineProperties(this, {
             _specs: Object.create(null),
         });
-    },
+    }
 
-    _render: function (selectors) {
+    _render(selectors) {
         var currentSpec = -1;
         var add = this.addRule.bind(this);
 
@@ -44,10 +43,10 @@ export default makeClass({
 
             return selector.class + "__" + spec;
         }, this).join(" ");
-    },
+    }
 
-    addRule: function () {
+    addRule() {
         // To override
-    },
+    }
 
-});
+}
