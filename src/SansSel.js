@@ -76,37 +76,41 @@ export default class SansSel {
 
         if (typeof name === "object") {
             for (let n in name) this.add(n, name[n]);
-            return;
+        }
+        else {
+
+            if (__DEV__) {
+                if (typeof name !== "string") {
+                    throw new Error("The \"name\" argument should be a string");
+                }
+
+                assertValidIdentifier(name);
+
+                if (!isPlainObject(declarations)) {
+                    throw new Error("The \"declaration\" argument should be a plain object");
+                }
+
+                if (owns(this._styles, name)) {
+                    throw new Error(`A "${name}" style already exists`);
+                }
+            }
+
+            let directParents =
+                declarations.inherit ?
+                    Array.isArray(declarations.inherit) ?
+                        declarations.inherit :
+                        [declarations.inherit] :
+                [];
+
+            this._styles[name] = new Selector({
+                class: this.name + "__" + name,
+                parents: this.get(directParents),
+                declarations: applyTransforms(this.transforms, declarations, this._transformsCache),
+            });
+
         }
 
-        if (__DEV__) {
-            if (typeof name !== "string") {
-                throw new Error("The \"name\" argument should be a string");
-            }
-
-            assertValidIdentifier(name);
-
-            if (!isPlainObject(declarations)) {
-                throw new Error("The \"declaration\" argument should be a plain object");
-            }
-
-            if (owns(this._styles, name)) {
-                throw new Error(`A "${name}" style already exists`);
-            }
-        }
-
-        var directParents =
-            declarations.inherit ?
-                Array.isArray(declarations.inherit) ?
-                    declarations.inherit :
-                    [declarations.inherit] :
-            [];
-
-        this._styles[name] = new Selector({
-            class: this.name + "__" + name,
-            parents: this.get(directParents),
-            declarations: applyTransforms(this.transforms, declarations, this._transformsCache),
-        });
+        return this;
     }
 
     get() {
