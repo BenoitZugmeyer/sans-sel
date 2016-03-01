@@ -19,10 +19,10 @@ export default function formatDeclarations(selector, declaration, cb, media) {
     }
 
     if (result) {
-        result = selector + "{" + result + "}";
+        result = `${selector}{${result}}`;
 
         if (media) {
-            result = media + "{" + result + "}";
+            result = `${media}{${result}}`;
         }
 
         cb(result);
@@ -34,10 +34,10 @@ export default function formatDeclarations(selector, declaration, cb, media) {
         value = declaration[property];
 
         if (property.slice(0, 6) === "media ") {
-            formatDeclarations(selector, value, cb, "@" + property);
+            formatDeclarations(selector, value, cb, `@${property}`);
         }
         else {
-            formatDeclarations(selector + ":" + property, value, cb, media);
+            formatDeclarations(`${selector}:${property}`, value, cb, media);
         }
     }
 }

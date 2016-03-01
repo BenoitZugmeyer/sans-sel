@@ -22,7 +22,7 @@ var unitLess = Object.create(null);
     "widows",
     "zIndex",
     "zoom",
-].forEach(function (property) {
+].forEach((property) => {
     unitLess[property] = true;
 });
 
@@ -32,7 +32,7 @@ export default function formatDeclaration(property, value) {
     }
 
     if (Array.isArray(value)) {
-        return value.map(function (v) { return formatDeclaration(property, v); }).reverse().join("\n");
+        return value.map((v) => formatDeclaration(property, v)).reverse().join("\n");
     }
 
     var isUnitLess = unitLess[property];
@@ -48,5 +48,5 @@ export default function formatDeclaration(property, value) {
         formatDeclarationCache[property] = property.replace(/([A-Z])/g, "-$1");
     }
 
-    return formatDeclarationCache[property] + ":" + value + ";";
+    return `${formatDeclarationCache[property]}:${value};`;
 }

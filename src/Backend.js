@@ -15,9 +15,9 @@ export default class Backend {
 
     _render(selectors) {
         var currentSpec = -1;
-        var add = this.addRule.bind(this);
+        var add = (rule) => this.addRule(rule);
 
-        return splat(selectors).map(function (selector) {
+        return splat(selectors).map((selector) => {
             var spec = -1;
 
             var specs = this._specs[selector.id] || (this._specs[selector.id] = []);
@@ -42,7 +42,7 @@ export default class Backend {
             currentSpec = spec;
 
             return selector.class + "__" + spec;
-        }, this).join(" ");
+        }).join(" ");
     }
 
     addRule() {

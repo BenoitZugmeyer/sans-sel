@@ -16,7 +16,7 @@ function get(sansSel, names, result) {
             }
             else if (typeof name === "string") {
                 if (!(name in sansSel._styles)) {
-                    throw new Error("Unknown style \"" + name + "\"");
+                    throw new Error(`Unknown style "${name}"`);
                 }
                 result.push(sansSel._styles[name]);
             }
@@ -24,7 +24,7 @@ function get(sansSel, names, result) {
                 get(sansSel, name, result);
             }
             else {
-                throw new Error("Style \"" + name + "\" has wrong type");
+                throw new Error(`Style "${name}" has wrong type`);
             }
         }
     }
@@ -86,7 +86,7 @@ export default class SansSel {
             }
 
             if (owns(this._styles, name)) {
-                throw new Error("A \"" + name + "\" style already exists");
+                throw new Error(`A "${name}" style already exists`);
             }
         }
 
