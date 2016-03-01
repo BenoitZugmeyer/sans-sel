@@ -4,7 +4,7 @@ import applyTransforms from "../src/applyTransforms";
 describe("applyTransforms", function () {
 
     it("exists", function () {
-        applyTransforms.should.be.a.Function;
+        applyTransforms.should.be.a.Function();
     });
 
     function apply(transforms, declarations) {

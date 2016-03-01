@@ -6,6 +6,7 @@ rules:
     quotes: [2, double]
     semi: [2, always]
     comma-dangle: [2, always-multiline]
+    no-unused-expressions: [2]
 
 globals:
     __DEV__: false
@@ -13,5 +14,5 @@ globals:
 env:
     es6: true
 
-ecmaFeatures:
-    modules: true
+parserOptions:
+    sourceType: module

@@ -5,7 +5,7 @@ import backend from "./testBackend";
 describe("SansSel", function () {
 
     it("should be a function", function () {
-        SansSel.should.be.a.Function;
+        SansSel.should.be.a.Function();
     });
 
     it("should throw if invoked with something other than an object", function () {
@@ -20,7 +20,7 @@ describe("SansSel", function () {
     describe("add", function () {
 
         it("should exist", function () {
-            ss.add.should.be.a.Function;
+            ss.add.should.be.a.Function();
         });
 
         it("should raise if an invalid name is given", function () {
@@ -45,7 +45,7 @@ describe("SansSel", function () {
     describe("addAll", function () {
 
         it("should exist", function () {
-            ss.addAll.should.be.a.Function;
+            ss.addAll.should.be.a.Function();
         });
 
         it("should add all styles", function () {
@@ -140,7 +140,7 @@ describe("SansSel", function () {
     describe("namespace", function () {
 
         it("should exist", function () {
-            ss.namespace.should.be.a.Function;
+            ss.namespace.should.be.a.Function();
         });
 
         it("should return a SansSel instance", function () {
@@ -196,7 +196,7 @@ describe("SansSel", function () {
 
     describe("transforms", function () {
         it("should exist", function () {
-            should(ss.transforms).be.an.Object;
+            should(ss.transforms).be.an.Object();
         });
 
         it("should apply transforms", function () {
