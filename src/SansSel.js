@@ -1,17 +1,18 @@
 import isPlainObject from "./isPlainObject";
 import defineProperties from "./defineProperties";
 import owns from "./owns";
-import DOMBackend from "./DOMBackend";
+import createDOMBackend from "./createDOMBackend";
 import applyTransforms from "./applyTransforms";
-import Selector from "./Selector";
+import Rule from "./Rule";
 import assertValidIdentifier from "./assertValidIdentifier";
+import Renderer from "./Renderer";
 
 function get(sansSel, names, result) {
     var i, l;
     for (i = 0, l = names.length; i < l; i++) {
         var name = names[i];
         if (name) {
-            if (name instanceof Selector) {
+            if (name instanceof Rule) {
                 result.push(name);
             }
             else if (typeof name === "string") {
@@ -33,21 +34,14 @@ function get(sansSel, names, result) {
 
 export default class SansSel {
 
-    constructor(options) {
-        if (!options) {
-            options = {};
-        }
-        else if (__DEV__ && !isPlainObject(options)) {
-            throw new Error("options should be a plain object");
-        }
-
+    constructor({ name="", backend=null, _renderer=null, _styles=null, _transforms=null }={}) {
         defineProperties(this, {
-            name: options.name || "",
-            backend: options.backend || new DOMBackend(),
-            transforms: options.transforms ? Object.create(options.transforms) : {},
+            name,
+            _renderer: _renderer || new Renderer(backend || createDOMBackend()),
             _transformsCache: Object.create(null),
             _namespaces: Object.create(null),
-            _styles: Object.create(options._styles || null),
+            _transforms: Object.create(_transforms),
+            _styles: Object.create(_styles),
         });
     }
 
@@ -62,9 +56,9 @@ export default class SansSel {
 
         if (!(name in this._namespaces)) {
             this._namespaces[name] = new this.constructor({
-                name: this.name ? this.name + "_" + name : name,
-                backend: this.backend,
-                transforms: this.transforms,
+                name: this.name ? `${this.name}_${name}` : name,
+                _renderer: this._renderer,
+                _transforms: this._transforms,
                 _styles: this._styles,
             });
         }
@@ -72,53 +66,67 @@ export default class SansSel {
         return this._namespaces[name];
     }
 
-    add(name, declarations) {
-
-        if (typeof name === "object") {
-            for (let n in name) this.add(n, name[n]);
+    addTransform(name, definition) {
+        if (__DEV__) {
+            if (typeof name !== "string") {
+                throw new Error("The 'name' argument should be a string");
+            }
         }
-        else {
 
-            if (__DEV__) {
-                if (typeof name !== "string") {
-                    throw new Error("The \"name\" argument should be a string");
-                }
+        this._transforms[name] = definition;
+        return this;
+    }
 
-                assertValidIdentifier(name);
+    addTransforms(set) {
+        for (let name in set) this.addTransform(name, set[name]);
+        return this;
+    }
 
-                if (!isPlainObject(declarations)) {
-                    throw new Error("The \"declaration\" argument should be a plain object");
-                }
+    addRule(name, declarations) {
 
-                if (owns(this._styles, name)) {
-                    throw new Error(`A "${name}" style already exists`);
-                }
+        if (__DEV__) {
+            if (typeof name !== "string") {
+                throw new Error("The \"name\" argument should be a string");
             }
 
-            let directParents =
-                declarations.inherit ?
-                    Array.isArray(declarations.inherit) ?
-                        declarations.inherit :
-                        [declarations.inherit] :
-                [];
+            assertValidIdentifier(name);
 
-            this._styles[name] = new Selector({
-                class: this.name + "__" + name,
-                parents: this.get(directParents),
-                declarations: applyTransforms(this.transforms, declarations, this._transformsCache),
-            });
+            if (!isPlainObject(declarations)) {
+                throw new Error("The \"declaration\" argument should be a plain object");
+            }
 
+            if (owns(this._styles, name)) {
+                throw new Error(`A "${name}" style already exists`);
+            }
         }
+
+        let directParents =
+            declarations.inherit ?
+                Array.isArray(declarations.inherit) ?
+                    declarations.inherit :
+                    [declarations.inherit] :
+            [];
+
+        this._styles[name] = new Rule({
+            class: `${this.name}__${name}`,
+            parents: this.getRules(directParents),
+            declarations: applyTransforms(this._transforms, declarations, this._transformsCache),
+        });
 
         return this;
     }
 
-    get() {
+    addRules(set) {
+        for (let name in set) this.addRule(name, set[name]);
+        return this;
+    }
+
+    getRules() {
         return get(this, arguments, []);
     }
 
     render() {
-        return this.backend._render.call(this.backend, this.get(arguments));
+        return this._renderer.render(this.getRules(arguments));
     }
 
 }

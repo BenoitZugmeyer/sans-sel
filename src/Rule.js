@@ -2,15 +2,15 @@ import defineProperties from "./defineProperties";
 
 var globalId = 0;
 
-export default class Selector {
+export default class Rule {
     constructor(options) {
         if (__DEV__) {
             if (!options) {
-                throw new Error("Selector constructor should have an object as argument");
+                throw new Error("Rule constructor should have an object as argument");
             }
 
             if (!options.class) {
-                throw new Error("Selector constructor argument should have a class property");
+                throw new Error("Rule constructor argument should have a class property");
             }
         }
         defineProperties(this, {

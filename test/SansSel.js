@@ -1,6 +1,6 @@
 import should from "should";
 import SansSel from "../src/SansSel";
-import backend from "./testBackend";
+import createTestBackend from "./createTestBackend";
 
 describe("SansSel", function () {
 
@@ -8,40 +8,45 @@ describe("SansSel", function () {
         SansSel.should.be.a.Function();
     });
 
-    it("should throw if invoked with something other than an object", function () {
-        (function () { new SansSel([]); }).should.throw("options should be a plain object");
-    });
+    // it("should throw if invoked with something other than an object", function () {
+    //     (function () { new SansSel([]); }).should.throw("options should be a plain object");
+    // });
 
     var ss;
+    let backend;
     beforeEach(function () {
-        ss = new SansSel({backend: backend});
+        backend = createTestBackend();
+        ss = new SansSel({backend});
     });
 
-    describe("add", function () {
+    describe("addRule", function () {
 
         it("should exist", function () {
-            ss.add.should.be.a.Function();
+            ss.addRule.should.be.a.Function();
         });
 
         it("should raise if an invalid name is given", function () {
-            ss.add.bind(ss, "-a").should.throw("Invalid identifier: -a");
+            ss.addRule.bind(ss, "-a").should.throw("Invalid identifier: -a");
         });
 
         it("should raise if no name is given", function () {
-            ss.add.bind(ss).should.throw("The \"name\" argument should be a string");
+            ss.addRule.bind(ss).should.throw("The \"name\" argument should be a string");
         });
 
         it("should raise if no declaration is given", function () {
-            ss.add.bind(ss, "foo").should.throw("The \"declaration\" argument should be a plain object");
+            ss.addRule.bind(ss, "foo").should.throw("The \"declaration\" argument should be a plain object");
         });
 
         it("should raise if an already existing name is given", function () {
-            ss.add("foo", {});
-            ss.add.bind(ss, "foo", {}).should.throw("A \"foo\" style already exists");
+            ss.addRule("foo", {});
+            ss.addRule.bind(ss, "foo", {}).should.throw("A \"foo\" style already exists");
         });
 
-        it("should add all styles if given an object", function () {
-            ss.add({
+    });
+
+    describe("addRules", () => {
+        it("should add all styles", function () {
+            ss.addRules({
                 foo: {},
                 bar: {},
             });
@@ -54,7 +59,7 @@ describe("SansSel", function () {
     describe("render", function () {
 
         it("should render basic style", function () {
-            ss.add("foo", { color: "red" });
+            ss.addRule("foo", { color: "red" });
             ss.render("foo");
             backend.rules.should.eql([
                 ".__foo__0{color:red;}",
@@ -62,7 +67,7 @@ describe("SansSel", function () {
         });
 
         it("should render media query", function () {
-            ss.add("foo", {
+            ss.addRule("foo", {
                 "media screen": {
                     color: "red",
                 },
@@ -74,7 +79,7 @@ describe("SansSel", function () {
         });
 
         it("should repeat properties with arrays as value", function () {
-            ss.add("foo", {
+            ss.addRule("foo", {
                 border: ["blue", "red"],
             });
             ss.render("foo");
@@ -85,7 +90,7 @@ describe("SansSel", function () {
 
         it("should renders rule sets in order", function () {
 
-            ss.add("foo", {
+            ss.addRule("foo", {
                 foo: "bar",
                 "media screen": {
                     bar: "baz",
@@ -101,7 +106,7 @@ describe("SansSel", function () {
         });
 
         it("should render nested pseudo selectors", function () {
-            ss.add("foo", {
+            ss.addRule("foo", {
                 foo: "bar",
                 focus: {
                     foo: "baz",
@@ -119,9 +124,9 @@ describe("SansSel", function () {
         });
 
         it("should raise if an invalid property is given", function () {
-            ss.add("a", { "-foobar": 1 });
-            ss.add("b", { "foo bar": 1 });
-            ss.add("c", { "foo:bar": 1 });
+            ss.addRule("a", { "-foobar": 1 });
+            ss.addRule("b", { "foo bar": 1 });
+            ss.addRule("c", { "foo:bar": 1 });
             ss.render.bind(ss, "a").should.throw("Invalid identifier: -foobar");
             ss.render.bind(ss, "b").should.throw("Invalid identifier: foo bar");
             ss.render.bind(ss, "c").should.throw("Invalid identifier: foo:bar");
@@ -141,26 +146,26 @@ describe("SansSel", function () {
 
         it("should prefix all classes by the name", function () {
             var ns = ss.namespace("foo");
-            ns.add("style", {});
+            ns.addRule("style", {});
             ns.render("style").should.equal("foo__style__0");
         });
 
         it("should concatenate prefixes", function () {
             var ns = ss.namespace("foo").namespace("bar");
-            ns.add("style", {});
+            ns.addRule("style", {});
             ns.render("style").should.equal("foo_bar__style__0");
         });
 
         it("should support own transforms", function () {
             var ns = ss.namespace("foo");
-            ss.transforms.foo = {
+            ss.addTransform("foo", {
                 textDecoration: "underline",
-            };
-            ns.transforms.bar = {
+            });
+            ns.addTransform("bar", {
                 foo: true,
                 background: "red",
-            };
-            ns.add("baz", {
+            });
+            ns.addRule("baz", {
                 bar: true,
             });
             ns.render("baz");
@@ -174,11 +179,11 @@ describe("SansSel", function () {
         });
 
         it("should support style inheritance", function () {
-            ss.add("foo", {});
-            ss.add("bar", {});
+            ss.addRule("foo", {});
+            ss.addRule("bar", {});
             var ns = ss.namespace("ns");
-            ns.add("bar", {});
-            ns.add("baz", {
+            ns.addRule("bar", {});
+            ns.addRule("baz", {
                 inherit: ["foo", "bar"],
             });
             ns.render("baz").should.be.equal("__foo__0 ns__bar__1 ns__baz__2");
@@ -187,21 +192,21 @@ describe("SansSel", function () {
     });
 
     describe("transforms", function () {
-        it("should exist", function () {
-            should(ss.transforms).be.an.Object();
-        });
+        // it("should exist", function () {
+        //     should(ss.transforms).be.an.Object();
+        // });
 
         it("should apply transforms", function () {
-            ss.transforms.display = function (v) {
+            ss.addTransform("display", function (v) {
                 if (v === "flex") {
                     v = "-webkit-" + v;
                 }
                 return {
                     display: v,
                 };
-            };
+            });
 
-            ss.add("foo", {
+            ss.addRule("foo", {
                 display: "flex",
             });
             ss.render("foo");
@@ -212,13 +217,13 @@ describe("SansSel", function () {
         });
 
         it("should support transformable media rules and nested pseudo selectors", function () {
-            ss.transforms.customMedia = function (v) {
+            ss.addTransform("customMedia", function (v) {
                 return {
                     "media foo": v,
                 };
-            };
+            });
 
-            ss.add("foo", {
+            ss.addRule("foo", {
                 color: "red",
                 customMedia: {
                     color: "blue",

@@ -1,29 +1,25 @@
+import splat from "./splat";
+import formatDeclarations from "./formatDeclarations";
 import defineProperties from "./defineProperties";
 
-import splat from "./splat";
+export default class Renderer {
 
-import formatDeclarations from "./formatDeclarations";
-
-export default class Backend {
-
-    constructor() {
+    constructor(backend) {
         this._spec = 0;
         defineProperties(this, {
             _specs: Object.create(null),
+            _backend: backend,
         });
     }
 
-    _render(selectors) {
-        var currentSpec = -1;
-        var add = (rule) => this.addRule(rule);
+    render(selectors) {
+        let currentSpec = -1;
 
         return splat(selectors).map((selector) => {
-            var spec = -1;
+            let spec = -1;
+            const specs = this._specs[selector.id] || (this._specs[selector.id] = []);
 
-            var specs = this._specs[selector.id] || (this._specs[selector.id] = []);
-
-            var i, l;
-            for (i = 0, l = specs.length; i < l; i++) {
+            for (let i = 0; i < specs.length; i++) {
                 if (specs[i] > currentSpec) {
                     spec = specs[i];
                     break;
@@ -32,8 +28,8 @@ export default class Backend {
 
             if (spec < 0) {
                 formatDeclarations("." + selector.class + "__" + this._spec,
-                                   selector.declarations,
-                                   add);
+                                    selector.declarations,
+                                    this._backend);
                 specs.push(this._spec);
                 spec = this._spec;
                 this._spec += 1;
@@ -43,10 +39,6 @@ export default class Backend {
 
             return selector.class + "__" + spec;
         }).join(" ");
-    }
-
-    addRule() {
-        // To override
     }
 
 }
