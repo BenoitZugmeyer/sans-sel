@@ -9,6 +9,7 @@ rules:
     no-unused-expressions: [2]
     prefer-arrow-callback: error
     object-shorthand: error
+    prefer-template: error
 
 globals:
     __DEV__: false

@@ -13,7 +13,8 @@ function applyTransforms(transforms, declarations, transformCache, result) {
         if (property in transforms) {
             var transform = transforms[property];
             var isFunction = typeof transform === "function";
-            var key = property + (isFunction ? ":" + hash(value) : "");
+            var key = property;
+            if (isFunction) key += `:${hash(value)}`;
 
             if (!owns(transformCache, key)) {
                 transformCache[key] = merge({}, isFunction ? transform(value) : transform);

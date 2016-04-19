@@ -34,7 +34,7 @@ describe("applyTransforms", () => {
             {
                 display(v) {
                     if (v === "flex") {
-                        v = "-webkit-" + v;
+                        v = `-webkit-${v}`;
                     }
                     return {
                         display: v,
@@ -121,7 +121,7 @@ describe("applyTransforms", () => {
             {
                 display(v) {
                     if (v === "flex") {
-                        v = "-webkit-" + v;
+                        v = `-webkit-${v}`;
                     }
                     return {
                         display: v,

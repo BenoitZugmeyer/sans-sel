@@ -191,7 +191,7 @@ describe("sansSel", () => {
         it("should apply transforms", () => {
             ss.addTransform("display", (v) => {
                 if (v === "flex") {
-                    v = "-webkit-" + v;
+                    v = `-webkit-${v}`;
                 }
                 return {
                     display: v,

@@ -20,7 +20,7 @@ export default function createRenderer(backend) {
             }
 
             if (ruleSpec < 0) {
-                formatDeclarations("." + rule.class + "__" + globalSpec,
+                formatDeclarations(`.${rule.class}__${globalSpec}`,
                                     rule.declarations,
                                     backend);
                 ruleSpecs.push(globalSpec);
@@ -30,7 +30,7 @@ export default function createRenderer(backend) {
 
             currentSpec = ruleSpec;
 
-            return rule.class + "__" + ruleSpec;
+            return `${rule.class}__${ruleSpec}`;
         }).join(" ");
 
         return {
