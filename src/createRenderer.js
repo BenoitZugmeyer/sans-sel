@@ -34,7 +34,7 @@ export default function createRenderer(backend) {
         }).join(" ");
 
         return {
-            toString: function () {
+            toString () {
                 return className;
             },
             _rules: rules,

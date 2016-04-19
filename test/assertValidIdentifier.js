@@ -1,8 +1,8 @@
 import assertValidIdentifier from "../src/assertValidIdentifier";
 
-describe("assertValidIdentifier", function () {
+describe("assertValidIdentifier", () => {
 
-    it("should work for simple strings", function () {
+    it("should work for simple strings", () => {
         assertValidIdentifier.bind(null, "foo").should.not.throw();
         assertValidIdentifier.bind(null, "bar-foo").should.not.throw();
         assertValidIdentifier.bind(null, "foo5").should.not.throw();
@@ -10,7 +10,7 @@ describe("assertValidIdentifier", function () {
         assertValidIdentifier.bind(null, "f").should.not.throw();
     });
 
-    it("should fail if the identifier is invalid", function () {
+    it("should fail if the identifier is invalid", () => {
         assertValidIdentifier.bind(null, "-foo").should.throw();
         assertValidIdentifier.bind(null, "bar-").should.throw();
         assertValidIdentifier.bind(null, "5foo").should.throw();

@@ -1,6 +1,6 @@
 import formatDeclarations from "../src/formatDeclarations";
 
-describe("formatDeclarations", function () {
+describe("formatDeclarations", () => {
 
     function collectRules() {
         function result(rule) {
@@ -10,7 +10,7 @@ describe("formatDeclarations", function () {
         return result;
     }
 
-    it("should iterate over each rule of a declaration", function () {
+    it("should iterate over each rule of a declaration", () => {
         var declaration = {
             color: "red",
             background: "yellow",
@@ -21,7 +21,7 @@ describe("formatDeclarations", function () {
         c.rules.should.eql([".selector{color:red;background:yellow;}"]);
     });
 
-    it("should add a media query if needed", function () {
+    it("should add a media query if needed", () => {
         var declaration = {
             color: "red",
             background: "yellow",
@@ -32,14 +32,14 @@ describe("formatDeclarations", function () {
         c.rules.should.eql(["@media foo{.selector{color:red;background:yellow;}}"]);
     });
 
-    it("should ignore empty declarations", function () {
+    it("should ignore empty declarations", () => {
         var declaration = {};
         var c = collectRules();
         formatDeclarations(".selector", declaration, c, "@media foo");
         c.rules.should.eql([]);
     });
 
-    it("should raise more rules for sub rules", function () {
+    it("should raise more rules for sub rules", () => {
         var declarations = {
             background: "red",
             hover: {
@@ -55,7 +55,7 @@ describe("formatDeclarations", function () {
         ]);
     });
 
-    it("should raise more rules for media", function () {
+    it("should raise more rules for media", () => {
         var declarations = {
             background: "red",
             "media screen": {

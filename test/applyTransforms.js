@@ -1,9 +1,9 @@
 import should from "should";
 import applyTransforms from "../src/applyTransforms";
 
-describe("applyTransforms", function () {
+describe("applyTransforms", () => {
 
-    it("exists", function () {
+    it("exists", () => {
         applyTransforms.should.be.a.Function();
     });
 
@@ -12,10 +12,10 @@ describe("applyTransforms", function () {
         return should(result);
     }
 
-    it("should replace a simple value", function () {
+    it("should replace a simple value", () => {
         apply(
             {
-                foo: function (v) {
+                foo(v) {
                     return {
                         bar: v,
                     };
@@ -29,10 +29,10 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should memoize transform results", function () {
+    it("should memoize transform results", () => {
         apply(
             {
-                display: function (v) {
+                display(v) {
                     if (v === "flex") {
                         v = "-webkit-" + v;
                     }
@@ -49,10 +49,10 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should be able to add more rules", function () {
+    it("should be able to add more rules", () => {
         apply(
             {
-                boxSizing: function (v) {
+                boxSizing: (v) => {
                     return {
                         boxSizing: v,
                         MozBoxSizing: v,
@@ -68,10 +68,10 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should be able to add more pseudo selectors", function () {
+    it("should be able to add more pseudo selectors", () => {
         apply(
             {
-                custom: function () {
+                custom() {
                     return {
                         textDecoration: "none",
                         hover: {
@@ -95,10 +95,10 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should be able to add more media queries", function () {
+    it("should be able to add more media queries", () => {
         apply(
             {
-                customMediaQuery: function (v) {
+                customMediaQuery(v) {
                     return {
                         "media foo": v,
                     };
@@ -116,10 +116,10 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should be able to make another transform pass", function () {
+    it("should be able to make another transform pass", () => {
         apply(
             {
-                display: function (v) {
+                display(v) {
                     if (v === "flex") {
                         v = "-webkit-" + v;
                     }
@@ -128,7 +128,7 @@ describe("applyTransforms", function () {
                     };
                 },
 
-                custom: function () {
+                custom() {
                     return {
                         display: "flex",
                         textDecoration: "none",
@@ -144,10 +144,10 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should recurse on sub properties too", function () {
+    it("should recurse on sub properties too", () => {
         apply(
             {
-                custom: function () {
+                custom() {
                     return {
                         textDecoration: "none",
                     };
@@ -165,11 +165,11 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should memoize the results", function () {
+    it("should memoize the results", () => {
         var called = 0;
         apply(
             {
-                custom: function () {
+                custom() {
                     called++;
                     return {
                         textDecoration: "none",
@@ -192,7 +192,7 @@ describe("applyTransforms", function () {
         called.should.be.equal(1);
     });
 
-    it("should support transforms with plain objects", function () {
+    it("should support transforms with plain objects", () => {
         apply(
             {
                 custom: {
@@ -207,7 +207,7 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should not recurse when a transform returns the same property", function () {
+    it("should not recurse when a transform returns the same property", () => {
         apply(
             {
                 a: {
@@ -222,7 +222,7 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should not affect transformed properties to the result", function () {
+    it("should not affect transformed properties to the result", () => {
         apply(
             {
                 a: {
@@ -237,7 +237,7 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should not affect transformed properties to the result even inside a transform", function () {
+    it("should not affect transformed properties to the result even inside a transform", () => {
         apply(
             {
                 b: {
@@ -256,7 +256,7 @@ describe("applyTransforms", function () {
         });
     });
 
-    it("should support transforms from inherited objects", function () {
+    it("should support transforms from inherited objects", () => {
         var transformsBase = {
             foo: {
                 color: "red",
