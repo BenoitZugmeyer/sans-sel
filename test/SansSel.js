@@ -8,9 +8,10 @@ describe("SansSel", function () {
         SansSel.should.be.a.Function();
     });
 
-    // it("should throw if invoked with something other than an object", function () {
-    //     (function () { new SansSel([]); }).should.throw("options should be a plain object");
-    // });
+    it("should throw if invoked with bad options", function () {
+        (function () { new SansSel({ name: 1 }); }).should.throw("The 'name' option should be a string");
+        (function () { new SansSel({ backend: 1 }); }).should.throw("The 'backend' option should be a function");
+    });
 
     var ss;
     let backend;
@@ -30,11 +31,11 @@ describe("SansSel", function () {
         });
 
         it("should raise if no name is given", function () {
-            ss.addRule.bind(ss).should.throw("The \"name\" argument should be a string");
+            ss.addRule.bind(ss).should.throw("The 'name' argument should be a string");
         });
 
         it("should raise if no declaration is given", function () {
-            ss.addRule.bind(ss, "foo").should.throw("The \"declaration\" argument should be a plain object");
+            ss.addRule.bind(ss, "foo").should.throw("The 'declaration' argument should be a plain object");
         });
 
         it("should raise if an already existing name is given", function () {

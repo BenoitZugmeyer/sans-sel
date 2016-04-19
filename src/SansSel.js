@@ -32,9 +32,29 @@ function get(sansSel, names, result) {
     return result;
 }
 
+function setAll(sansSel, method, set) {
+    if (__DEV__) {
+        if (!set || typeof set !== "object") {
+            throw new Error("The 'set' argument should be an object");
+        }
+    }
+
+    for (let name in set) sansSel[method](name, set[name]);
+    return sansSel;
+}
+
 export default class SansSel {
 
     constructor({ name="", backend=null, _renderer=null, _styles=null, _transforms=null }={}) {
+        if (__DEV__) {
+            if (typeof name !== "string") {
+                throw new Error("The 'name' option should be a string");
+            }
+
+            if (backend !== null && typeof backend !== "function") {
+                throw new Error("The 'backend' option should be a function");
+            }
+        }
         defineProperties(this, {
             name,
             _renderer: _renderer || new Renderer(backend || createDOMBackend()),
@@ -50,7 +70,7 @@ export default class SansSel {
             assertValidIdentifier(name);
 
             if (typeof name !== "string") {
-                throw new Error("The \"name\" argument should be a string");
+                throw new Error("The 'name' argument should be a string");
             }
         }
 
@@ -71,6 +91,14 @@ export default class SansSel {
             if (typeof name !== "string") {
                 throw new Error("The 'name' argument should be a string");
             }
+
+            if (!definition || (typeof definition !== "object" && typeof definition !== "function")) {
+                throw new Error("The 'definition' argument should be an object or a function");
+            }
+
+            if (owns(this._transforms, name)) {
+                throw new Error(`The transform ${name} already exists`);
+            }
         }
 
         this._transforms[name] = definition;
@@ -78,21 +106,20 @@ export default class SansSel {
     }
 
     addTransforms(set) {
-        for (let name in set) this.addTransform(name, set[name]);
-        return this;
+        return setAll(this, "addTransform", set);
     }
 
     addRule(name, declarations) {
 
         if (__DEV__) {
             if (typeof name !== "string") {
-                throw new Error("The \"name\" argument should be a string");
+                throw new Error("The 'name' argument should be a string");
             }
 
             assertValidIdentifier(name);
 
             if (!isPlainObject(declarations)) {
-                throw new Error("The \"declaration\" argument should be a plain object");
+                throw new Error("The 'declaration' argument should be a plain object");
             }
 
             if (owns(this._styles, name)) {
@@ -117,8 +144,7 @@ export default class SansSel {
     }
 
     addRules(set) {
-        for (let name in set) this.addRule(name, set[name]);
-        return this;
+        return setAll(this, "addRule", set);
     }
 
     getRules() {
