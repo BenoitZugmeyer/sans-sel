@@ -1,12 +1,12 @@
 extends: eslint:recommended
 
 rules:
-    indent: [2, 4]
-    linebreak-style: [2, unix]
-    quotes: [2, double]
-    semi: [2, always]
-    comma-dangle: [2, always-multiline]
-    no-unused-expressions: [2]
+    indent: [error, 4]
+    linebreak-style: [error, unix]
+    quotes: [error, double]
+    semi: [error, always]
+    comma-dangle: [error, always-multiline]
+    no-unused-expressions: error
     prefer-arrow-callback: error
     object-shorthand: error
     prefer-template: error
