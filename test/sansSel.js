@@ -1,3 +1,4 @@
+import should from "should";
 import sansSel from "../src/sansSel";
 import createTestBackend from "./createTestBackend";
 
@@ -187,7 +188,11 @@ describe("sansSel", () => {
 
     });
 
-    describe("transforms", () => {
+    describe("addTransform", () => {
+        it("should exist", () => {
+            should(ss.addTransform).be.a.Function();
+        });
+
         it("should apply transforms", () => {
             ss.addTransform("display", (v) => {
                 if (v === "flex") {
@@ -230,6 +235,28 @@ describe("sansSel", () => {
                 ".__foo__0{color:red;}",
                 "@media foo{.__foo__0{color:blue;}}",
                 "@media foo{.__foo__0:hover{color:yellow;}}",
+            ]);
+        });
+    });
+
+    describe("addTransforms", () => {
+        it("should exist", () => {
+            should(ss.addTransforms).be.a.Function();
+        });
+
+        it("should apply multiple transforms", () => {
+            ss.addTransforms({
+                blue: { color: "blue" },
+                blueBackground () { return { backgroundColor: "blue" }; },
+            });
+            ss.addRule("foo", {
+                blue: true,
+                blueBackground: true,
+            });
+            ss("foo");
+
+            backend.rules.should.eql([
+                ".__foo__0{color:blue;background-Color:blue;}",
             ]);
         });
     });
