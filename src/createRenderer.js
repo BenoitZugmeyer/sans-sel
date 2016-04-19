@@ -2,13 +2,13 @@ import splat from "./splat";
 import formatDeclarations from "./formatDeclarations";
 
 export default function createRenderer(backend) {
-    var globalSpec = 0;
-    var specs = Object.create(null);
+    let globalSpec = 0;
+    const specs = Object.create(null);
 
     return function render(rules) {
         let currentSpec = -1;
 
-        let className = splat(rules).map((rule) => {
+        const className = splat(rules).map((rule) => {
             let ruleSpec = -1;
             const ruleSpecs = specs[rule.id] || (specs[rule.id] = []);
 

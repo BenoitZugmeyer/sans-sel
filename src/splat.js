@@ -1,7 +1,6 @@
 function addRules(rules, list, added) {
-    var i;
-    for (i = rules.length - 1; i >= 0; i--) {
-        var rule = rules[i];
+    for (let i = rules.length - 1; i >= 0; i--) {
+        const rule = rules[i];
         if (rule) {
             if (typeof rule.length === "number") {
                 addRules(rule, list, added);
@@ -18,7 +17,7 @@ function addRules(rules, list, added) {
 }
 
 export default function splat() {
-    var rules = [];
+    const rules = [];
     addRules(arguments, rules, {});
     return rules;
 }

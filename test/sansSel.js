@@ -12,7 +12,7 @@ describe("sansSel", () => {
         (function () { sansSel({ backend: 1 }); }).should.throw("The 'backend' option should be a function");
     });
 
-    var ss;
+    let ss;
     let backend;
     beforeEach(() => {
         backend = createTestBackend();
@@ -125,7 +125,7 @@ describe("sansSel", () => {
                 foo: { color: "red" },
                 bar: { color: "blue" },
             });
-            var renderResult = ss("foo");
+            const renderResult = ss("foo");
             ss(renderResult, "bar").toString().should.eql("__foo__0 __bar__1");
         });
     });
@@ -141,19 +141,19 @@ describe("sansSel", () => {
         });
 
         it("should prefix all classes by the name", () => {
-            var ns = ss.namespace("foo");
+            const ns = ss.namespace("foo");
             ns.addRule("style", {});
             ns("style").toString().should.equal("foo__style__0");
         });
 
         it("should concatenate prefixes", () => {
-            var ns = ss.namespace("foo").namespace("bar");
+            const ns = ss.namespace("foo").namespace("bar");
             ns.addRule("style", {});
             ns("style").toString().should.equal("foo_bar__style__0");
         });
 
         it("should support own transforms", () => {
-            var ns = ss.namespace("foo");
+            const ns = ss.namespace("foo");
             ss.addTransform("foo", {
                 textDecoration: "underline",
             });
@@ -177,7 +177,7 @@ describe("sansSel", () => {
         it("should support style inheritance", () => {
             ss.addRule("foo", {});
             ss.addRule("bar", {});
-            var ns = ss.namespace("ns");
+            const ns = ss.namespace("ns");
             ns.addRule("bar", {});
             ns.addRule("baz", {
                 inherit: ["foo", "bar"],

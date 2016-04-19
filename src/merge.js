@@ -5,7 +5,7 @@ export default function merge(target, source, shallow) {
     if (typeof source !== "object" || !source) return target;
 
     Object.keys(source).forEach((key) => {
-        var sourceValue = source[key];
+        const sourceValue = source[key];
 
         if (sourceValue === undefined || sourceValue === null) {
             delete target[key];

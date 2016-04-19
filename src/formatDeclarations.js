@@ -2,13 +2,12 @@ import isPlainObject from "./isPlainObject";
 import formatDeclaration from "./formatDeclaration";
 
 export default function formatDeclarations(selector, declaration, cb, media) {
-    var result = "";
+    let result = "";
 
-    var subRules = [];
-    var property, value;
+    const subRules = [];
 
-    for (property in declaration) {
-        value = declaration[property];
+    for (const property in declaration) {
+        const value = declaration[property];
 
         if (isPlainObject(value)) {
             subRules.push(property);
@@ -28,10 +27,9 @@ export default function formatDeclarations(selector, declaration, cb, media) {
         cb(result);
     }
 
-    var i, l;
-    for (i = 0, l = subRules.length; i < l; i++) {
-        property = subRules[i];
-        value = declaration[property];
+    for (let i = 0; i < subRules.length; i++) {
+        const property = subRules[i];
+        const value = declaration[property];
 
         if (property.slice(0, 6) === "media ") {
             formatDeclarations(selector, value, cb, `@${property}`);

@@ -1,8 +1,8 @@
 import assertValidIdentifier from "./assertValidIdentifier";
 
-var formatDeclarationCache = Object.create(null);
+const formatDeclarationCache = Object.create(null);
 
-var unitLess = Object.create(null);
+const unitLess = Object.create(null);
 [
     "columnCount",
     "fillOpacity",
@@ -35,7 +35,7 @@ export default function formatDeclaration(property, value) {
         return value.map((v) => formatDeclaration(property, v)).reverse().join("\n");
     }
 
-    var isUnitLess = unitLess[property];
+    const isUnitLess = unitLess[property];
 
     if (property === "content") {
         value = JSON.stringify(value);

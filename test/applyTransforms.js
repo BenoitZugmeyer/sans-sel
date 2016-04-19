@@ -8,7 +8,7 @@ describe("applyTransforms", () => {
     });
 
     function apply(transforms, declarations) {
-        var result = applyTransforms(transforms, declarations, Object.create(null));
+        const result = applyTransforms(transforms, declarations, Object.create(null));
         return should(result);
     }
 
@@ -166,7 +166,7 @@ describe("applyTransforms", () => {
     });
 
     it("should memoize the results", () => {
-        var called = 0;
+        let called = 0;
         apply(
             {
                 custom() {
@@ -257,12 +257,12 @@ describe("applyTransforms", () => {
     });
 
     it("should support transforms from inherited objects", () => {
-        var transformsBase = {
+        const transformsBase = {
             foo: {
                 color: "red",
             },
         };
-        var transforms = Object.create(transformsBase);
+        const transforms = Object.create(transformsBase);
         transforms.bar = {
             foo: true,
             background: "yellow",

@@ -5,7 +5,7 @@ import applyTransforms from "./applyTransforms";
 import assertValidIdentifier from "./assertValidIdentifier";
 import createRenderer from "./createRenderer";
 
-var globalId = 0;
+let globalId = 0;
 
 export default function sansSel({ name="", backend=null, _renderer=null, _styles=null, _transforms=null }={}) {
 
@@ -43,18 +43,18 @@ export default function sansSel({ name="", backend=null, _renderer=null, _styles
                 }
             }
 
-            for (let name in set) fn(name, set[name]);
+            for (const name in set) fn(name, set[name]);
 
             return sansSelInstance;
         };
     }
 
     function getRulesRec(names, result) {
-        var i, l;
+        let i, l;
         for (i = 0, l = names.length; i < l; i++) {
-            var name = names[i];
+            const name = names[i];
             if (name) {
-                var type = typeof name;
+                const type = typeof name;
                 if (type === "object" && name) {
                     if (name._rules) {
                         getRulesRec(name._rules, result);
@@ -142,7 +142,7 @@ export default function sansSel({ name="", backend=null, _renderer=null, _styles
             }
         }
 
-        let directParents =
+        const directParents =
             declarations.inherit ?
                 Array.isArray(declarations.inherit) ?
                     declarations.inherit :

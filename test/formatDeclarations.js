@@ -11,43 +11,43 @@ describe("formatDeclarations", () => {
     }
 
     it("should iterate over each rule of a declaration", () => {
-        var declaration = {
+        const declaration = {
             color: "red",
             background: "yellow",
         };
 
-        var c = collectRules();
+        const c = collectRules();
         formatDeclarations(".selector", declaration, c);
         c.rules.should.eql([".selector{color:red;background:yellow;}"]);
     });
 
     it("should add a media query if needed", () => {
-        var declaration = {
+        const declaration = {
             color: "red",
             background: "yellow",
         };
 
-        var c = collectRules();
+        const c = collectRules();
         formatDeclarations(".selector", declaration, c, "@media foo");
         c.rules.should.eql(["@media foo{.selector{color:red;background:yellow;}}"]);
     });
 
     it("should ignore empty declarations", () => {
-        var declaration = {};
-        var c = collectRules();
+        const declaration = {};
+        const c = collectRules();
         formatDeclarations(".selector", declaration, c, "@media foo");
         c.rules.should.eql([]);
     });
 
     it("should raise more rules for sub rules", () => {
-        var declarations = {
+        const declarations = {
             background: "red",
             hover: {
                 background: "yellow",
             },
         };
 
-        var c = collectRules();
+        const c = collectRules();
         formatDeclarations(".selector", declarations, c);
         c.rules.should.eql([
             ".selector{background:red;}",
@@ -56,14 +56,14 @@ describe("formatDeclarations", () => {
     });
 
     it("should raise more rules for media", () => {
-        var declarations = {
+        const declarations = {
             background: "red",
             "media screen": {
                 background: "yellow",
             },
         };
 
-        var c = collectRules();
+        const c = collectRules();
         formatDeclarations(".selector", declarations, c);
         c.rules.should.eql([
             ".selector{background:red;}",

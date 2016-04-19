@@ -2,23 +2,23 @@ import merge from "./merge";
 import isPlainObject from "./isPlainObject";
 import owns from "./owns";
 
-var hash = JSON.stringify;
+const hash = JSON.stringify;
 
 function applyTransforms(transforms, declarations, transformCache, result) {
-    var property;
+    let property;
 
     for (property in declarations) {
-        var value = declarations[property];
+        const value = declarations[property];
 
         if (property in transforms) {
-            var transform = transforms[property];
-            var isFunction = typeof transform === "function";
-            var key = property;
+            const transform = transforms[property];
+            const isFunction = typeof transform === "function";
+            let key = property;
             if (isFunction) key += `:${hash(value)}`;
 
             if (!owns(transformCache, key)) {
                 transformCache[key] = merge({}, isFunction ? transform(value) : transform);
-                var transformResult = {};
+                const transformResult = {};
                 applyTransforms(transforms,
                                 transformCache[key],
                                 transformCache,
@@ -43,7 +43,7 @@ function applyTransforms(transforms, declarations, transformCache, result) {
 }
 
 export default function (transforms, declarations, transformCache) {
-    var result = {};
+    const result = {};
     applyTransforms(transforms, declarations, transformCache, result);
     return result;
 }

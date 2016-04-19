@@ -10,6 +10,8 @@ rules:
     prefer-arrow-callback: error
     object-shorthand: error
     prefer-template: error
+    prefer-const: error
+    no-var: error
 
 globals:
     __DEV__: false

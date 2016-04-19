@@ -4,17 +4,17 @@ import merge from "../src/merge";
 describe("merge", () => {
 
     it("should merge declarations added by add", () => {
-        var s = merge({ foo: "bar" }, { bar: "baz", foo: "biz" });
+        const s = merge({ foo: "bar" }, { bar: "baz", foo: "biz" });
         s.should.eql({ bar: "baz", foo: "biz" });
     });
 
     it("should recursively merge objects in declarations", () => {
-        var s = merge({ foo: { biz: "buz" } }, { foo: { baz: "biz" } });
+        const s = merge({ foo: { biz: "buz" } }, { foo: { baz: "biz" } });
         s.should.eql({ foo: { biz: "buz", baz: "biz" } });
     });
 
     it("should not merge arrays in declarations", () => {
-        var s = merge({ foo: [ "buz" ] }, { foo: [ "baz" ] });
+        const s = merge({ foo: [ "buz" ] }, { foo: [ "baz" ] });
         s.should.eql({ foo: [ "baz" ] });
     });
 
