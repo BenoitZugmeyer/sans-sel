@@ -14,11 +14,17 @@
     "should": "^8.2.2"
   },
   "scripts": {
+    "prepublish": "npm run dist && npm run dev",
     "dist": "mkdir -p dist && rollup -c | uglifyjs -c -m -d '__DEV__=false' > dist/sansSel.min.js",
     "dev": "mkdir -p dist && rollup -c --intro 'var __DEV__ = true;' > dist/sansSel.js",
     "coverage": "NODE_ENV=test istanbul cover $(which _mocha)",
     "test": "NODE_ENV=test mocha --compilers js:babel-register --require test/setDev.js",
     "lint": "eslint ."
   },
-  "main": "./src/index"
+  "main": "./dist/sansSel",
+  "files": [
+      "dist/sansSel.js",
+      "dist/sansSel.min.js",
+      "src/*"
+  ]
 }
