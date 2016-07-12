@@ -1,6 +1,7 @@
 {
   "name": "sans-sel",
-  "version": "1.0.0dev",
+  "version": "1.0.0-dev.0",
+  "license": "ISC",
   "author": "Benoît Zugmeyer",
   "description": "Write your components styles in JavaScript, without selectors.",
   "repository": "https://github.com/BenoitZugmeyer/sans-sel",
