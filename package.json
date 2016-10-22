@@ -11,6 +11,7 @@
     "babel-register": "^6.6.0",
     "eslint": "^2.2.0",
     "mocha": "^2.4.5",
+    "rollup": "^0.36.3",
     "rollup-plugin-babel": "^2.4.0",
     "should": "^8.2.2"
   },
@@ -24,8 +25,8 @@
   },
   "main": "./dist/sansSel",
   "files": [
-      "dist/sansSel.js",
-      "dist/sansSel.min.js",
-      "src/*"
+    "dist/sansSel.js",
+    "dist/sansSel.min.js",
+    "src/*"
   ]
 }
