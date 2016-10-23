@@ -12,7 +12,7 @@
 
             var ss = sansSel();
 
-            ss.add({
+            ss.addRules({
                 app: {
                     background: '#eee',
                     fontFamily: 'sans-serif',
@@ -55,13 +55,13 @@
             });
 
             var app = document.createElement('div');
-            app.className = ss.render('app');
+            app.className = ss('app');
 
             function createLink(label, main) {
                 var link = document.createElement('a');
                 link.setAttribute('href', '#');
                 link.textContent = label;
-                link.className = ss.render(main ? 'mainLink' : 'link');
+                link.className = ss(main ? 'mainLink' : 'link');
                 return link;
             }
 

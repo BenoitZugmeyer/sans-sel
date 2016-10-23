@@ -1,23 +1,22 @@
-import should from "should";
-import SansSel from "../src/SansSel";
+import sansSel from "../src/sansSel";
 import createTestBackend from "./createTestBackend";
 
-describe("SansSel", function () {
+describe("sansSel", function () {
 
     it("should be a function", function () {
-        SansSel.should.be.a.Function();
+        sansSel.should.be.a.Function();
     });
 
     it("should throw if invoked with bad options", function () {
-        (function () { new SansSel({ name: 1 }); }).should.throw("The 'name' option should be a string");
-        (function () { new SansSel({ backend: 1 }); }).should.throw("The 'backend' option should be a function");
+        (function () { sansSel({ name: 1 }); }).should.throw("The 'name' option should be a string");
+        (function () { sansSel({ backend: 1 }); }).should.throw("The 'backend' option should be a function");
     });
 
     var ss;
     let backend;
     beforeEach(function () {
         backend = createTestBackend();
-        ss = new SansSel({backend});
+        ss = sansSel({backend});
     });
 
     describe("addRule", function () {
@@ -45,23 +44,11 @@ describe("SansSel", function () {
 
     });
 
-    describe("addRules", () => {
-        it("should add all styles", function () {
-            ss.addRules({
-                foo: {},
-                bar: {},
-            });
-
-            should(ss._styles).have.property("foo");
-            should(ss._styles).have.property("bar");
-        });
-    });
-
     describe("render", function () {
 
         it("should render basic style", function () {
             ss.addRule("foo", { color: "red" });
-            ss.render("foo");
+            ss("foo");
             backend.rules.should.eql([
                 ".__foo__0{color:red;}",
             ]);
@@ -73,7 +60,7 @@ describe("SansSel", function () {
                     color: "red",
                 },
             });
-            ss.render("foo");
+            ss("foo");
             backend.rules.should.eql([
                 "@media screen{.__foo__0{color:red;}}",
             ]);
@@ -83,7 +70,7 @@ describe("SansSel", function () {
             ss.addRule("foo", {
                 border: ["blue", "red"],
             });
-            ss.render("foo");
+            ss("foo");
             backend.rules.should.eql([
                 ".__foo__0{border:red;\nborder:blue;}",
             ]);
@@ -97,7 +84,7 @@ describe("SansSel", function () {
                     bar: "baz",
                 },
             });
-            ss.render("foo");
+            ss("foo");
 
             backend.rules.should.eql([
                 ".__foo__0{foo:bar;}",
@@ -116,7 +103,7 @@ describe("SansSel", function () {
                     },
                 },
             });
-            ss.render("foo");
+            ss("foo");
             backend.rules.should.eql([
                 ".__foo__0{foo:bar;}",
                 ".__foo__0:focus{foo:baz;}",
@@ -128,11 +115,19 @@ describe("SansSel", function () {
             ss.addRule("a", { "-foobar": 1 });
             ss.addRule("b", { "foo bar": 1 });
             ss.addRule("c", { "foo:bar": 1 });
-            ss.render.bind(ss, "a").should.throw("Invalid identifier: -foobar");
-            ss.render.bind(ss, "b").should.throw("Invalid identifier: foo bar");
-            ss.render.bind(ss, "c").should.throw("Invalid identifier: foo:bar");
+            ss.bind(ss, "a").should.throw("Invalid identifier: -foobar");
+            ss.bind(ss, "b").should.throw("Invalid identifier: foo bar");
+            ss.bind(ss, "c").should.throw("Invalid identifier: foo:bar");
         });
 
+        it("should accept render results as argument", function () {
+            ss.addRules({
+                foo: { color: "red" },
+                bar: { color: "blue" },
+            });
+            var renderResult = ss("foo");
+            ss(renderResult, "bar").toString().should.eql("__foo__0 __bar__1");
+        });
     });
 
     describe("namespace", function () {
@@ -141,20 +136,20 @@ describe("SansSel", function () {
             ss.namespace.should.be.a.Function();
         });
 
-        it("should return a SansSel instance", function () {
-            ss.namespace("foo").should.be.an.instanceOf(SansSel);
+        it("should return a function", function () {
+            ss.namespace("foo").should.be.a.Function();
         });
 
         it("should prefix all classes by the name", function () {
             var ns = ss.namespace("foo");
             ns.addRule("style", {});
-            ns.render("style").should.equal("foo__style__0");
+            ns("style").toString().should.equal("foo__style__0");
         });
 
         it("should concatenate prefixes", function () {
             var ns = ss.namespace("foo").namespace("bar");
             ns.addRule("style", {});
-            ns.render("style").should.equal("foo_bar__style__0");
+            ns("style").toString().should.equal("foo_bar__style__0");
         });
 
         it("should support own transforms", function () {
@@ -169,7 +164,7 @@ describe("SansSel", function () {
             ns.addRule("baz", {
                 bar: true,
             });
-            ns.render("baz");
+            ns("baz");
             backend.rules.should.eql([
                 ".foo__baz__0{text-Decoration:underline;background:red;}",
             ]);
@@ -187,16 +182,12 @@ describe("SansSel", function () {
             ns.addRule("baz", {
                 inherit: ["foo", "bar"],
             });
-            ns.render("baz").should.be.equal("__foo__0 ns__bar__1 ns__baz__2");
+            ns("baz").toString().should.be.equal("__foo__0 ns__bar__1 ns__baz__2");
         });
 
     });
 
     describe("transforms", function () {
-        // it("should exist", function () {
-        //     should(ss.transforms).be.an.Object();
-        // });
-
         it("should apply transforms", function () {
             ss.addTransform("display", function (v) {
                 if (v === "flex") {
@@ -210,7 +201,7 @@ describe("SansSel", function () {
             ss.addRule("foo", {
                 display: "flex",
             });
-            ss.render("foo");
+            ss("foo");
 
             backend.rules.should.eql([
                 ".__foo__0{display:-webkit-flex;}",
@@ -233,7 +224,7 @@ describe("SansSel", function () {
                     },
                 },
             });
-            ss.render("foo");
+            ss("foo");
 
             backend.rules.should.eql([
                 ".__foo__0{color:red;}",
