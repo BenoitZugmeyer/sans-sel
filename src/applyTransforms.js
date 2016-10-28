@@ -13,11 +13,11 @@ function applyTransforms(transforms, declarations, transformCache, result) {
         if (property in transforms) {
             const transform = transforms[property];
             const isFunction = typeof transform === "function";
-            let key = property;
-            if (isFunction) key += `:${hash(value)}`;
+            const key = `${property}:${hash(isFunction ? value : Boolean(value))}`;
 
             if (!owns(transformCache, key)) {
-                transformCache[key] = merge({}, isFunction ? transform(value) : transform);
+                transformCache[key] = merge({}, isFunction ? transform(value) : value && transform);
+
                 const transformResult = {};
                 applyTransforms(transforms,
                                 transformCache[key],

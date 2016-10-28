@@ -278,4 +278,28 @@ describe("applyTransforms", () => {
         });
     });
 
+    it("should ignore falsy transform value", () => {
+        apply(
+            {
+                a: { foo: "bar" },
+            },
+            {
+                a: false,
+            }
+        ).eql({
+        });
+    });
+
+    it("should ignore falsy transform value returned by a function", () => {
+        apply(
+            {
+                a() { return false; },
+            },
+            {
+                a: true,
+            }
+        ).eql({
+        });
+    });
+
 });
