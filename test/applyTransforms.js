@@ -207,11 +207,28 @@ describe("applyTransforms", () => {
         });
     });
 
-    it("should not recurse when a transform returns the same property", () => {
+    it("should not recurse when a transform object contains the same property", () => {
         apply(
             {
                 a: {
                     a: "-webkit-flex",
+                },
+            },
+            {
+                a: true,
+            }
+        ).eql({
+            a: "-webkit-flex",
+        });
+    });
+
+    it("should not recurse when a transform function returns the same property", () => {
+        apply(
+            {
+                a() {
+                    return  {
+                        a: "-webkit-flex",
+                    };
                 },
             },
             {
