@@ -1,4 +1,5 @@
 import isPlainObject from "./isPlainObject";
+import uncamelcase from "./uncamelcase";
 import formatDeclaration from "./formatDeclaration";
 
 export default function formatDeclarations(selector, declaration, cb, media) {
@@ -35,7 +36,11 @@ export default function formatDeclarations(selector, declaration, cb, media) {
             formatDeclarations(selector, value, cb, `@${property}`);
         }
         else {
-            formatDeclarations(`${selector}:${property}`, value, cb, media);
+            const pseudoProperty =
+                property[0] === "$" ? `::${property.slice(1)}` :
+                property[0] !== ":" ? `:${property}` :
+                    property;
+            formatDeclarations(`${selector}${uncamelcase(pseudoProperty)}`, value, cb, media);
         }
     }
 }

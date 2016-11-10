@@ -55,6 +55,40 @@ describe("formatDeclarations", () => {
         ]);
     });
 
+    it("should camel-case pseudo-classes", () => {
+        const declarations = {
+            firstChild: {
+                background: "yellow",
+            },
+        };
+
+        const c = collectRules();
+        formatDeclarations(".selector", declarations, c);
+        c.rules.should.eql([
+            ".selector:first-Child{background:yellow;}",
+        ]);
+    });
+
+    it("should replace leading underscores by double colons for pseudo-elements", () => {
+        const declarations = {
+            background: "red",
+            $firstLetter: {
+                background: "yellow",
+            },
+            $WebkitInputPlaceholder: {
+                color: "yellow",
+            },
+        };
+
+        const c = collectRules();
+        formatDeclarations(".selector", declarations, c);
+        c.rules.should.eql([
+            ".selector{background:red;}",
+            ".selector::first-Letter{background:yellow;}",
+            ".selector::-Webkit-Input-Placeholder{color:yellow;}",
+        ]);
+    });
+
     it("should raise more rules for media", () => {
         const declarations = {
             background: "red",

@@ -1,4 +1,5 @@
 import assertValidIdentifier from "./assertValidIdentifier";
+import uncamelcase from "./uncamelcase";
 
 const formatDeclarationCache = Object.create(null);
 
@@ -45,7 +46,7 @@ export default function formatDeclaration(property, value) {
     }
 
     if (!(property in formatDeclarationCache)) {
-        formatDeclarationCache[property] = property.replace(/([A-Z])/g, "-$1");
+        formatDeclarationCache[property] = uncamelcase(property);
     }
 
     return `${formatDeclarationCache[property]}:${value};`;
