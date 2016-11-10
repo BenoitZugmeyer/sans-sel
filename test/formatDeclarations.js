@@ -92,7 +92,7 @@ describe("formatDeclarations", () => {
     it("should raise more rules for media", () => {
         const declarations = {
             background: "red",
-            "media screen": {
+            "@media screen": {
                 background: "yellow",
             },
         };

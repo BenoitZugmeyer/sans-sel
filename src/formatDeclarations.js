@@ -32,8 +32,8 @@ export default function formatDeclarations(selector, declaration, cb, media) {
         const property = subRules[i];
         const value = declaration[property];
 
-        if (property.slice(0, 6) === "media ") {
-            formatDeclarations(selector, value, cb, `@${property}`);
+        if (property[0] === "@") {
+            formatDeclarations(selector, value, cb, property);
         }
         else {
             const pseudoProperty =

@@ -57,7 +57,7 @@ describe("sansSel", () => {
 
         it("should render media query", () => {
             ss.addRule("foo", {
-                "media screen": {
+                "@media screen": {
                     color: "red",
                 },
             });
@@ -81,7 +81,7 @@ describe("sansSel", () => {
 
             ss.addRule("foo", {
                 foo: "bar",
-                "media screen": {
+                "@media screen": {
                     bar: "baz",
                 },
             });
@@ -216,7 +216,7 @@ describe("sansSel", () => {
         it("should support transformable media rules and nested pseudo selectors", () => {
             ss.addTransform("customMedia", (v) => {
                 return {
-                    "media foo": v,
+                    "@media foo": v,
                 };
             });
 
