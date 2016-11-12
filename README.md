@@ -89,7 +89,7 @@ const styles = sansSel({ backend: isomorphicBackend });
 
 Create a *sans-sel* object inheriting from the current one.
 
-The `name` is mandatory and should be unique from other namespaces created by the current *sans-sel* object. If you'll use the new object to style a component, you could use the component name as a namespace name.
+The `name` is mandatory and should be unique among other namespaces created by the current *sans-sel* object. If you'll use the new object to style a component, you could use the component name as a namespace name.
 
 It returns the newly created *sans-sel* object.
 
