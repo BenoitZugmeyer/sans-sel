@@ -1,7 +1,7 @@
 sans-sel
 ========
 
-![Travis status](https://api.travis-ci.org/BenoitZugmeyer/sans-sel.svg?branch=master)
+[![Build status](https://travis-ci.org/BenoitZugmeyer/sans-sel.svg?branch=master)](https://travis-ci.org/BenoitZugmeyer/sans-sel)
 
 *sans-sel* is a small but powerful library to help you write modular, reusable and maintainable CSS in JavaScript.
 
