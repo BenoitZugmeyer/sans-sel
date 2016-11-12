@@ -1,4 +1,4 @@
-import formatDeclarations from "../src/formatDeclarations";
+import formatDeclarations from "../formatDeclarations";
 
 describe("formatDeclarations", () => {
 
@@ -18,7 +18,7 @@ describe("formatDeclarations", () => {
 
         const c = collectRules();
         formatDeclarations(".selector", declaration, c);
-        c.rules.should.eql([".selector{color:red;background:yellow;}"]);
+        expect(c.rules).toEqual([".selector{color:red;background:yellow;}"]);
     });
 
     it("should add a media query if needed", () => {
@@ -29,14 +29,14 @@ describe("formatDeclarations", () => {
 
         const c = collectRules();
         formatDeclarations(".selector", declaration, c, "@media foo");
-        c.rules.should.eql(["@media foo{.selector{color:red;background:yellow;}}"]);
+        expect(c.rules).toEqual(["@media foo{.selector{color:red;background:yellow;}}"]);
     });
 
     it("should ignore empty declarations", () => {
         const declaration = {};
         const c = collectRules();
         formatDeclarations(".selector", declaration, c, "@media foo");
-        c.rules.should.eql([]);
+        expect(c.rules).toEqual([]);
     });
 
     it("should raise more rules for sub rules", () => {
@@ -49,7 +49,7 @@ describe("formatDeclarations", () => {
 
         const c = collectRules();
         formatDeclarations(".selector", declarations, c);
-        c.rules.should.eql([
+        expect(c.rules).toEqual([
             ".selector{background:red;}",
             ".selector:hover{background:yellow;}",
         ]);
@@ -64,7 +64,7 @@ describe("formatDeclarations", () => {
 
         const c = collectRules();
         formatDeclarations(".selector", declarations, c);
-        c.rules.should.eql([
+        expect(c.rules).toEqual([
             ".selector:first-Child{background:yellow;}",
         ]);
     });
@@ -82,7 +82,7 @@ describe("formatDeclarations", () => {
 
         const c = collectRules();
         formatDeclarations(".selector", declarations, c);
-        c.rules.should.eql([
+        expect(c.rules).toEqual([
             ".selector{background:red;}",
             ".selector::first-Letter{background:yellow;}",
             ".selector::-Webkit-Input-Placeholder{color:yellow;}",
@@ -99,7 +99,7 @@ describe("formatDeclarations", () => {
 
         const c = collectRules();
         formatDeclarations(".selector", declarations, c);
-        c.rules.should.eql([
+        expect(c.rules).toEqual([
             ".selector{background:red;}",
             "@media screen{.selector{background:yellow;}}",
         ]);

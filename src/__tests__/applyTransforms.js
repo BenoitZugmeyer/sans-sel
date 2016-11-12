@@ -1,15 +1,14 @@
-import should from "should";
-import applyTransforms from "../src/applyTransforms";
+import applyTransforms from "../applyTransforms";
 
 describe("applyTransforms", () => {
 
     it("exists", () => {
-        applyTransforms.should.be.a.Function();
+        expect(typeof applyTransforms).toBe("function");
     });
 
     function apply(transforms, declarations) {
         const result = applyTransforms(transforms, declarations, Object.create(null));
-        return should(result);
+        return expect(result);
     }
 
     it("should replace a simple value", () => {
@@ -24,7 +23,7 @@ describe("applyTransforms", () => {
             {
                 foo: "flex",
             }
-        ).eql({
+        ).toEqual({
             bar: "flex",
         });
     });
@@ -44,7 +43,7 @@ describe("applyTransforms", () => {
             {
                 display: "flex",
             }
-        ).eql({
+        ).toEqual({
             display: "-webkit-flex",
         });
     });
@@ -62,7 +61,7 @@ describe("applyTransforms", () => {
             {
                 boxSizing: "border-box",
             }
-        ).eql({
+        ).toEqual({
             boxSizing: "border-box",
             MozBoxSizing: "border-box",
         });
@@ -86,7 +85,7 @@ describe("applyTransforms", () => {
                     color: "blue",
                 },
             }
-        ).eql({
+        ).toEqual({
             textDecoration: "none",
             hover: {
                 textDecoration: "underline",
@@ -109,7 +108,7 @@ describe("applyTransforms", () => {
                     width: "100px",
                 },
             }
-        ).eql({
+        ).toEqual({
             "media foo": {
                 width: "100px",
             },
@@ -138,7 +137,7 @@ describe("applyTransforms", () => {
             {
                 custom: true,
             }
-        ).eql({
+        ).toEqual({
             display: "-webkit-flex",
             textDecoration: "none",
         });
@@ -158,7 +157,7 @@ describe("applyTransforms", () => {
                     custom: true,
                 },
             }
-        ).eql({
+        ).toEqual({
             hover: {
                 textDecoration: "none",
             },
@@ -182,14 +181,14 @@ describe("applyTransforms", () => {
                     custom: true,
                 },
             }
-        ).eql({
+        ).toEqual({
             textDecoration: "none",
             hover: {
                 textDecoration: "none",
             },
         });
 
-        called.should.be.equal(1);
+        expect(called).toBe(1);
     });
 
     it("should support transforms with plain objects", () => {
@@ -202,7 +201,7 @@ describe("applyTransforms", () => {
             {
                 custom: true,
             }
-        ).eql({
+        ).toEqual({
             textDecoration: "none",
         });
     });
@@ -217,7 +216,7 @@ describe("applyTransforms", () => {
             {
                 a: true,
             }
-        ).eql({
+        ).toEqual({
             a: "-webkit-flex",
         });
     });
@@ -234,7 +233,7 @@ describe("applyTransforms", () => {
             {
                 a: true,
             }
-        ).eql({
+        ).toEqual({
             a: "-webkit-flex",
         });
     });
@@ -249,7 +248,7 @@ describe("applyTransforms", () => {
             {
                 a: true,
             }
-        ).eql({
+        ).toEqual({
             b: "32",
         });
     });
@@ -268,7 +267,7 @@ describe("applyTransforms", () => {
             {
                 a: true,
             }
-        ).eql({
+        ).toEqual({
             c: "-webkit-flex",
         });
     });
@@ -289,7 +288,7 @@ describe("applyTransforms", () => {
             {
                 bar: true,
             }
-        ).eql({
+        ).toEqual({
             color: "red",
             background: "yellow",
         });
@@ -303,7 +302,7 @@ describe("applyTransforms", () => {
             {
                 a: false,
             }
-        ).eql({
+        ).toEqual({
         });
     });
 
@@ -315,7 +314,7 @@ describe("applyTransforms", () => {
             {
                 a: true,
             }
-        ).eql({
+        ).toEqual({
         });
     });
 

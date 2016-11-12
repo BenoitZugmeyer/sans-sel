@@ -10,17 +10,15 @@
     "babel-preset-es2015-rollup": "^1.1.1",
     "babel-register": "^6.6.0",
     "eslint": "^3.8.1",
-    "mocha": "^2.4.5",
+    "jest": "^17.0.0",
     "rollup": "^0.36.3",
-    "rollup-plugin-babel": "^2.4.0",
-    "should": "^8.2.2"
+    "rollup-plugin-babel": "^2.4.0"
   },
   "scripts": {
     "prepublish": "npm run dist && npm run dev",
     "dist": "mkdir -p dist && rollup -c | uglifyjs -c -m -d '__DEV__=false' > dist/sansSel.min.js",
     "dev": "mkdir -p dist && rollup -c --intro 'var __DEV__ = true;' > dist/sansSel.js",
-    "coverage": "NODE_ENV=test istanbul cover $(which _mocha)",
-    "test": "NODE_ENV=test mocha --compilers js:babel-register --require test/setDev.js",
+    "test": "jest",
     "lint": "eslint ."
   },
   "main": "./dist/sansSel",
@@ -28,5 +26,14 @@
     "dist/sansSel.js",
     "dist/sansSel.min.js",
     "src/*"
-  ]
+  ],
+  "jest": {
+    "globals": {
+      "__DEV__": true
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/_\\w+\\.js"
+    ]
+  }
 }

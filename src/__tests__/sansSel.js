@@ -1,16 +1,15 @@
-import should from "should";
-import sansSel from "../src/sansSel";
-import createTestBackend from "./createTestBackend";
+import sansSel from "../sansSel";
+import createTestBackend from "./_createTestBackend";
 
 describe("sansSel", () => {
 
     it("should be a function", () => {
-        sansSel.should.be.a.Function();
+        expect(typeof sansSel).toBe("function");
     });
 
     it("should throw if invoked with bad options", () => {
-        (function () { sansSel({ name: 1 }); }).should.throw("The 'name' option should be a string");
-        (function () { sansSel({ backend: 1 }); }).should.throw("The 'backend' option should be a function");
+        expect(function () { sansSel({ name: 1 }); }).toThrow("The 'name' option should be a string");
+        expect(function () { sansSel({ backend: 1 }); }).toThrow("The 'backend' option should be a function");
     });
 
     let ss;
@@ -23,24 +22,24 @@ describe("sansSel", () => {
     describe("addRule", () => {
 
         it("should exist", () => {
-            ss.addRule.should.be.a.Function();
+            expect(typeof ss.addRule).toBe("function");
         });
 
         it("should raise if an invalid name is given", () => {
-            ss.addRule.bind(ss, "-a").should.throw("Invalid identifier: -a");
+            expect(ss.addRule.bind(ss, "-a")).toThrow("Invalid identifier: -a");
         });
 
         it("should raise if no name is given", () => {
-            ss.addRule.bind(ss).should.throw("The 'name' argument should be a string");
+            expect(ss.addRule.bind(ss)).toThrow("The 'name' argument should be a string");
         });
 
         it("should raise if no declaration is given", () => {
-            ss.addRule.bind(ss, "foo").should.throw("The 'declaration' argument should be a plain object");
+            expect(ss.addRule.bind(ss, "foo")).toThrow("The 'declaration' argument should be a plain object");
         });
 
         it("should raise if an already existing name is given", () => {
             ss.addRule("foo", {});
-            ss.addRule.bind(ss, "foo", {}).should.throw("A \"foo\" style already exists");
+            expect(ss.addRule.bind(ss, "foo", {})).toThrow("A \"foo\" style already exists");
         });
 
     });
@@ -50,7 +49,7 @@ describe("sansSel", () => {
         it("should render basic style", () => {
             ss.addRule("foo", { color: "red" });
             ss("foo");
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 ".__foo__0{color:red;}",
             ]);
         });
@@ -62,7 +61,7 @@ describe("sansSel", () => {
                 },
             });
             ss("foo");
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 "@media screen{.__foo__0{color:red;}}",
             ]);
         });
@@ -72,7 +71,7 @@ describe("sansSel", () => {
                 border: ["blue", "red"],
             });
             ss("foo");
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 ".__foo__0{border:red;\nborder:blue;}",
             ]);
         });
@@ -87,7 +86,7 @@ describe("sansSel", () => {
             });
             ss("foo");
 
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 ".__foo__0{foo:bar;}",
                 "@media screen{.__foo__0{bar:baz;}}",
             ]);
@@ -105,7 +104,7 @@ describe("sansSel", () => {
                 },
             });
             ss("foo");
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 ".__foo__0{foo:bar;}",
                 ".__foo__0:focus{foo:baz;}",
                 ".__foo__0:focus:hover{foo:biz;}",
@@ -116,9 +115,9 @@ describe("sansSel", () => {
             ss.addRule("a", { "-foobar": 1 });
             ss.addRule("b", { "foo bar": 1 });
             ss.addRule("c", { "foo:bar": 1 });
-            ss.bind(ss, "a").should.throw("Invalid identifier: -foobar");
-            ss.bind(ss, "b").should.throw("Invalid identifier: foo bar");
-            ss.bind(ss, "c").should.throw("Invalid identifier: foo:bar");
+            expect(ss.bind(ss, "a")).toThrow("Invalid identifier: -foobar");
+            expect(ss.bind(ss, "b")).toThrow("Invalid identifier: foo bar");
+            expect(ss.bind(ss, "c")).toThrow("Invalid identifier: foo:bar");
         });
 
         it("should accept render results as argument", () => {
@@ -127,30 +126,30 @@ describe("sansSel", () => {
                 bar: { color: "blue" },
             });
             const renderResult = ss("foo");
-            ss(renderResult, "bar").toString().should.eql("__foo__0 __bar__1");
+            expect(ss(renderResult, "bar").toString()).toEqual("__foo__0 __bar__1");
         });
     });
 
     describe("namespace", () => {
 
         it("should exist", () => {
-            ss.namespace.should.be.a.Function();
+            expect(typeof ss.namespace).toBe("function");
         });
 
         it("should return a function", () => {
-            ss.namespace("foo").should.be.a.Function();
+            expect(typeof ss.namespace("foo")).toBe("function");
         });
 
         it("should prefix all classes by the name", () => {
             const ns = ss.namespace("foo");
             ns.addRule("style", {});
-            ns("style").toString().should.equal("foo__style__0");
+            expect(ns("style").toString()).toBe("foo__style__0");
         });
 
         it("should concatenate prefixes", () => {
             const ns = ss.namespace("foo").namespace("bar");
             ns.addRule("style", {});
-            ns("style").toString().should.equal("foo_bar__style__0");
+            expect(ns("style").toString()).toBe("foo_bar__style__0");
         });
 
         it("should support own transforms", () => {
@@ -166,13 +165,13 @@ describe("sansSel", () => {
                 bar: true,
             });
             ns("baz");
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 ".foo__baz__0{text-Decoration:underline;background:red;}",
             ]);
         });
 
         it("should return the same object if called with the same name", () => {
-            ss.namespace("foo").should.be.equal(ss.namespace("foo"));
+            expect(ss.namespace("foo")).toBe(ss.namespace("foo"));
         });
 
         it("should support style inheritance", () => {
@@ -183,14 +182,14 @@ describe("sansSel", () => {
             ns.addRule("baz", {
                 inherit: ["foo", "bar"],
             });
-            ns("baz").toString().should.be.equal("__foo__0 ns__bar__1 ns__baz__2");
+            expect(ns("baz").toString()).toBe("__foo__0 ns__bar__1 ns__baz__2");
         });
 
     });
 
     describe("addTransform", () => {
         it("should exist", () => {
-            should(ss.addTransform).be.a.Function();
+            expect(typeof ss.addTransform).toBe("function");
         });
 
         it("should apply transforms", () => {
@@ -208,7 +207,7 @@ describe("sansSel", () => {
             });
             ss("foo");
 
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 ".__foo__0{display:-webkit-flex;}",
             ]);
         });
@@ -231,7 +230,7 @@ describe("sansSel", () => {
             });
             ss("foo");
 
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 ".__foo__0{color:red;}",
                 "@media foo{.__foo__0{color:blue;}}",
                 "@media foo{.__foo__0:hover{color:yellow;}}",
@@ -241,7 +240,7 @@ describe("sansSel", () => {
 
     describe("addTransforms", () => {
         it("should exist", () => {
-            should(ss.addTransforms).be.a.Function();
+            expect(typeof ss.addTransforms).toBe("function");
         });
 
         it("should apply multiple transforms", () => {
@@ -255,7 +254,7 @@ describe("sansSel", () => {
             });
             ss("foo");
 
-            backend.rules.should.eql([
+            expect(backend.rules).toEqual([
                 ".__foo__0{color:blue;background-Color:blue;}",
             ]);
         });
