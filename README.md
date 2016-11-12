@@ -179,7 +179,7 @@ It returns the current *sans-sel* object.
 
 If the definition is a function, it will be called with the property value as argument. If the returned value is a plain object, it will replace the property in the rule declaration, otherwise it will be ignored.
 
-If the definititon is invariant, it can be supplied directly as a plain object. This object will replace the property in the rule declaration only if the property value is truthy.
+If the definition is invariant, it can be supplied directly as a plain object. This object will replace the property in the rule declaration only if the property value is truthy.
 
 The property replacement is done in-place: property order is conserved.
 
@@ -329,8 +329,8 @@ const rules = styles("foo", "bar", "baz");
 Hints
 =====
 
-Always define rules statically, for example when the JS module is executed. *sans-sel* is append
-only and won't clear unused styles, so if you add the same rules multiple times, memory will be
+Always define rules statically, for example when the JS module is executed. *sans-sel* is "append
+only" and won't clear unused styles, so if you add the same rules multiple times, memory will be
 leaked and perfs will be degraded.
 
 You can still use standard CSS (ex: to define `@keyframes`) or inline styles (ex: for JS driven
