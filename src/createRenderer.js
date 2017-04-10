@@ -8,7 +8,7 @@ export default function createRenderer(backend) {
     return function render(rules) {
         let currentSpec = -1;
 
-        const classNames = splat(rules).map((rule) => {
+        const className = splat(rules).map((rule) => {
             let ruleSpec = -1;
             const ruleSpecs = specs[rule.id] || (specs[rule.id] = []);
 
@@ -31,18 +31,14 @@ export default function createRenderer(backend) {
             currentSpec = ruleSpec;
 
             return `${rule.class}__${ruleSpec}`;
-        });
+        }).join(" ");
 
-        const renderer = {};
-        Object.defineProperties(renderer, {
-            toString: {
-                value() { return classNames.join(" "); },
+        return {
+            toString () {
+                return className;
             },
-            _rules: { value: rules },
-        });
-        classNames.forEach((className) => renderer[className] = true);
-
-        return renderer;
+            _rules: rules,
+        };
     };
 }
 
