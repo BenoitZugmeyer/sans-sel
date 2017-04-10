@@ -22,6 +22,7 @@
     "lint": "eslint ."
   },
   "main": "./dist/sansSel",
+  "jsnext:main": "./src/sansSel.js",
   "files": [
     "dist/sansSel.js",
     "dist/sansSel.min.js",
