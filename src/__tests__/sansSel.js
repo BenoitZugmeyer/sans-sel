@@ -8,8 +8,8 @@ describe("sansSel", () => {
     });
 
     it("should throw if invoked with bad options", () => {
-        expect(function () { sansSel({ name: 1 }); }).toThrow("The 'name' option should be a string");
-        expect(function () { sansSel({ backend: 1 }); }).toThrow("The 'backend' option should be a function");
+        expect(() => { sansSel({ name: 1 }); }).toThrow("The 'name' option should be a string");
+        expect(() => { sansSel({ backend: 1 }); }).toThrow("The 'backend' option should be a function");
     });
 
     let ss;
@@ -48,7 +48,7 @@ describe("sansSel", () => {
 
         it("should render basic style", () => {
             ss.addRule("foo", { color: "red" });
-            ss("foo");
+            ss("foo").toString();
             expect(backend.rules).toEqual([
                 ".__foo__0{color:red;}",
             ]);
@@ -60,7 +60,7 @@ describe("sansSel", () => {
                     color: "red",
                 },
             });
-            ss("foo");
+            ss("foo").toString();
             expect(backend.rules).toEqual([
                 "@media screen{.__foo__0{color:red;}}",
             ]);
@@ -70,7 +70,7 @@ describe("sansSel", () => {
             ss.addRule("foo", {
                 border: ["blue", "red"],
             });
-            ss("foo");
+            ss("foo").toString();
             expect(backend.rules).toEqual([
                 ".__foo__0{border:red;\nborder:blue;}",
             ]);
@@ -84,7 +84,7 @@ describe("sansSel", () => {
                     bar: "baz",
                 },
             });
-            ss("foo");
+            ss("foo").toString();
 
             expect(backend.rules).toEqual([
                 ".__foo__0{foo:bar;}",
@@ -103,7 +103,7 @@ describe("sansSel", () => {
                     },
                 },
             });
-            ss("foo");
+            ss("foo").toString();
             expect(backend.rules).toEqual([
                 ".__foo__0{foo:bar;}",
                 ".__foo__0:focus{foo:baz;}",
@@ -115,9 +115,9 @@ describe("sansSel", () => {
             ss.addRule("a", { "-foobar": 1 });
             ss.addRule("b", { "foo bar": 1 });
             ss.addRule("c", { "foo:bar": 1 });
-            expect(ss.bind(ss, "a")).toThrow("Invalid identifier: -foobar");
-            expect(ss.bind(ss, "b")).toThrow("Invalid identifier: foo bar");
-            expect(ss.bind(ss, "c")).toThrow("Invalid identifier: foo:bar");
+            expect(() => ss("a").toString()).toThrow("Invalid identifier: -foobar");
+            expect(() => ss("b").toString()).toThrow("Invalid identifier: foo bar");
+            expect(() => ss("c").toString()).toThrow("Invalid identifier: foo:bar");
         });
 
         it("should accept render results as argument", () => {
@@ -164,7 +164,7 @@ describe("sansSel", () => {
             ns.addRule("baz", {
                 bar: true,
             });
-            ns("baz");
+            ns("baz").toString();
             expect(backend.rules).toEqual([
                 ".foo__baz__0{text-Decoration:underline;background:red;}",
             ]);
@@ -205,7 +205,7 @@ describe("sansSel", () => {
             ss.addRule("foo", {
                 display: "flex",
             });
-            ss("foo");
+            ss("foo").toString();
 
             expect(backend.rules).toEqual([
                 ".__foo__0{display:-webkit-flex;}",
@@ -228,7 +228,7 @@ describe("sansSel", () => {
                     },
                 },
             });
-            ss("foo");
+            ss("foo").toString();
 
             expect(backend.rules).toEqual([
                 ".__foo__0{color:red;}",
@@ -252,7 +252,7 @@ describe("sansSel", () => {
                 blue: true,
                 blueBackground: true,
             });
-            ss("foo");
+            ss("foo").toString();
 
             expect(backend.rules).toEqual([
                 ".__foo__0{color:blue;background-Color:blue;}",
