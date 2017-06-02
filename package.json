@@ -11,10 +11,10 @@
     "babel-register": "^6.6.0",
     "eslint": "^3.10.0",
     "eslint-config-benoitz": "^1.0.0",
-    "jest": "^19.0.2",
+    "jest": "^20.0.4",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.4.0",
-    "uglifyjs": "^2.4.10"
+    "uglifyjs": "^2.4.11"
   },
   "scripts": {
     "prepublish": "npm run dist && npm run dev",
