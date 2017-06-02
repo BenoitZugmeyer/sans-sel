@@ -1,23 +1,4 @@
-extends: eslint:recommended
-
-rules:
-    indent: [error, 4]
-    linebreak-style: [error, unix]
-    quotes: [error, double]
-    semi: [error, always]
-    comma-dangle: [error, always-multiline]
-    no-unused-expressions: error
-    prefer-arrow-callback: error
-    object-shorthand: error
-    prefer-template: error
-    prefer-const: error
-    no-var: error
+extends: benoitz
 
 globals:
-    __DEV__: false
-
-env:
-    es6: true
-
-parserOptions:
-    sourceType: module
+  __DEV__: false

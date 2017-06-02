@@ -1,11 +1,11 @@
 
 export default function () {
-    function testBackend(rule) {
-        testBackend.rules.push(rule);
-    }
+  function testBackend(rule) {
+    testBackend.rules.push(rule)
+  }
 
     // Expose rules so we can test them
-    testBackend.rules = [];
+  testBackend.rules = []
 
-    return testBackend;
+  return testBackend
 }
