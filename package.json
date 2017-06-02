@@ -14,7 +14,7 @@
     "jest": "^20.0.4",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.4.0",
-    "uglifyjs": "^2.4.11"
+    "uglify-js": "^3.0.15"
   },
   "scripts": {
     "prepublish": "npm run dist && npm run dev",
