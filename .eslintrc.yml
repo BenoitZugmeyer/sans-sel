@@ -1,4 +1,4 @@
 extends: benoitz
 
 globals:
-  __DEV__: false
+  process: false

@@ -9,7 +9,7 @@ let globalId = 0
 
 export default function sansSel({ name="", backend=null, _renderer=null, _styles=null, _transforms=null }={}) {
 
-  if (__DEV__) {
+  if (process.env.NODE_ENV !== "production") {
     if (typeof name !== "string") {
       throw new Error("The 'name' option should be a string")
     }
@@ -37,7 +37,7 @@ export default function sansSel({ name="", backend=null, _renderer=null, _styles
 
   function multiSetter(fn) {
     return (set) => {
-      if (__DEV__) {
+      if (process.env.NODE_ENV !== "production") {
         if (!set || typeof set !== "object") {
           throw new Error("The 'set' argument should be an object")
         }
@@ -85,7 +85,7 @@ export default function sansSel({ name="", backend=null, _renderer=null, _styles
   }
 
   function namespace(namespaceName) {
-    if (__DEV__) {
+    if (process.env.NODE_ENV !== "production") {
       assertValidIdentifier(namespaceName)
 
       if (typeof namespaceName !== "string") {
@@ -106,7 +106,7 @@ export default function sansSel({ name="", backend=null, _renderer=null, _styles
   }
 
   function addTransform(name, definition) {
-    if (__DEV__) {
+    if (process.env.NODE_ENV !== "production") {
       if (typeof name !== "string") {
         throw new Error("The 'name' argument should be a string")
       }
@@ -126,7 +126,7 @@ export default function sansSel({ name="", backend=null, _renderer=null, _styles
 
   function addRule(ruleName, declarations) {
 
-    if (__DEV__) {
+    if (process.env.NODE_ENV !== "production") {
       if (typeof ruleName !== "string") {
         throw new Error("The 'name' argument should be a string")
       }

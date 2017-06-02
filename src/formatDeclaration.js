@@ -5,7 +5,7 @@ import isUnitLess from "./isUnitLess"
 const formatDeclarationCache = Object.create(null)
 
 export default function formatDeclaration(property, value) {
-  if (__DEV__) {
+  if (process.env.NODE_ENV !== "production") {
     assertValidIdentifier(property)
   }
 

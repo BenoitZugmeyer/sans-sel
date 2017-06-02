@@ -18,8 +18,8 @@
   },
   "scripts": {
     "prepublish": "npm run dist && npm run dev",
-    "dist": "mkdir -p dist && rollup -c | uglifyjs -c -m -d '__DEV__=false' > dist/sansSel.min.js",
-    "dev": "mkdir -p dist && rollup -c --intro 'var __DEV__ = true;' > dist/sansSel.js",
+    "dist": "mkdir -p dist && rollup -c | sed 's/process\\.env\\.NODE_ENV !== \"production\"/false/' | uglifyjs -c -m > dist/sansSel.min.js",
+    "dev": " mkdir -p dist && rollup -c | sed 's/process\\.env\\.NODE_ENV !== \"production\"/true/' > dist/sansSel.js",
     "test": "jest",
     "lint": "eslint ."
   },
