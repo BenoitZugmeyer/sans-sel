@@ -3,9 +3,10 @@
 export default function () {
   const element = document.createElement("style")
   document.head.appendChild(element)
-  const sheet = element.sheet
 
   return (rule) => {
-    sheet.insertRule(rule, sheet.cssRules.length)
+    element.appendChild(document.createTextNode(rule))
+    // Other way... to investigate which is better
+    // element.sheet.insertRule(rule, sheet.cssRules.length)
   }
 }
