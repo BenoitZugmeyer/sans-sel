@@ -320,4 +320,38 @@ describe("applyTransforms", () => {
         })
   })
 
+  it("should omit falsy value on transform with plain object", () => {
+    apply(
+      {
+        plop: { a: false, b: null, c: undefined, d: "", e: NaN, color: "red" },
+      },
+      {
+        plop: true,
+      }
+        ).toEqual({
+          color: "red",
+        })
+  })
+
+  it("should omit falsy value on transform with a function", () => {
+    apply(
+      {
+        plop(v) {
+          return {
+            a: false,
+            b: null,
+            c: undefined,
+            d: "",
+            e: NaN,
+            color: v,
+          }
+        },
+      },
+      {
+        plop: "blue",
+      }
+        ).toEqual({
+          color: "blue",
+        })
+  })
 })

@@ -132,6 +132,21 @@ describe("sansSel", () => {
       const renderResult = ss("foo")
       expect(ss(renderResult, "bar").toString()).toEqual("__foo__0 __bar__1")
     })
+
+    it("should omit falsy properties", () => {
+      ss.addRule("foo", {
+        color: "red",
+        fontSize: false,
+        backgroundColor: "",
+        fontWeight: null,
+        textAlign: undefined,
+        margin: NaN,
+      })
+      ss("foo").toString()
+      expect(backend.rules).toEqual([
+        ".__foo__0{color:red;}",
+      ])
+    })
   })
 
   describe("namespace", () => {
