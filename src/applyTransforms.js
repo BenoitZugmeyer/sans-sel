@@ -10,6 +10,8 @@ function applyTransforms(transforms, declarations, transformCache, result) {
   for (property in declarations) {
     const value = declarations[property]
 
+    if (!value && value !== 0) continue
+
     if (property in transforms) {
       const transform = transforms[property]
       const isFunction = typeof transform === "function"
