@@ -35,4 +35,9 @@ describe("formatDeclaration", () => {
     expect(formatDeclaration("content", "foo bar")).toBe("content:\"foo bar\";")
     expect(formatDeclaration("content", "foo \"bar")).toBe("content:\"foo \\\"bar\";")
   })
+
+  it("should keep double dash declaration", () => {
+    expect(formatDeclaration("--foo", "bar")).toBe("--foo:bar;")
+  })
+
 })

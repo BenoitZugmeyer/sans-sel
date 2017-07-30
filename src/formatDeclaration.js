@@ -1,14 +1,9 @@
-import assertValidIdentifier from "./assertValidIdentifier"
 import uncamelcase from "./uncamelcase"
 import isUnitLess from "./isUnitLess"
 
 const formatDeclarationCache = Object.create(null)
 
 export default function formatDeclaration(property, value) {
-  if (process.env.NODE_ENV !== "production") {
-    assertValidIdentifier(property)
-  }
-
   if (Array.isArray(value)) {
     return value.map((v) => formatDeclaration(property, v)).reverse().join("\n")
   }

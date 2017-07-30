@@ -115,15 +115,6 @@ describe("sansSel", () => {
       ])
     })
 
-    it("should raise if an invalid property is given", () => {
-      ss.addRule("a", { "-foobar": 1 })
-      ss.addRule("b", { "foo bar": 1 })
-      ss.addRule("c", { "foo:bar": 1 })
-      expect(() => ss("a").toString()).toThrow("Invalid identifier: -foobar")
-      expect(() => ss("b").toString()).toThrow("Invalid identifier: foo bar")
-      expect(() => ss("c").toString()).toThrow("Invalid identifier: foo:bar")
-    })
-
     it("should accept render results as argument", () => {
       ss.addRules({
         foo: { color: "red" },
