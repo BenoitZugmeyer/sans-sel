@@ -1,6 +1,6 @@
 {
   "name": "sans-sel",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "license": "ISC",
   "author": "Benoît Zugmeyer",
   "description": "Write your components styles in JavaScript, without selectors.",
